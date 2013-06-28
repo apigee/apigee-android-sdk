@@ -1,0 +1,155 @@
+package com.apigee.sdk.apm.android;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.Header;
+import org.apache.http.StatusLine;
+import org.apache.http.HttpEntity;
+
+import com.apigee.sdk.apm.android.HttpClientWrapper;
+import com.apigee.sdk.apm.android.MetricsCollectorService;
+import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
+
+/**
+ * 
+ * Description : Httpclient 4 specific interceptor to collect performance
+ * statistics from httpclient
+ * 
+ * Open issues : 1. Can't really correlate input from output. wrapping the
+ * "execute" function is much easier since we know the start and stop variables
+ * are in the same thread 2. Can't catch exceptions using this handler.
+ * 
+ * Pros : Easier to insert. This is probably not a good idea after thinking
+ * about it a bit more...... May need to have an interceptor pattern that is
+ * created for HttpClient3 (Might be easier). Or we should use dynamic proxy
+ * method instead.
+ * 
+ * @author vadmin
+ * 
+ */
+public class PerformanceMonitoringInterceptor implements
+		HttpResponseInterceptor, HttpRequestInterceptor {
+
+	public static final String ATTR_REQ_START_TIME = "RequestStartTime";
+	public static final String ATTR_URI            = "URI";
+	
+	MetricsCollectorService metricsCollector;
+
+	public MetricsCollectorService getMetricsCollector() {
+		return metricsCollector;
+	}
+
+	public void setMetricsCollector(MetricsCollectorService metricsCollector) {
+		this.metricsCollector = metricsCollector;
+	}
+
+	@Override
+	public void process(HttpResponse arg0, HttpContext arg1)
+			throws HttpException, IOException {
+
+		if ((arg0 != null) &&
+			(arg1 != null) &&
+			(arg1.getAttribute(ATTR_REQ_START_TIME) != null) &&
+			(metricsCollector != null)) {
+			
+			long endTime = System.currentTimeMillis();
+
+			boolean errorOccured = false;
+
+			if (arg1.getAttribute(HttpClientWrapper.ATTR_DELEGATE_EXCEPTION_OCCURRED) != null) {
+				errorOccured = (Boolean) arg1
+						.getAttribute(HttpClientWrapper.ATTR_DELEGATE_EXCEPTION_OCCURRED);
+			}
+				
+			HashMap<String,Object> httpHeaders = null;
+			String serverResponseTime = null;
+			String serverReceiptTime = null;
+			String serverId = null;
+			int statusCode = -1;
+			long contentLength = -1;
+				
+			StatusLine statusLine = arg0.getStatusLine();
+				
+			if( statusLine != null ) {
+				statusCode = statusLine.getStatusCode();
+			}
+				
+			HttpEntity httpEntity = arg0.getEntity();
+				
+			if( httpEntity != null ) {
+				contentLength = httpEntity.getContentLength();
+			}
+				
+			// did the server set it's response time?
+			Header[] headers = arg0.getHeaders(ClientNetworkMetrics.HttpServerResponseTimeHeader);
+			if( (headers != null) && (headers.length > 0) ) {
+				Header serverResponseTimeHeader = headers[0];
+				serverResponseTime = serverResponseTimeHeader.getValue();
+			}
+				
+			// did the server set it's receipt time?
+			headers = arg0.getHeaders(ClientNetworkMetrics.HttpServerReceiptTimeHeader);
+			if( (headers != null) && (headers.length > 0) ) {
+				Header serverReceiptTimeHeader = headers[0];
+				serverReceiptTime = serverReceiptTimeHeader.getValue();
+			}
+				
+			// did the server set it's id?
+			headers = arg0.getHeaders(ClientNetworkMetrics.HttpServerIdHeader);
+			if( (headers != null) && (headers.length > 0) ) {
+				Header serverIdHeader = headers[0];
+				serverId = serverIdHeader.getValue();
+			}
+
+			if( (statusCode > -1) ||
+				(contentLength > -1) ||
+				(serverResponseTime != null) ||
+				(serverReceiptTime != null) ||
+				(serverId != null) ) {
+				httpHeaders = new HashMap<String,Object>();
+					
+				if( serverResponseTime != null ) {
+					httpHeaders.put(ClientNetworkMetrics.HttpServerResponseTimeHeader, serverResponseTime);
+				}
+					
+				if( serverReceiptTime != null ) {
+					httpHeaders.put(ClientNetworkMetrics.HttpServerReceiptTimeHeader, serverReceiptTime);
+				}
+					
+				if( serverId != null ) {
+					httpHeaders.put(ClientNetworkMetrics.HttpServerIdHeader, serverId);
+				}
+					
+				if( statusCode > -1 ) {
+					httpHeaders.put(ClientNetworkMetrics.HttpStatusCode, new Integer(statusCode));
+				}
+					
+				if( contentLength > -1 ) {
+					httpHeaders.put(ClientNetworkMetrics.HttpContentLength, new Long(contentLength));
+				}
+			}
+
+			metricsCollector.analyze(arg1.getAttribute(ATTR_URI).toString(),
+									(Long) arg1.getAttribute(ATTR_REQ_START_TIME),
+									endTime,
+									errorOccured,
+									httpHeaders);
+		}
+	}
+
+	@Override
+	public void process(HttpRequest arg0, HttpContext arg1)
+			throws HttpException, IOException {
+
+		arg1.setAttribute(ATTR_REQ_START_TIME, System.currentTimeMillis());
+		arg1.setAttribute(ATTR_URI, arg0.getRequestLine().getUri());
+	}
+
+}
