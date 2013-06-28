@@ -51,7 +51,6 @@ import com.apigee.sdk.apm.android.SessionTimeoutListener;
 import com.apigee.sdk.apm.android.UploadService;
 import com.apigee.sdk.apm.android.crashlogging.CrashManager;
 import com.apigee.sdk.apm.android.metrics.LowPriorityThreadFactory;
-import com.apigee.sdk.apm.android.metrics.MPConfig;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.App;
@@ -65,6 +64,8 @@ public class MonitoringClient implements SessionTimeoutListener {
 	public static final boolean DEFAULT_AUTO_UPLOAD_ENABLED = true;
 	public static final boolean DEFAULT_CRASH_REPORTING_ENABLED = true;
 	
+    public static final int SUBMIT_THREAD_TTL_MILLIS = 180 * 1000;
+	public static final int SESSION_EXPIRATION_MILLIS = 1000 * 60 * 30;
 	
 	private static MonitoringClient singleton = null;
 
@@ -94,7 +95,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	private DataClient dataClient;
 	
     private static ThreadPoolExecutor sExecutor =
-            new ThreadPoolExecutor(0, 1, MPConfig.SUBMIT_THREAD_TTL, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new LowPriorityThreadFactory());
+            new ThreadPoolExecutor(0, 1, SUBMIT_THREAD_TTL_MILLIS, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new LowPriorityThreadFactory());
 
 
 	public static final int UPLOAD_INTERVAL = 300000; // 5 Minutes
@@ -193,7 +194,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 		
 		this.dataClient = dataClient;
 		
-		this.sessionManager = new SessionManager(MPConfig.SESSION_EXPIRATION,this);
+		this.sessionManager = new SessionManager(SESSION_EXPIRATION_MILLIS,this);
 		this.sessionManager.openSession();
 
 		// First configure the logger
