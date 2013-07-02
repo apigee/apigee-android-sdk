@@ -91,7 +91,7 @@ public class ClientSessionMetrics implements Serializable {
 	String devicePlatform;
 
 	//This needs to be set on client side.
-	String deviceOperatingSystem;
+	String deviceOSVersion;
 
 	//This needs to be set on client side.
 	String localLanguage;
@@ -327,12 +327,12 @@ public class ClientSessionMetrics implements Serializable {
 		this.devicePlatform = devicePlatform;
 	}
 
-	public String getDeviceOperatingSystem() {
-		return deviceOperatingSystem;
+	public String getDeviceOSVersion() {
+		return deviceOSVersion;
 	}
 
-	public void setDeviceOperatingSystem(String deviceOperatingSystem) {
-		this.deviceOperatingSystem = deviceOperatingSystem;
+	public void setDeviceOSVersion(String deviceOSVersion) {
+		this.deviceOSVersion = deviceOSVersion;
 	}
 
 	public String getLocalLanguage() {

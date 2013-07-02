@@ -378,7 +378,7 @@ public class CrashManager {
 	    	
 	    	monitoringClient.onCrashReportUpload(crashFileContents);
 	    	
-	    	if( monitoringClient.postString(crashFileContents, postURL, "text/plain") != null ) {
+	    	if( monitoringClient.putString(crashFileContents, postURL, "text/plain") != null ) {
 	    		Log.i(ClientLog.TAG_MONITORING_CLIENT,"Sent crash file to server '" + fileNameForServer + "'");
 	    	} else {
 	    		Log.e(ClientLog.TAG_MONITORING_CLIENT,"There was an error with the request to upload the crash report");

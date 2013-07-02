@@ -45,7 +45,7 @@ public class ClientLog implements Serializable {
 
 	String devicePlatform;
 
-	String deviceOperatingSystem;
+	String deviceOSVersion;
 
 	Float bearing;
 
@@ -242,12 +242,12 @@ public class ClientLog implements Serializable {
 		this.devicePlatform = devicePlatform;
 	}
 
-	public String getDeviceOperatingSystem() {
-		return deviceOperatingSystem;
+	public String getDeviceOSVersion() {
+		return deviceOSVersion;
 	}
 
-	public void setDeviceOperatingSystem(String deviceOperatingSystem) {
-		this.deviceOperatingSystem = deviceOperatingSystem;
+	public void setDeviceOSVersion(String deviceOSVersion) {
+		this.deviceOSVersion = deviceOSVersion;
 	}
 
 	public Long getEndHour() {

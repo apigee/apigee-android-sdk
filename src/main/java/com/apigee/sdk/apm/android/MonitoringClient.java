@@ -185,6 +185,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 			UploadListener uploadListener = monitoringOptions.getUploadListener();
 			
 			if( uploadListener != null ) {
+				if (null == this.listListeners) {
+					this.listListeners = new ArrayList<UploadListener>();
+				}
 				this.listListeners.add(uploadListener);
 			}
 		} else {
@@ -341,7 +344,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 	
-	public String postString(String postBody, String urlAsString, String contentType) {
+	public String putOrPostString(String httpMethod, String body, String urlAsString, String contentType) {
 		String response = null;
 		OutputStream out = null;
 		InputStream in = null;
@@ -350,11 +353,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 			URL url = new URL(urlAsString);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	    
-			byte[] postData = postBody.getBytes();
+			byte[] putOrPostData = body.getBytes();
 
 			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Length", Integer.toString(postData.length));
+			conn.setRequestMethod(httpMethod);
+			conn.setRequestProperty("Content-Length", Integer.toString(putOrPostData.length));
 			
 			if( contentType != null ) {
 				conn.setRequestProperty("Content-Type", contentType);
@@ -362,10 +365,14 @@ public class MonitoringClient implements SessionTimeoutListener {
 			
 			conn.setUseCaches(false);
 			
-			Log.v(ClientLog.TAG_MONITORING_CLIENT, "Posting data to '" + urlAsString + "'");
+			if (httpMethod.equals("POST")) {
+				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Posting data to '" + urlAsString + "'");
+			} else {
+				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Putting data to '" + urlAsString + "'");
+			}
 
 			out = conn.getOutputStream();
-			out.write(postData);
+			out.write(putOrPostData);
 			out.close();
 			out = null;
 
@@ -408,11 +415,23 @@ public class MonitoringClient implements SessionTimeoutListener {
 			}
 		}
 		
-	    return response;
+	    return response;		
+	}
+	
+	public String postString(String postBody, String urlAsString, String contentType) {
+		return putOrPostString("POST", postBody, urlAsString, contentType);
 	}
 
 	public String postString(String postBody, String urlAsString) {
 		return postString(postBody, urlAsString, "application/json; charset=utf-8");
+	}
+
+	public String putString(String body, String urlAsString, String contentType) {
+		return putOrPostString("PUT", body, urlAsString, contentType);
+	}
+
+	public String putString(String body, String urlAsString) {
+		return putString(body, urlAsString, "application/json; charset=utf-8");
 	}
 
 	public boolean readUpdateAndApplyConfiguration(HttpClient client,
@@ -831,7 +850,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return Build.TYPE;
 	}
 	
-	public String getDeviceOperatingSystem() {
+	public String getDeviceOSVersion() {
 		return Build.VERSION.RELEASE;
 	}
 	

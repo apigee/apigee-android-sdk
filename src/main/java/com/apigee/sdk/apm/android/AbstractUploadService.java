@@ -175,7 +175,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 		try {
 			//set device hardware metadata
 			sessionMetrics.setDeviceModel(monitoringClient.getDeviceModel());
-			sessionMetrics.setDeviceOperatingSystem(monitoringClient.getDeviceOperatingSystem());
+			sessionMetrics.setDeviceOSVersion(monitoringClient.getDeviceOSVersion());
 			sessionMetrics.setDevicePlatform(monitoringClient.getDevicePlatform());
 			sessionMetrics.setDeviceType(monitoringClient.getDeviceType());
 			String android_id = Secure.getString(

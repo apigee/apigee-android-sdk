@@ -43,7 +43,7 @@ public class ClientNetworkMetrics implements Serializable, Cloneable {
 
 	String devicePlatform;
 
-	String deviceOperatingSystem;
+	String deviceOSVersion;
 
 	private String url;
 
@@ -301,12 +301,12 @@ public class ClientNetworkMetrics implements Serializable, Cloneable {
 		this.devicePlatform = devicePlatform;
 	}
 
-	public String getDeviceOperatingSystem() {
-		return deviceOperatingSystem;
+	public String getDeviceOSVersion() {
+		return deviceOSVersion;
 	}
 
-	public void setDeviceOperatingSystem(String deviceOperatingSystem) {
-		this.deviceOperatingSystem = deviceOperatingSystem;
+	public void setDeviceOSVersion(String deviceOSVersion) {
+		this.deviceOSVersion = deviceOSVersion;
 	}
 
 	public Object clone() {
