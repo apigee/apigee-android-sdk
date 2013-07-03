@@ -1,14 +1,5 @@
 package com.apigee.sdk.data.client;
 
-import com.apigee.sdk.Logger;
-import com.apigee.sdk.DefaultAndroidLog;
-import com.apigee.sdk.URLConnectionFactory;
-
-import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
-import static com.apigee.sdk.data.client.utils.UrlUtils.addQueryParams;
-import static com.apigee.sdk.data.client.utils.UrlUtils.encodeParams;
-import static com.apigee.sdk.data.client.utils.UrlUtils.path;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +19,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
+import android.content.Context;
+import android.location.Location;
+
+import com.apigee.sdk.Logger;
+import com.apigee.sdk.DefaultAndroidLog;
+import com.apigee.sdk.URLConnectionFactory;
+
+import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
+import static com.apigee.sdk.data.client.utils.UrlUtils.addQueryParams;
+import static com.apigee.sdk.data.client.utils.UrlUtils.encodeParams;
+import static com.apigee.sdk.data.client.utils.UrlUtils.path;
+
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
 import com.apigee.sdk.data.client.entities.Activity;
 import com.apigee.sdk.data.client.entities.Device;
@@ -37,6 +40,12 @@ import com.apigee.sdk.data.client.entities.Message;
 import com.apigee.sdk.data.client.entities.User;
 import com.apigee.sdk.data.client.entities.Collection;
 import com.apigee.sdk.data.client.response.ApiResponse;
+import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
+import com.apigee.sdk.data.client.callbacks.ClientAsyncTask;
+import com.apigee.sdk.data.client.callbacks.DeviceRegistrationCallback;
+import com.apigee.sdk.data.client.callbacks.GroupsRetrievedCallback;
+import com.apigee.sdk.data.client.callbacks.QueryResultsCallback;
+import com.apigee.sdk.data.client.utils.DeviceUuidFactory;
 
 /**
  * The DataClient class for accessing the Usergrid API. Start by instantiating this
@@ -569,6 +578,24 @@ public class DataClient {
         return response;
     }
 
+	/**
+	 * Log the user in and get a valid access token. Executes asynchronously in
+	 * background and the callbacks are called in the UI thread.
+	 * 
+	 * @param email
+	 * @param password
+	 * @param callback
+	 */
+	public void authorizeAppUserAsync(final String email,
+			final String password, final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return authorizeAppUser(email, password);
+			}
+		}).execute();
+	}
+
     /**
      * Change the password for the currently logged in user. You must supply the
      * old password and the new password.
@@ -625,6 +652,25 @@ public class DataClient {
         return response;
     }
 
+	/**
+	 * Log the user in with their numeric pin-code and get a valid access token.
+	 * Executes asynchronously in background and the callbacks are called in the
+	 * UI thread.
+	 * 
+	 * @param email
+	 * @param pin
+	 * @param callback
+	 */
+	public void authorizeAppUserViaPinAsync(final String email,
+			final String pin, final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return authorizeAppUserViaPin(email, pin);
+			}
+		}).execute();
+	}
+
     /**
      * Log the user in with their Facebook access token retrieved via Facebook
      * OAuth.
@@ -659,6 +705,26 @@ public class DataClient {
         }
         return response;
     }
+    
+	/**
+	 * Log the user in with their numeric pin-code and get a valid access token.
+	 * Executes asynchronously in background and the callbacks are called in the
+	 * UI thread.
+	 * 
+	 * @param email
+	 * @param pin
+	 * @param callback
+	 */
+	public void authorizeAppUserViaFacebookAsync(final String fb_access_token,
+			final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return authorizeAppUserViaFacebook(fb_access_token);
+			}
+		}).execute();
+	}
+
 
     /**
      * Log the app in with it's client id and client secret key. Not recommended
@@ -697,6 +763,26 @@ public class DataClient {
         return response;
     }
 
+	/**
+	 * Log the app in with it's client id and client secret key. Not recommended
+	 * for production apps. Executes asynchronously in background and the
+	 * callbacks are called in the UI thread.
+	 * 
+	 * @param clientId
+	 * @param clientSecret
+	 * @param callback
+	 */
+	public void authorizeAppClientAsync(final String clientId,
+			final String clientSecret, final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+
+			@Override
+			public ApiResponse doTask() {
+				return authorizeAppClient(clientId, clientSecret);
+			}
+		}).execute();
+	}
+
     private void validateNonEmptyParam(Object param, String paramName) {
         if ( isEmpty(param) ) {
             throw new IllegalArgumentException(paramName + " cannot be null or empty");
@@ -720,6 +806,71 @@ public class DataClient {
                 organizationId, applicationId, "devices", deviceId.toString());
         return response.getFirstEntity(Device.class);
     }
+
+    /**
+     * Registers a device using the device's unique device ID.
+     *
+     * @param context
+     * @param properties
+     * @return a Device object if success
+     */
+    public Device registerDeviceForPush(UUID deviceId,
+                                        String notifier,
+                                        String token,
+                                        Map<String, Object> properties) {
+      if (properties == null) {
+          properties = new HashMap<String, Object>();
+      }
+      String notifierKey = notifier + ".notifier.id";
+      properties.put(notifierKey, token);
+      return registerDevice(deviceId, properties);
+    }
+
+    /**
+     * Registers a device using the device's unique device ID. Executes
+     * asynchronously in background and the callbacks are called in the UI
+     * thread.
+     *
+     * @param context
+     * @param properties
+     * @param callback
+     */
+    public void registerDeviceForPushAsync(final Context context,
+                                           final String notifier,
+                                           final String token,
+                                           final Map<String, Object> properties,
+                                           final DeviceRegistrationCallback callback) {
+      (new ClientAsyncTask<Device>(callback) {
+        @Override
+        public Device doTask() {
+          UUID deviceId = new DeviceUuidFactory(context).getDeviceUuid();
+
+          return registerDeviceForPush(deviceId, notifier, token, properties);
+        }
+      }).execute();
+    }
+
+	/**
+	 * Registers a device using the device's unique device ID. Executes
+	 * asynchronously in background and the callbacks are called in the UI
+	 * thread.
+	 * 
+	 * @param context
+	 * @param properties
+	 * @param callback
+	 */
+	public void registerDeviceAsync(final Context context,
+			final Map<String, Object> properties,
+			final DeviceRegistrationCallback callback) {
+		(new ClientAsyncTask<Device>(callback) {
+			@Override
+			public Device doTask() {
+			    UUID deviceId = new DeviceUuidFactory(context).getDeviceUuid();
+		        
+				return registerDevice(deviceId, properties);
+			}
+		}).execute();
+	}
 
     /**
      * Create a new entity on the server.
@@ -754,6 +905,42 @@ public class DataClient {
         return response;
     }
     
+    /**
+  	 * Create a new entity on the server. Executes asynchronously in background
+  	 * and the callbacks are called in the UI thread.
+  	 * 
+  	 * @param entity
+  	 * @param callback
+  	 */
+  	public void createEntityAsync(final Entity entity,
+  			final ApiResponseCallback callback) {
+  		(new ClientAsyncTask<ApiResponse>(callback) {
+  			@Override
+  			public ApiResponse doTask() {
+  				return createEntity(entity);
+  			}
+  		}).execute();
+  	}
+
+  	
+  	/**
+  	 * Create a new entity on the server from a set of properties. Properties
+  	 * must include a "type" property. Executes asynchronously in background and
+  	 * the callbacks are called in the UI thread.
+  	 * 
+  	 * @param properties
+  	 * @param callback
+  	 */
+  	public void createEntityAsync(final Map<String, Object> properties,
+  			final ApiResponseCallback callback) {
+  		(new ClientAsyncTask<ApiResponse>(callback) {
+  			@Override
+  			public ApiResponse doTask() {
+  				return createEntity(properties);
+  			}
+  		}).execute();
+  	}
+
     /**
      * Update an existing entity on the server.
      * 
@@ -825,6 +1012,27 @@ public class DataClient {
         return createEntity(properties);
     }
 
+	/**
+	 * Creates a user. Executes asynchronously in background and the callbacks
+	 * are called in the UI thread.
+	 * 
+	 * @param username
+	 * @param name
+	 * @param email
+	 * @param password
+	 * @param callback
+	 */
+	public void createUserAsync(final String username, final String name,
+			final String email, final String password,
+			final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return createUser(username, name, email, password);
+			}
+		}).execute();
+	}
+
     /**
      * Get the groups for the user.
      * 
@@ -845,6 +1053,23 @@ public class DataClient {
         return groupMap;
     }
 
+	/**
+	 * Get the groups for the user. Executes asynchronously in background and
+	 * the callbacks are called in the UI thread.
+	 * 
+	 * @param userId
+	 * @param callback
+	 */
+	public void getGroupsForUserAsync(final String userId,
+			final GroupsRetrievedCallback callback) {
+		(new ClientAsyncTask<Map<String, Group>>(callback) {
+			@Override
+			public Map<String, Group> doTask() {
+				return getGroupsForUser(userId);
+			}
+		}).execute();
+	}
+
     /**
      * Get a user's activity feed. Returned as a query to ease paging.
      * 
@@ -856,6 +1081,25 @@ public class DataClient {
                 organizationId, applicationId, "users", userId, "feed");
         return q;
     }
+    
+	/**
+	 * Get a user's activity feed. Returned as a query to ease paging. Executes
+	 * asynchronously in background and the callbacks are called in the UI
+	 * thread.
+	 * 
+	 * 
+	 * @param userId
+	 * @param callback
+	 */
+	public void queryActivityFeedForUserAsync(final String userId, final QueryResultsCallback callback) {
+		(new ClientAsyncTask<Query>(callback) {
+			@Override
+			public Query doTask() {
+				return queryActivityFeedForUser(userId);
+			}
+		}).execute();
+	}
+
 
     /**
      * Posts an activity to a user. Activity must already be created.
@@ -891,6 +1135,35 @@ public class DataClient {
         return postUserActivity(user.getUuid().toString(), activity);
     }
 
+	/**
+	 * Creates and posts an activity to a user. Executes asynchronously in
+	 * background and the callbacks are called in the UI thread.
+	 * 
+	 * @param verb
+	 * @param title
+	 * @param content
+	 * @param category
+	 * @param user
+	 * @param object
+	 * @param objectType
+	 * @param objectName
+	 * @param objectContent
+	 * @param callback
+	 */
+	public void postUserActivityAsync(final String verb, final String title,
+			final String content, final String category, final User user,
+			final Entity object, final String objectType,
+			final String objectName, final String objectContent,
+			final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return postUserActivity(verb, title, content, category, user,
+						object, objectType, objectName, objectContent);
+			}
+		}).execute();
+	}
+
     /**
      * Posts an activity to a group. Activity must already be created.
      * 
@@ -925,6 +1198,36 @@ public class DataClient {
                 category, user, object, objectType, objectName, objectContent);
         return postGroupActivity(groupId, activity);
     }
+
+	/**
+	 * Creates and posts an activity to a group. Executes asynchronously in
+	 * background and the callbacks are called in the UI thread.
+	 * 
+	 * @param groupId
+	 * @param verb
+	 * @param title
+	 * @param content
+	 * @param category
+	 * @param user
+	 * @param object
+	 * @param objectType
+	 * @param objectName
+	 * @param objectContent
+	 * @param callback
+	 */
+	public void postGroupActivityAsync(final String groupId, final String verb, final String title,
+			final String content, final String category, final User user,
+			final Entity object, final String objectType,
+			final String objectName, final String objectContent,
+			final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return postGroupActivity(groupId, verb, title, content, category, user,
+						object, objectType, objectName, objectContent);
+			}
+		}).execute();
+	}
 
     /**
      * Post an activity to the stream.
@@ -984,6 +1287,25 @@ public class DataClient {
         return q;
     }
 
+	/**
+	 * Get a group's activity feed. Returned as a query to ease paging. Executes
+	 * asynchronously in background and the callbacks are called in the UI
+	 * thread.
+	 * 
+	 * 
+	 * @param userId
+	 * @param callback
+	 */
+	public void queryActivityFeedForGroupAsync(final String groupId,
+			final QueryResultsCallback callback) {
+		(new ClientAsyncTask<Query>(callback) {
+			@Override
+			public Query doTask() {
+				return queryActivityFeedForGroup(groupId);
+			}
+		}).execute();
+	}
+
     /**
      * Perform a query request and return a query object. The Query object
      * provides a simple way of dealing with result sets that need to be
@@ -1001,6 +1323,29 @@ public class DataClient {
         return new EntityQuery(response, httpMethod, params, data, segments);
     }
 
+	/**
+	 * Perform a query request and return a query object. The Query object
+	 * provides a simple way of dealing with result sets that need to be
+	 * iterated or paged through. Executes asynchronously in background and the
+	 * callbacks are called in the UI thread.
+	 * 
+	 * @param callback
+	 * @param method
+	 * @param params
+	 * @param data
+	 * @param segments
+	 */
+	public void queryEntitiesRequestAsync(final QueryResultsCallback callback,
+			final String httpMethod, final Map<String, Object> params,
+			final Object data, final String... segments) {
+		(new ClientAsyncTask<Query>(callback) {
+			@Override
+			public Query doTask() {
+				return queryEntitiesRequest(httpMethod, params, data, segments);
+			}
+		}).execute();
+	}
+	
     /**
      * Perform a query of the users collection.
      * 
@@ -1011,6 +1356,18 @@ public class DataClient {
                 organizationId,  applicationId, "users");
         return q;
     }
+    
+	/**
+	 * Perform a query of the users collection. Executes asynchronously in
+	 * background and the callbacks are called in the UI thread.
+	 * 
+	 * @param callback
+	 */
+	public void queryUsersAsync(QueryResultsCallback callback) {
+		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
+				getApplicationId(), "users");
+	}
+
 
     /**
      * Perform a query of the users collection using the provided query command.
@@ -1027,6 +1384,21 @@ public class DataClient {
         return q;
     }
 
+	/**
+	 * Perform a query of the users collection using the provided query command.
+	 * For example: "name contains 'ed'". Executes asynchronously in background
+	 * and the callbacks are called in the UI thread.
+	 * 
+	 * @param ql
+	 * @param callback
+	 */
+	public void queryUsersAsync(String ql, QueryResultsCallback callback) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("ql", ql);
+		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null,
+				getApplicationId(), "users");
+	}
+	
     /**
      * Perform a query of the users collection within the specified distance of
      * the specified location and optionally using the provided query command.
@@ -1059,6 +1431,19 @@ public class DataClient {
         return q;
     }
 
+	/**
+	 * Queries the users for the specified group. Executes asynchronously in
+	 * background and the callbacks are called in the UI thread.
+	 * 
+	 * @param groupId
+	 * @param callback
+	 */
+	public void queryUsersForGroupAsync(String groupId,
+			QueryResultsCallback callback) {
+		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
+				getApplicationId(), "groups", groupId, "users");
+	}
+
     /**
      * Adds a user to the specified groups.
      * 
@@ -1071,6 +1456,24 @@ public class DataClient {
                 groupId, "users", userId);
     }
 
+	/**
+	 * Adds a user to the specified groups. Executes asynchronously in
+	 * background and the callbacks are called in the UI thread.
+	 * 
+	 * @param userId
+	 * @param groupId
+	 * @param callback
+	 */
+	public void addUserToGroupAsync(final String userId, final String groupId,
+			final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return addUserToGroup(userId, groupId);
+			}
+		}).execute();
+	}
+
     /**
      * Creates a group with the specified group path. Group paths can be slash
      * ("/") delimited like file paths for hierarchical group relationships.
@@ -1081,6 +1484,20 @@ public class DataClient {
     public ApiResponse createGroup(String groupPath) {
         return createGroup(groupPath, null);
     }
+
+	/**
+	 * Creates a group with the specified group path. Group paths can be slash
+	 * ("/") delimited like file paths for hierarchical group relationships.
+	 * Executes asynchronously in background and the callbacks are called in the
+	 * UI thread.
+	 * 
+	 * @param groupPath
+	 * @param callback
+	 */
+	public void createGroupAsync(String groupPath,
+			final ApiResponseCallback callback) {
+		createGroupAsync(groupPath, null);
+	}
 
     /**
      * Creates a group with the specified group path and group title. Group
@@ -1095,6 +1512,26 @@ public class DataClient {
      return createGroup(groupPath, groupTitle, null);  
     }
     
+	/**
+	 * Creates a group with the specified group path and group title. Group
+	 * paths can be slash ("/") deliminted like file paths for hierarchical
+	 * group relationships. Executes asynchronously in background and the
+	 * callbacks are called in the UI thread.
+	 * 
+	 * @param groupPath
+	 * @param groupTitle
+	 * @param callback
+	 */
+	public void createGroupAsync(final String groupPath,
+			final String groupTitle, final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return createGroup(groupPath, groupTitle);
+			}
+		}).execute();
+	}
+
     /**
      * Create a group with a path, title and name
      * @param groupPath
@@ -1152,6 +1589,28 @@ public class DataClient {
                 connectedEntityId);
     }
 
+	/**
+	 * Connect two entities together. Executes asynchronously in background and
+	 * the callbacks are called in the UI thread.
+	 * 
+	 * @param connectingEntityType
+	 * @param connectingEntityId
+	 * @param connectionType
+	 * @param connectedEntityId
+	 * @param callback
+	 */
+	public void connectEntitiesAsync(final String connectingEntityType,
+			final String connectingEntityId, final String connectionType,
+			final String connectedEntityId, final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return connectEntities(connectingEntityType,
+						connectingEntityId, connectionType, connectedEntityId);
+			}
+		}).execute();
+	}
+	
     /**
      * Disconnect two entities.
      * 
@@ -1169,6 +1628,28 @@ public class DataClient {
                 connectedEntityId);
     }
 
+	/**
+	 * Disconnect two entities. Executes asynchronously in background and the
+	 * callbacks are called in the UI thread.
+	 * 
+	 * @param connectingEntityType
+	 * @param connectingEntityId
+	 * @param connectionType
+	 * @param connectedEntityId
+	 * @param callback
+	 */
+	public void disconnectEntitiesAsync(final String connectingEntityType,
+			final String connectingEntityId, final String connectionType,
+			final String connectedEntityId, final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return connectEntities(connectingEntityType,
+						connectingEntityId, connectionType, connectedEntityId);
+			}
+		}).execute();
+	}
+	
     /**
      * Query the connected entities.
      * 
@@ -1188,6 +1669,26 @@ public class DataClient {
         return q;
     }
 
+	/**
+	 * Query the connected entities. Executes asynchronously in background and
+	 * the callbacks are called in the UI thread.
+	 * 
+	 * @param connectingEntityType
+	 * @param connectingEntityId
+	 * @param connectionType
+	 * @param ql
+	 * @param callback
+	 */
+	public void queryEntityConnectionsAsync(String connectingEntityType,
+			String connectingEntityId, String connectionType, String ql,
+			QueryResultsCallback callback) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("ql", ql);
+		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null,
+				getApplicationId(), connectingEntityType, connectingEntityId,
+				connectionType);
+	}
+	
     protected String makeLocationQL(float distance, double lattitude,
             double longitude, String ql) {
         String within = String.format("within %d of %d , %d", distance,
@@ -1219,6 +1720,31 @@ public class DataClient {
         return q;
     }
 
+	/**
+	 * Query the connected entities within distance of a specific point. .
+	 * Executes asynchronously in background and the callbacks are called in the
+	 * UI thread.
+	 * 
+	 * @param connectingEntityType
+	 * @param connectingEntityId
+	 * @param connectionType
+	 * @param distance
+	 * @param latitude
+	 * @param longitude
+	 * @param callback
+	 */
+	public void queryEntityConnectionsWithinLocationAsync(
+			String connectingEntityType, String connectingEntityId,
+			String connectionType, float distance, Location location,
+			String ql, QueryResultsCallback callback) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("ql", makeLocationQL(distance, location.getLatitude(), location.getLongitude(), ql));
+		params.put("ql", ql);
+		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null,
+				getApplicationId(), connectingEntityType, connectingEntityId,
+				connectionType);
+	}
+	
     public interface Query {
 
         public ApiResponse getResponse();

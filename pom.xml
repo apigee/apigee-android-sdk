@@ -16,11 +16,26 @@
 		<!--<android.libs>/Users/alanho/Documents/libs/android-sdk/platforms/android-16</android.libs>-->
         <android.libs>/Applications/adt-bundle-mac/sdk/platforms/android-4.2</android.libs>
          <!--<android.libs>/Users/ApigeeCorporation/tools/android-sdk-macosx/platforms/android-16</android.libs>-->
-        <jackson-version>2.1.1</jackson-version>
+        <jackson-version>2.2.0</jackson-version>
         <!--<spring-java-version>1.0.1.RELEASE</spring-java-version>-->
         <apache-http-version>4.1.2</apache-http-version>
 	</properties>
 
+	<developers>
+		<developer>
+			<id>eanuff</id>
+			<name>Ed Anuff</name>
+		</developer>
+		<developer>
+			<id>tnine</id>
+			<name>Todd Nine</name>
+		</developer>
+		<developer>
+			<id>sganyo</id>
+			<name>Scott Ganyo</name>
+		</developer>
+	</developers>
+	
 	<build>
 		<finalName>apigee-android-${version}</finalName>
 		<plugins>
