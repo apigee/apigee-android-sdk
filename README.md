@@ -15,7 +15,7 @@ AndroidManifest.xml Settings
 Please ensure that your application includes the following permission:
 
 <pre>
-	<uses-permission android:name="android.permission.INTERNET"/>
+	android.permission.INTERNET
 </pre>
 
 Building From Source
