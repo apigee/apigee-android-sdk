@@ -10,6 +10,13 @@ There are 2 main areas of functionality provided: (1) AppServices (UserGrid), an
 
 NOTE -- mobile analytics is temporarily disabled until the back-end systems are configured.
 
+AndroidManifest.xml Settings
+----------------------------
+Please ensure that your application includes the following permission:
+
+<pre>
+	<uses-permission android:name="android.permission.INTERNET"/>
+</pre>
 
 Building From Source
 --------------------
