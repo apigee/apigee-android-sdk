@@ -269,10 +269,10 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 						sessionMetrics.setTelephonyDeviceId(telephonyManager
 								.getDeviceId());
 						sessionMetrics
-						.setTelephonyeNetworkOperator(telephonyManager
+						.setTelephonyNetworkOperator(telephonyManager
 								.getNetworkOperator());
 						sessionMetrics
-						.setTelephonyeNetworkOperatorName(telephonyManager
+						.setTelephonyNetworkOperatorName(telephonyManager
 								.getNetworkOperatorName());
 
 						//TODO: should telephonyNetworkType be used?
@@ -297,14 +297,14 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 					Log.v(ClientLog.TAG_MONITORING_CLIENT, "Phone state permission denied");
 					sessionMetrics.setTelephonyPhoneType(VALUE_UNKNOWN);					
 					sessionMetrics.setTelephonyDeviceId(VALUE_UNKNOWN);
-					sessionMetrics.setTelephonyeNetworkOperator(VALUE_UNKNOWN);
-					sessionMetrics.setTelephonyeNetworkOperatorName(VALUE_UNKNOWN);
+					sessionMetrics.setTelephonyNetworkOperator(VALUE_UNKNOWN);
+					sessionMetrics.setTelephonyNetworkOperatorName(VALUE_UNKNOWN);
 				}
 
 				//Set the network carrier
 				if ((sessionMetrics.getNetworkType() != null) && sessionMetrics.getNetworkType().equalsIgnoreCase("MOBILE"))
 				{
-					String networkOperatorName = sessionMetrics.getTelephonyeNetworkOperatorName();
+					String networkOperatorName = sessionMetrics.getTelephonyNetworkOperatorName();
 					if( (networkOperatorName != null) && (networkOperatorName.length() > 0) ) {
 						sessionMetrics.setNetworkCarrier(formatString(networkOperatorName));
 					} else {
@@ -323,8 +323,8 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 				sessionMetrics.setNetworkCarrier(VALUE_UNKNOWN);
 				sessionMetrics.setTelephonyPhoneType(VALUE_UNKNOWN);
 				sessionMetrics.setTelephonyDeviceId(VALUE_UNKNOWN);
-				sessionMetrics.setTelephonyeNetworkOperator(VALUE_UNKNOWN);
-				sessionMetrics.setTelephonyeNetworkOperatorName(VALUE_UNKNOWN);
+				sessionMetrics.setTelephonyNetworkOperator(VALUE_UNKNOWN);
+				sessionMetrics.setTelephonyNetworkOperatorName(VALUE_UNKNOWN);
 			}
 
 			return sessionMetrics;

@@ -34,12 +34,10 @@ public class ClientSessionMetrics implements Serializable {
 	String telephonyDeviceId;
 
 	//This needs to be set on client side.
-	//TODO: fix misspelling
-	String telephonyeNetworkOperator;
+	String telephonyNetworkOperator;
 
 	//This needs to be set on client side.
-	//TODO: fix misspelling
-	String telephonyeNetworkOperatorName;
+	String telephonyNetworkOperatorName;
 
 	//This needs to be set on client side.
 	String telephonyNetworkType;
@@ -206,21 +204,21 @@ public class ClientSessionMetrics implements Serializable {
 		this.telephonyDeviceId = telephonyDeviceId;
 	}
 
-	public String getTelephonyeNetworkOperator() {
-		return telephonyeNetworkOperator;
+	public String getTelephonyNetworkOperator() {
+		return telephonyNetworkOperator;
 	}
 
-	public void setTelephonyeNetworkOperator(String telephonyeNetworkOperator) {
-		this.telephonyeNetworkOperator = telephonyeNetworkOperator;
+	public void setTelephonyNetworkOperator(String telephonyNetworkOperator) {
+		this.telephonyNetworkOperator = telephonyNetworkOperator;
 	}
 
-	public String getTelephonyeNetworkOperatorName() {
-		return telephonyeNetworkOperatorName;
+	public String getTelephonyNetworkOperatorName() {
+		return telephonyNetworkOperatorName;
 	}
 
-	public void setTelephonyeNetworkOperatorName(
-			String telephonyeNetworkOperatorName) {
-		this.telephonyeNetworkOperatorName = telephonyeNetworkOperatorName;
+	public void setTelephonyNetworkOperatorName(
+			String telephonyNetworkOperatorName) {
+		this.telephonyNetworkOperatorName = telephonyNetworkOperatorName;
 	}
 
 	public String getTelephonyNetworkType() {
