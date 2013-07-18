@@ -53,14 +53,16 @@ public class MetricsCollector2 implements MetricsCollectorService {
 		if( httpHeaders != null ) {
 			Integer statusCode = (Integer) httpHeaders.get(ClientNetworkMetrics.HttpStatusCode);
 			Long responseDataSize = (Long) httpHeaders.get(ClientNetworkMetrics.HttpContentLength);
-			String serverResponseTime = (String) httpHeaders.get(ClientNetworkMetrics.HttpServerResponseTimeHeader);
-			String serverReceiptTime = (String) httpHeaders.get(ClientNetworkMetrics.HttpServerReceiptTimeHeader);
-			String serverId = (String) httpHeaders.get(ClientNetworkMetrics.HttpServerIdHeader);
+			Date serverResponseTime = (Date) httpHeaders.get(ClientNetworkMetrics.HeaderResponseTime);
+			Date serverReceiptTime = (Date) httpHeaders.get(ClientNetworkMetrics.HeaderReceiptTime);
+			Long serverProcessingTime = (Long) httpHeaders.get(ClientNetworkMetrics.HeaderProcessingTime);
+			String serverId = (String) httpHeaders.get(ClientNetworkMetrics.HeaderServerId);
 				
 			metric.setHttpStatusCode(statusCode);
 			metric.setResponseDataSize(responseDataSize);
-			metric.setBackendResponseTime(serverResponseTime);
-			metric.setBackendReceiptTime(serverReceiptTime);
+			metric.setServerResponseTime(serverResponseTime);
+			metric.setServerReceiptTime(serverReceiptTime);
+			metric.setServerProcessingTime(serverProcessingTime);
 			metric.setServerId(serverId);
 		}
 			

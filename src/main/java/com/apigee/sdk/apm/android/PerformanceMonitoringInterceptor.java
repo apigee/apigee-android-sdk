@@ -71,6 +71,7 @@ public class PerformanceMonitoringInterceptor implements
 			HashMap<String,Object> httpHeaders = null;
 			String serverResponseTime = null;
 			String serverReceiptTime = null;
+			String serverProcessingTime = null;
 			String serverId = null;
 			int statusCode = -1;
 			long contentLength = -1;
@@ -88,21 +89,28 @@ public class PerformanceMonitoringInterceptor implements
 			}
 				
 			// did the server set it's response time?
-			Header[] headers = arg0.getHeaders(ClientNetworkMetrics.HttpServerResponseTimeHeader);
+			Header[] headers = arg0.getHeaders(ClientNetworkMetrics.HeaderResponseTime);
 			if( (headers != null) && (headers.length > 0) ) {
 				Header serverResponseTimeHeader = headers[0];
 				serverResponseTime = serverResponseTimeHeader.getValue();
 			}
 				
 			// did the server set it's receipt time?
-			headers = arg0.getHeaders(ClientNetworkMetrics.HttpServerReceiptTimeHeader);
+			headers = arg0.getHeaders(ClientNetworkMetrics.HeaderReceiptTime);
 			if( (headers != null) && (headers.length > 0) ) {
 				Header serverReceiptTimeHeader = headers[0];
 				serverReceiptTime = serverReceiptTimeHeader.getValue();
 			}
-				
+
+			// did the server set it's processing time?
+			headers = arg0.getHeaders(ClientNetworkMetrics.HeaderProcessingTime);
+			if( (headers != null) && (headers.length > 0) ) {
+				Header serverProcessingTimeHeader = headers[0];
+				serverProcessingTime = serverProcessingTimeHeader.getValue();
+			}
+
 			// did the server set it's id?
-			headers = arg0.getHeaders(ClientNetworkMetrics.HttpServerIdHeader);
+			headers = arg0.getHeaders(ClientNetworkMetrics.HeaderServerId);
 			if( (headers != null) && (headers.length > 0) ) {
 				Header serverIdHeader = headers[0];
 				serverId = serverIdHeader.getValue();
@@ -116,15 +124,25 @@ public class PerformanceMonitoringInterceptor implements
 				httpHeaders = new HashMap<String,Object>();
 					
 				if( serverResponseTime != null ) {
-					httpHeaders.put(ClientNetworkMetrics.HttpServerResponseTimeHeader, serverResponseTime);
+					//TODO: convert to Date
+					httpHeaders.put(ClientNetworkMetrics.HeaderResponseTime, serverResponseTime);
 				}
 					
 				if( serverReceiptTime != null ) {
-					httpHeaders.put(ClientNetworkMetrics.HttpServerReceiptTimeHeader, serverReceiptTime);
+					//TODO: convert to Date
+					httpHeaders.put(ClientNetworkMetrics.HeaderReceiptTime, serverReceiptTime);
+				}
+				
+				if( serverProcessingTime != null ) {
+					try {
+						Long processingTimeValue = Long.parseLong(serverProcessingTime);
+						httpHeaders.put(ClientNetworkMetrics.HeaderProcessingTime, processingTimeValue);
+					} catch (NumberFormatException e) {
+					}
 				}
 					
 				if( serverId != null ) {
-					httpHeaders.put(ClientNetworkMetrics.HttpServerIdHeader, serverId);
+					httpHeaders.put(ClientNetworkMetrics.HeaderServerId, serverId);
 				}
 					
 				if( statusCode > -1 ) {

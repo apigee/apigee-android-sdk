@@ -14,9 +14,11 @@ import com.apigee.sdk.apm.android.util.DateUtils;
  */
 public class ClientNetworkMetrics implements Serializable, Cloneable {
 
-	public static final String HttpServerResponseTimeHeader = "x-server-response-time";
-	public static final String HttpServerReceiptTimeHeader  = "x-server-receipt-time";
-	public static final String HttpServerIdHeader           = "x-server-id";
+	public static final String HeaderReceiptTime            = "x-apigee-receipttime";
+	public static final String HeaderResponseTime           = "x-apigee-responsetime";
+	public static final String HeaderProcessingTime         = "x-apigee-serverprocessingtime";
+	public static final String HeaderServerId               = "x-apigee-serverid";
+
 	public static final String HttpStatusCode               = "http-status-code";
 	public static final String HttpContentLength            = "http-content-length";
 	
@@ -88,11 +90,13 @@ public class ClientNetworkMetrics implements Serializable, Cloneable {
 	//This needs to be set on client side with HTTP status code etc. 
 	private String transactionDetails;
 	
-	private Integer httpStatusCode;  // only pertinent for HTTP calls (N/A for sockets or WebSockets)
-	private Long responseDataSize;  // only pertinent for HTTP calls (N/A for sockets or WebSockets)
-	private String backendResponseTime;  // something that the server can send back in HTTP response headers
-	private String backendReceiptTime;   // something that the server can send back in HTTP response headers
-	private String serverId;  // something that the server can send back in HTTP response headers
+	private Integer httpStatusCode;
+	private Long responseDataSize;
+	private Long serverProcessingTime = 0L;
+	private Date serverReceiptTime;
+	private Date serverResponseTime;
+	private String domain;
+	private String serverId;
 
 	String appConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_DEFAULT;
 
@@ -356,20 +360,28 @@ public class ClientNetworkMetrics implements Serializable, Cloneable {
 		return this.responseDataSize;
 	}
 	
-	public void setBackendResponseTime(String responseTime) {
-		this.backendResponseTime = responseTime;
+	public void setServerProcessingTime(Long serverProcessingTime) {
+		this.serverProcessingTime = serverProcessingTime;
 	}
 	
-	public String getBackendResponseTime() {
-		return this.backendResponseTime;
+	public Long getServerProcessingTime() {
+		return this.serverProcessingTime;
 	}
 	
-	public void setBackendReceiptTime(String receiptTime) {
-		this.backendReceiptTime = receiptTime;
+	public void setServerReceiptTime(Date serverReceiptTime) {
+		this.serverReceiptTime = serverReceiptTime;
 	}
 	
-	public String getBackendReceiptTime() {
-		return this.backendReceiptTime;
+	public Date getServerReceiptTime() {
+		return this.serverReceiptTime;
+	}
+
+	public void setServerResponseTime(Date serverResponseTime) {
+		this.serverResponseTime = serverResponseTime;
+	}
+	
+	public Date getServerResponseTime() {
+		return this.serverResponseTime;
 	}
 	
 	public void setServerId(String serverId) {
@@ -379,4 +391,13 @@ public class ClientNetworkMetrics implements Serializable, Cloneable {
 	public String getServerId() {
 		return this.serverId;
 	}
+	
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	
+	public String getDomain() {
+		return this.domain;
+	}
+
 }

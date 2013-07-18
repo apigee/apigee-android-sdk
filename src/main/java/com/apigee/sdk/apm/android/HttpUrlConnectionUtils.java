@@ -12,9 +12,10 @@ public class HttpUrlConnectionUtils {
 	
 	public static Map<String,Object> captureHttpHeaders(HttpURLConnection connection) {
 		HashMap<String,Object> httpHeaders = null;
-		String serverResponseTime = connection.getHeaderField(ClientNetworkMetrics.HttpServerResponseTimeHeader);
-		String serverReceiptTime = connection.getHeaderField(ClientNetworkMetrics.HttpServerReceiptTimeHeader);
-		String serverId = connection.getHeaderField(ClientNetworkMetrics.HttpServerIdHeader);
+		String serverResponseTime = connection.getHeaderField(ClientNetworkMetrics.HeaderResponseTime);
+		String serverReceiptTime = connection.getHeaderField(ClientNetworkMetrics.HeaderReceiptTime);
+		String serverProcessingTime = connection.getHeaderField(ClientNetworkMetrics.HeaderProcessingTime);
+		String serverId = connection.getHeaderField(ClientNetworkMetrics.HeaderServerId);
 		int contentLength = connection.getContentLength();
 		int httpStatusCode = -1;
 		
@@ -28,8 +29,11 @@ public class HttpUrlConnectionUtils {
 			(httpStatusCode > -1) ||
 			(serverResponseTime != null) ||
 			(serverReceiptTime != null) ||
+			(serverProcessingTime != null) ||
 			(serverId != null) ) {
+			
 			httpHeaders = new HashMap<String,Object>();
+			
 			if( contentLength > -1 ) {
 				httpHeaders.put(ClientNetworkMetrics.HttpContentLength, new Integer(contentLength));
 			}
@@ -39,15 +43,25 @@ public class HttpUrlConnectionUtils {
 			}
 			
 			if( serverResponseTime != null ) {
-				httpHeaders.put(ClientNetworkMetrics.HttpServerResponseTimeHeader, serverResponseTime);
+				//TODO: convert to Date object
+				//httpHeaders.put(ClientNetworkMetrics.HeaderResponseTime, serverResponseTime);
 			}
 			
 			if( serverReceiptTime != null ) {
-				httpHeaders.put(ClientNetworkMetrics.HttpServerReceiptTimeHeader, serverReceiptTime);
+				//TODO: convert to Date object
+				//httpHeaders.put(ClientNetworkMetrics.HeaderReceiptTime, serverReceiptTime);
+			}
+			
+			if( serverProcessingTime != null) {
+				try {
+					Long processingTimeValue = Long.parseLong(serverProcessingTime);
+					httpHeaders.put(ClientNetworkMetrics.HeaderProcessingTime, processingTimeValue);
+				} catch (NumberFormatException e) {
+				}
 			}
 			
 			if( serverId != null ) {
-				httpHeaders.put(ClientNetworkMetrics.HttpServerIdHeader, serverId);
+				httpHeaders.put(ClientNetworkMetrics.HeaderServerId, serverId);
 			}
 		}
 		
