@@ -177,7 +177,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 
 		this.isActive = false;
 		this.isInitialized = false;
-		
+
+		this.listListeners = new ArrayList<UploadListener>();
+
 		if( monitoringOptions != null ) {
 			this.crashReportingEnabled = monitoringOptions.getCrashReportingEnabled();
 			this.enableAutoUpload = monitoringOptions.getEnableAutoUpload();
@@ -205,9 +207,6 @@ public class MonitoringClient implements SessionTimeoutListener {
 		this.appIdentification = appIdentification;
 
 		this.originalHttpClient = client;
-		
-		this.listListeners = new ArrayList<UploadListener>();
-		
 		
 		this.appActivity = appActivity;
 		
