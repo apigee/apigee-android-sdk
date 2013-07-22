@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Apigee App Services Template App</string>
+    <string name="placeholder">"Wait a second while we attempt to contact the Apigee servers…\n\nIf you haven’t done so already, follow the instructions in src/com/apigee/appservices/android_template/MainActivity.java\n\nThen restart the app!"</string>
+
+</resources>
