@@ -1975,6 +1975,15 @@ public class DataClient {
         					type);
     }
 
+	public void getEntitiesAsync(final String type,
+			final String queryString, final ApiResponseCallback callback) {
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return getEntities(type, queryString);
+			}
+		}).execute();
+	}
 
     private class QueueQuery implements Query {
         final String httpMethod;
