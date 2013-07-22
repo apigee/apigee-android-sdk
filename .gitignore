@@ -1,3 +1,8 @@
+*.class
+*.apk
+*.dex
+bin/classes/*
+gen/
 target/*
 .settings/*
 .classpath
