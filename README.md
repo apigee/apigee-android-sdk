@@ -20,7 +20,7 @@ Please ensure that your application includes the following permission:
 
 Building From Source
 --------------------
-To build from source, please use Maven.  Issue this command from the top-level directory of your repository:
+To build from source, please use Maven.  Issue this command from the 'source' directory of your repository:
 
 <pre>
 	mvn install -Dmaven.test.skip=true
