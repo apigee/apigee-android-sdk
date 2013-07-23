@@ -3,7 +3,7 @@
 *.dex
 bin/classes/*
 gen/
-target/*
+target/
 .settings/*
 .classpath
 .project
