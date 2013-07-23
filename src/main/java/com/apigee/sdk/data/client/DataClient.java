@@ -1588,6 +1588,25 @@ public class DataClient {
                 connectingEntityType, connectingEntityId, connectionType,
                 connectedEntityId);
     }
+    
+    /**
+     * Connect two entities together
+     * @param connectorType
+     * @param connectorID
+     * @param connectionType
+     * @param connecteeType
+     * @param connecteeID
+     * @return
+     */
+    public ApiResponse connectEntities(String connectorType,
+    		String connectorID,
+    		String connectionType,
+    		String connecteeType,
+    		String connecteeID) {
+		return apiRequest(HTTP_METHOD_POST, null, null, organizationId, applicationId,
+				connectorType, connectorID, connectionType, connecteeType, connecteeID);
+    }
+
 
 	/**
 	 * Connect two entities together. Executes asynchronously in background and
