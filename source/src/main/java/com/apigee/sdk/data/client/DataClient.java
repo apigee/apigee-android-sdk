@@ -412,8 +412,7 @@ public class DataClient {
 	            urlAsString = addQueryParams(urlAsString, params);
 	        }
 
-
-			logTrace("Invoking " + httpMethod + " to '" + urlAsString + "'");
+			//logTrace("Invoking " + httpMethod + " to '" + urlAsString + "'");
 
 			URL url = new URL(urlAsString);
 			conn = (HttpURLConnection) url.openConnection();
@@ -421,6 +420,11 @@ public class DataClient {
 			conn.setRequestMethod(httpMethod);
 			conn.setRequestProperty("Content-Type", contentType);
 			conn.setUseCaches(false);
+			
+			if  ((accessToken != null) && (accessToken.length() > 0)) {
+				String authStr = "Bearer " + accessToken;
+				conn.setRequestProperty("Authorization", authStr);
+			}
 
 			conn.setDoInput(true);
 			
@@ -429,11 +433,17 @@ public class DataClient {
 	                data = JsonNodeFactory.instance.objectNode();
 	            }
 	            
-	    		ObjectMapper objectMapper = new ObjectMapper();
-	    		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-	    		String dataAsString = objectMapper.writeValueAsString(data);
-	    		
-	    		logTrace("Posting/putting data: '" + dataAsString + "'");
+	            String dataAsString = null;
+	            
+	            if ((data != null) && (!(data instanceof String))) {
+	            	ObjectMapper objectMapper = new ObjectMapper();
+	    			objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+	    			dataAsString = objectMapper.writeValueAsString(data);
+	            } else {
+	            	dataAsString = (String) data;
+	            }
+	            
+	    		//logTrace("Posting/putting data: '" + dataAsString + "'");
 
 				byte[] dataAsBytes = dataAsString.getBytes();
 
@@ -446,7 +456,7 @@ public class DataClient {
 				out.close();
 				out = null;
 	        }
-
+	        
 			in = conn.getInputStream();
 			if( in != null ) {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -460,8 +470,8 @@ public class DataClient {
 				
 				String responseAsString = sb.toString();
 
-				logTrace("response from server: '" + responseAsString + "'");
-
+				//logTrace("response from server: '" + responseAsString + "'");
+				
 				JacksonMarshallingService marshallingService = new JacksonMarshallingService();
 				response = (ApiResponse) marshallingService.demarshall(responseAsString, ApiResponse.class);
 				if( response != null ) {
@@ -473,10 +483,9 @@ public class DataClient {
 				response = null;
 				logTrace("no response body from server");
 			}
-			
-			final int responseCode = conn.getResponseCode();
-			
-			logTrace("responseCode from server = " + responseCode);
+
+			//final int responseCode = conn.getResponseCode();
+			//logTrace("responseCode from server = " + responseCode);
 		}
 		catch(Exception e) {
 			logError("Error " + httpMethod + " to '" + urlAsString + "'" );
