@@ -36,6 +36,10 @@ public class User extends Entity {
 		return type.equals(ENTITY_TYPE);
 	}
 
+	public User() {
+		setType(ENTITY_TYPE);
+	}
+	
 	public User(DataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);

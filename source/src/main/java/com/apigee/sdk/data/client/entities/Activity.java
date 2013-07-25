@@ -132,6 +132,10 @@ public class Activity extends Entity {
 	public static boolean isSameType(String type) {
 		return type.equals(ENTITY_TYPE);
 	}
+	
+	public Activity() {
+		setType("activity");
+	}
 
     public Activity(DataClient dataClient) {
     	super(dataClient);

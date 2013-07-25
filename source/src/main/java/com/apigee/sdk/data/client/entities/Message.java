@@ -38,6 +38,10 @@ public class Message extends Entity {
 		return type.equals(ENTITY_TYPE);
 	}
 
+	public Message() {
+		setType(ENTITY_TYPE);
+	}
+	
 	public Message(DataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);

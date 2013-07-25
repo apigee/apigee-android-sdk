@@ -22,6 +22,10 @@ public class Group extends Entity {
 		return type.equals(ENTITY_TYPE);
 	}
 
+	public Group() {
+		setType(ENTITY_TYPE);
+	}
+	
 	public Group(DataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);

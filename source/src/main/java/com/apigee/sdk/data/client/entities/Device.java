@@ -21,6 +21,10 @@ public class Device extends Entity {
 		return type.equals(ENTITY_TYPE);
 	}
 
+	public Device() {
+		setType(ENTITY_TYPE);
+	}
+	
 	public Device(DataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);
