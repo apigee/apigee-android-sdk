@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
 

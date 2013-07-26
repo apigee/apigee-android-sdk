@@ -36,8 +36,6 @@ import org.apache.http.Header;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
-import com.apigee.sdk.apm.http.impl.client.cache.WarningValue;
-
 /**
  * This class provides for parsing and understanding Warning headers. As the
  * Warning header can be multi-valued, but the values can contain separators

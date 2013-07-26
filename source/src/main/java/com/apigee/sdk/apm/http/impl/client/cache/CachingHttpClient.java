@@ -65,20 +65,6 @@ import com.apigee.sdk.apm.http.client.cache.HeaderConstants;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheStorage;
 import com.apigee.sdk.apm.http.client.cache.ResourceFactory;
-import com.apigee.sdk.apm.http.impl.client.cache.BasicHttpCache;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheValidityPolicy;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheableRequestPolicy;
-import com.apigee.sdk.apm.http.impl.client.cache.CachedHttpResponseGenerator;
-import com.apigee.sdk.apm.http.impl.client.cache.CachedResponseSuitabilityChecker;
-import com.apigee.sdk.apm.http.impl.client.cache.ConditionalRequestBuilder;
-import com.apigee.sdk.apm.http.impl.client.cache.HeapResourceFactory;
-import com.apigee.sdk.apm.http.impl.client.cache.HttpCache;
-import com.apigee.sdk.apm.http.impl.client.cache.OptionsHttp11Response;
-import com.apigee.sdk.apm.http.impl.client.cache.RequestProtocolCompliance;
-import com.apigee.sdk.apm.http.impl.client.cache.RequestProtocolError;
-import com.apigee.sdk.apm.http.impl.client.cache.ResponseCachingPolicy;
-import com.apigee.sdk.apm.http.impl.client.cache.ResponseProtocolCompliance;
 
 /**
  * @since 4.1

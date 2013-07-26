@@ -5,9 +5,6 @@ import java.net.Proxy;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import com.apigee.sdk.apm.android.AbstractURLWrapper;
-import com.apigee.sdk.apm.android.URLWrapper;
-
 
 public class DefaultURLWrapper extends AbstractURLWrapper implements URLWrapper {
 

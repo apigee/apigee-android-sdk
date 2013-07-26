@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
-
 public interface HttpCacheEntrySerializer {
 
 	public void writeTo(HttpCacheEntry entry, OutputStream os)

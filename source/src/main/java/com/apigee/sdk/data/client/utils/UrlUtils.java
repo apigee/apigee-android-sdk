@@ -1,7 +1,7 @@
 package com.apigee.sdk.data.client.utils;
 
-import static java.net.URLEncoder.encode;
 import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
+import static java.net.URLEncoder.encode;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;

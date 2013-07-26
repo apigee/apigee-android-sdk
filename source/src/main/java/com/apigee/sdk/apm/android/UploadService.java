@@ -1,22 +1,13 @@
 package com.apigee.sdk.apm.android;
 
-import java.util.HashMap;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
-
-import com.apigee.sdk.apm.android.AndroidLog;
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
-import com.apigee.sdk.apm.android.MetricsUploadException;
-import com.apigee.sdk.apm.android.MetricsUploadService;
-import com.apigee.sdk.apm.android.SessionManager;
-import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 
 

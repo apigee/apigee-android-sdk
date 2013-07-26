@@ -6,19 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.ArrayList;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.entities.Entity;
+import com.apigee.sdk.data.client.entities.Message;
+import com.apigee.sdk.data.client.entities.User;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
-import com.apigee.sdk.data.client.entities.Entity;
-import com.apigee.sdk.data.client.entities.Message;
-import com.apigee.sdk.data.client.entities.User;
-import com.apigee.sdk.data.client.DataClient;
 
 public class ApiResponse {
 

@@ -8,11 +8,9 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIUtils;
-
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
+import org.apache.http.protocol.HttpContext;
 
 
 

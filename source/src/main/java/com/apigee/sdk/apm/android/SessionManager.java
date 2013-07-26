@@ -1,11 +1,10 @@
 package com.apigee.sdk.apm.android;
 
-import android.os.Handler;
-import android.os.Message;
 import java.util.Date;
 import java.util.UUID;
 
-import com.apigee.sdk.apm.android.SessionTimeoutListener;
+import android.os.Handler;
+import android.os.Message;
 
 
 public class SessionManager {

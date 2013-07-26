@@ -3,9 +3,7 @@ package com.apigee.sdk.apm.android.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 //import com.apigee.sdk.android.model.FILTER_TYPE;
-import com.apigee.sdk.apm.android.model.App;
 
 /**
  * 

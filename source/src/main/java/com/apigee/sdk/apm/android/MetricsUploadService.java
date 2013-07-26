@@ -2,8 +2,6 @@ package com.apigee.sdk.apm.android;
 
 import java.util.List;
 
-import com.apigee.sdk.apm.android.MetricsUploadException;
-import com.apigee.sdk.apm.android.UploadListener;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 
 

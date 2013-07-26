@@ -1,13 +1,5 @@
 package com.apigee.sdk.apm.android;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.SSLPeerUnverifiedException;
-
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ContentHandlerFactory;
@@ -18,6 +10,11 @@ import java.security.Principal;
 import java.security.cert.Certificate;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocketFactory;
 
 
 public class ApigeeHttpsURLConnection extends HttpsURLConnection

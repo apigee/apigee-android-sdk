@@ -32,16 +32,11 @@ import java.lang.ref.ReferenceQueue;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import com.apigee.sdk.apm.http.annotation.ThreadSafe;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheStorage;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheUpdateCallback;
 import com.apigee.sdk.apm.http.client.cache.Resource;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheMap;
-import com.apigee.sdk.apm.http.impl.client.cache.FileResource;
-import com.apigee.sdk.apm.http.impl.client.cache.ResourceReference;
 
 /**
  * {@link HttpCacheStorage} implementation capable of deallocating resources

@@ -40,9 +40,6 @@ import com.apigee.sdk.apm.http.annotation.ThreadSafe;
 import com.apigee.sdk.apm.http.client.cache.HeaderConstants;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheStorage;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheInvalidator;
-import com.apigee.sdk.apm.http.impl.client.cache.HttpCache;
-import com.apigee.sdk.apm.http.impl.client.cache.URIExtractor;
 
 /**
  * Given a particular HttpRequest, flush any cache entries that this request

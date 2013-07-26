@@ -29,14 +29,10 @@ package com.apigee.sdk.apm.http.impl.client.cache;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-
 import com.apigee.sdk.apm.http.annotation.ThreadSafe;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheStorage;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheUpdateCallback;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheMap;
-import com.apigee.sdk.apm.http.impl.client.cache.HeapResource;
 
 /**
  * Basic {@link HttpCacheStorage} implementation backed by an instance of

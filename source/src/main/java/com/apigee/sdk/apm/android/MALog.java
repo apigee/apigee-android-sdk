@@ -1,6 +1,5 @@
 package com.apigee.sdk.apm.android;
 
-import com.apigee.sdk.apm.android.MonitoringClient;
 
 public class MALog {
 	

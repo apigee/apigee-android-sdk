@@ -3,18 +3,16 @@ package com.apigee.sdk.apm.android;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.Header;
 import org.apache.http.StatusLine;
-import org.apache.http.HttpEntity;
+import org.apache.http.protocol.HttpContext;
 
-import com.apigee.sdk.apm.android.HttpClientWrapper;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
 /**

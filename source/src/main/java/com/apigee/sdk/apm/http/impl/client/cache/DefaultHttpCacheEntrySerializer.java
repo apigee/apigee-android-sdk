@@ -32,7 +32,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntrySerializationException;

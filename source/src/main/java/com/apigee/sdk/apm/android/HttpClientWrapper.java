@@ -27,11 +27,6 @@ import org.apache.http.protocol.HttpContext;
 import android.net.http.AndroidHttpClient;
 
 import com.apigee.sdk.AppIdentification;
-
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.GatewayInterceptor;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
-import com.apigee.sdk.apm.android.PerformanceMonitoringInterceptor;
 import com.apigee.sdk.apm.http.impl.client.cache.CachingHttpClient;
 
 public class HttpClientWrapper implements HttpClient, PropertyChangeListener {

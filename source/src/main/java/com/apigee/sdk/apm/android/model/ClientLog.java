@@ -3,7 +3,6 @@ package com.apigee.sdk.apm.android.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
 import com.apigee.sdk.apm.android.util.DateUnits;
 import com.apigee.sdk.apm.android.util.DateUtils;
 

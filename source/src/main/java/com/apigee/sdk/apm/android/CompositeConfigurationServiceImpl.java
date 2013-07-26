@@ -2,17 +2,17 @@ package com.apigee.sdk.apm.android;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.Random;
 import java.util.Set;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.*;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 
 import android.content.Context;
@@ -25,21 +25,14 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
-import com.apigee.sdk.data.client.DataClient;
-
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.CompositeConfigurationServiceImpl;
-import com.apigee.sdk.apm.android.DefaultConfigBuilder;
-import com.apigee.sdk.apm.android.JacksonMarshallingService;
-import com.apigee.sdk.apm.android.LoadConfigurationException;
-import com.apigee.sdk.apm.android.UploadService;
 import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
+import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.AppConfigCustomParameter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter;
+import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.apm.android.model.App;
-import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
+import com.apigee.sdk.data.client.DataClient;
 
 
 public class CompositeConfigurationServiceImpl implements ApplicationConfigurationService {

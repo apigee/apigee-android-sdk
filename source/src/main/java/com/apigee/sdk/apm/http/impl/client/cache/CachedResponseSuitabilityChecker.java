@@ -40,8 +40,6 @@ import org.apache.http.impl.cookie.DateUtils;
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.HeaderConstants;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheValidityPolicy;
 
 /**
  * Determines whether a given {@link HttpCacheEntry} is suitable to be used as a

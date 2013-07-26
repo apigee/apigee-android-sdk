@@ -2,10 +2,8 @@ package com.apigee.sdk.apm.android;
 
 import java.beans.PropertyChangeSupport;
 
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.LoadConfigurationException;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 
 public abstract class BaseWebManagerClientConfigLoader implements ApplicationConfigurationService {
 

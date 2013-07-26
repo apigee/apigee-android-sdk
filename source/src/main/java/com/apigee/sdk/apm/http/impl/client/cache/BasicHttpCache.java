@@ -48,15 +48,6 @@ import com.apigee.sdk.apm.http.client.cache.HttpCacheUpdateCallback;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheUpdateException;
 import com.apigee.sdk.apm.http.client.cache.Resource;
 import com.apigee.sdk.apm.http.client.cache.ResourceFactory;
-import com.apigee.sdk.apm.http.impl.client.cache.BasicHttpCacheStorage;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheEntryUpdater;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheInvalidator;
-import com.apigee.sdk.apm.http.impl.client.cache.CachedHttpResponseGenerator;
-import com.apigee.sdk.apm.http.impl.client.cache.HeapResourceFactory;
-import com.apigee.sdk.apm.http.impl.client.cache.HttpCache;
-import com.apigee.sdk.apm.http.impl.client.cache.SizeLimitedResponseReader;
-import com.apigee.sdk.apm.http.impl.client.cache.URIExtractor;
 
 class BasicHttpCache implements HttpCache {
 

@@ -1,17 +1,12 @@
 package com.apigee.sdk.apm.android;
 
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.net.HttpURLConnection;
-import javax.net.ssl.HttpsURLConnection;
 
-import com.apigee.sdk.apm.android.AbstractURLWrapper;
-import com.apigee.sdk.apm.android.ApigeeHttpURLConnection;
-import com.apigee.sdk.apm.android.ApigeeHttpsURLConnection;
-import com.apigee.sdk.apm.android.MANet;
-import com.apigee.sdk.apm.android.URLWrapper;
+import javax.net.ssl.HttpsURLConnection;
 
 
 public class ApigeeURLWrapper extends AbstractURLWrapper implements URLWrapper

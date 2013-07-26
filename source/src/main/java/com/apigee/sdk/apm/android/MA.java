@@ -1,15 +1,11 @@
 package com.apigee.sdk.apm.android;
 
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.apm.android.ConfigurationReloadedListener;
-import com.apigee.sdk.apm.android.InitializationException;
-import com.apigee.sdk.apm.android.UploadListener;
-import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.AppIdentification;
-import com.apigee.sdk.data.client.DataClient;
-
 import android.content.Context;
 import android.util.Log;
+
+import com.apigee.sdk.AppIdentification;
+import com.apigee.sdk.apm.android.model.ClientLog;
+import com.apigee.sdk.data.client.DataClient;
 
 public class MA {
 

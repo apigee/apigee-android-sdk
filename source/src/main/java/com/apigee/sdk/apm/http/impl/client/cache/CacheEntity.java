@@ -37,7 +37,6 @@ import org.apache.http.protocol.HTTP;
 
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
-import com.apigee.sdk.apm.http.impl.client.cache.IOUtils;
 
 @Immutable
 class CacheEntity implements HttpEntity, Serializable {

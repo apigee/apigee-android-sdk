@@ -1,12 +1,11 @@
 package com.apigee.sdk.apm.android.crashlogging;
 
-import com.apigee.sdk.apm.android.crashlogging.Constants;
-import com.apigee.sdk.apm.android.model.ClientLog;
-
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
+
+import com.apigee.sdk.apm.android.model.ClientLog;
 
 /**
  * <h4>Description</h4>

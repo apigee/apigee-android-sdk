@@ -45,7 +45,6 @@ import com.apigee.sdk.apm.http.client.cache.HeaderConstants;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
 import com.apigee.sdk.apm.http.client.cache.Resource;
 import com.apigee.sdk.apm.http.client.cache.ResourceFactory;
-import com.apigee.sdk.apm.http.impl.client.cache.HeapResourceFactory;
 
 /**
  * Update a {@link HttpCacheEntry} with new or updated information based on the

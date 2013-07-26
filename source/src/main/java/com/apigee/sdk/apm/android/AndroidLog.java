@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import android.util.Log;
 
 import com.apigee.sdk.Logger;
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
 import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
 import com.apigee.sdk.apm.android.model.ClientLog;
 

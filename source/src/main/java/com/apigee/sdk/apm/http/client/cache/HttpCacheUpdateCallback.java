@@ -28,8 +28,6 @@ package com.apigee.sdk.apm.http.client.cache;
 
 import java.io.IOException;
 
-import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
-
 public interface HttpCacheUpdateCallback {
 
 	/**

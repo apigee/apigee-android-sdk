@@ -1,24 +1,29 @@
 package com.apigee.sdk.data.client.entities;
 
-import static com.apigee.sdk.data.client.utils.JsonUtils.*;
+import static com.apigee.sdk.data.client.utils.JsonUtils.getUUIDProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setBooleanProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setFloatProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setLongProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setStringProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setUUIDProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.toJsonString;
 import static com.apigee.sdk.data.client.utils.MapUtils.newMapWithoutKeys;
-
-import com.apigee.sdk.data.client.DataClient.Query;
-import com.apigee.sdk.data.client.response.ApiResponse;
-import com.apigee.sdk.data.client.DataClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Iterator;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.DataClient.Query;
+import com.apigee.sdk.data.client.response.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class Entity {
 

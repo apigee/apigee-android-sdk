@@ -1,16 +1,13 @@
 package com.apigee.sdk.apm.android;
 
-import java.net.HttpURLConnection;
-import java.net.FileNameMap;
-import java.net.ContentHandlerFactory;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
-import java.util.List;
+import java.net.ContentHandlerFactory;
+import java.net.FileNameMap;
+import java.net.HttpURLConnection;
 import java.security.Permission;
-
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
+import java.util.List;
+import java.util.Map;
 
 
 public class ApigeeHttpURLConnection extends HttpURLConnection

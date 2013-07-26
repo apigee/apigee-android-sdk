@@ -41,8 +41,6 @@ import org.apache.http.protocol.HTTP;
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.HeaderConstants;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheEntity;
-import com.apigee.sdk.apm.http.impl.client.cache.CacheValidityPolicy;
 
 /**
  * Rebuilds an {@link HttpResponse} from a {@link CacheEntry}

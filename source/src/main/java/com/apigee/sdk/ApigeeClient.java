@@ -1,14 +1,10 @@
 package com.apigee.sdk;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.apigee.sdk.AppIdentification;
-
-import com.apigee.sdk.data.client.DataClient;
-import com.apigee.sdk.apm.android.MA;
 import com.apigee.sdk.apm.android.MonitoringClient;
 import com.apigee.sdk.apm.android.MonitoringOptions;
+import com.apigee.sdk.data.client.DataClient;
 
 
 public class ApigeeClient {

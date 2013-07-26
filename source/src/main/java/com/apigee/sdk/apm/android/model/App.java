@@ -7,12 +7,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-//import com.apigee.sdk.android.model.CONFIG_TYPE;
-import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+//import com.apigee.sdk.android.model.CONFIG_TYPE;
 
 /**
  * 

@@ -1,51 +1,48 @@
 package com.apigee.sdk.data.client;
 
+import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
+import static com.apigee.sdk.data.client.utils.UrlUtils.addQueryParams;
+import static com.apigee.sdk.data.client.utils.UrlUtils.encodeParams;
+import static com.apigee.sdk.data.client.utils.UrlUtils.path;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.StringTokenizer;
-import java.util.ArrayList;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import android.content.Context;
 import android.location.Location;
 
 import com.apigee.sdk.Logger;
-import com.apigee.sdk.DefaultAndroidLog;
 import com.apigee.sdk.URLConnectionFactory;
-
-import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
-import static com.apigee.sdk.data.client.utils.UrlUtils.addQueryParams;
-import static com.apigee.sdk.data.client.utils.UrlUtils.encodeParams;
-import static com.apigee.sdk.data.client.utils.UrlUtils.path;
-
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
-import com.apigee.sdk.data.client.entities.Activity;
-import com.apigee.sdk.data.client.entities.Device;
-import com.apigee.sdk.data.client.entities.Entity;
-import com.apigee.sdk.data.client.entities.Group;
-import com.apigee.sdk.data.client.entities.Message;
-import com.apigee.sdk.data.client.entities.User;
-import com.apigee.sdk.data.client.entities.Collection;
-import com.apigee.sdk.data.client.response.ApiResponse;
 import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
 import com.apigee.sdk.data.client.callbacks.ClientAsyncTask;
 import com.apigee.sdk.data.client.callbacks.DeviceRegistrationCallback;
 import com.apigee.sdk.data.client.callbacks.GroupsRetrievedCallback;
 import com.apigee.sdk.data.client.callbacks.QueryResultsCallback;
+import com.apigee.sdk.data.client.entities.Activity;
+import com.apigee.sdk.data.client.entities.Collection;
+import com.apigee.sdk.data.client.entities.Device;
+import com.apigee.sdk.data.client.entities.Entity;
+import com.apigee.sdk.data.client.entities.Group;
+import com.apigee.sdk.data.client.entities.Message;
+import com.apigee.sdk.data.client.entities.User;
+import com.apigee.sdk.data.client.response.ApiResponse;
 import com.apigee.sdk.data.client.utils.DeviceUuidFactory;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
  * The DataClient class for accessing the Usergrid API. Start by instantiating this
@@ -62,7 +59,7 @@ public class DataClient {
     public static boolean FORCE_PUBLIC_API = false;
 
     // Public API
-    public static String PUBLIC_API_URL = "http://api.usergrid.com";
+    public static String PUBLIC_API_URL = "https://api.usergrid.com";
 
     // Local API of standalone server
     public static String LOCAL_STANDALONE_API_URL = "http://localhost:8080";

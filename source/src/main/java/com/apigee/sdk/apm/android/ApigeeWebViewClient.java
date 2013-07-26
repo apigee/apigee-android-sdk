@@ -1,11 +1,8 @@
 package com.apigee.sdk.apm.android;
 
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.apm.android.ApigeeWebViewClientLifecycleListener;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
-
-import android.webkit.*;
 import android.graphics.Bitmap;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 
 public class ApigeeWebViewClient extends WebViewClient

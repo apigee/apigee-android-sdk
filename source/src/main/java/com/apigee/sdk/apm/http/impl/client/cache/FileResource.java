@@ -31,7 +31,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 import com.apigee.sdk.apm.http.annotation.ThreadSafe;
 import com.apigee.sdk.apm.http.client.cache.Resource;
 

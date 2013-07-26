@@ -31,14 +31,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.InputLimit;
 import com.apigee.sdk.apm.http.client.cache.Resource;
 import com.apigee.sdk.apm.http.client.cache.ResourceFactory;
-import com.apigee.sdk.apm.http.impl.client.cache.BasicIdGenerator;
-import com.apigee.sdk.apm.http.impl.client.cache.FileResource;
-import com.apigee.sdk.apm.http.impl.client.cache.IOUtils;
 
 /**
  * Generates {@link Resource} instances whose body is stored in a temporary

@@ -9,12 +9,11 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Date;
 import java.util.UUID;
 
+import android.util.Log;
+
 import com.apigee.sdk.apm.android.crashlogging.Constants;
 import com.apigee.sdk.apm.android.crashlogging.CrashManagerListener;
 import com.apigee.sdk.apm.android.model.ClientLog;
-
-
-import android.util.Log;
 
 /**
  * <h4>Description</h4>

@@ -38,7 +38,6 @@ import com.apigee.sdk.apm.http.annotation.NotThreadSafe;
 import com.apigee.sdk.apm.http.client.cache.InputLimit;
 import com.apigee.sdk.apm.http.client.cache.Resource;
 import com.apigee.sdk.apm.http.client.cache.ResourceFactory;
-import com.apigee.sdk.apm.http.impl.client.cache.CombinedEntity;
 
 /**
  * @since 4.1

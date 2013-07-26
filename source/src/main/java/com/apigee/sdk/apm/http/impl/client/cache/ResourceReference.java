@@ -29,7 +29,6 @@ package com.apigee.sdk.apm.http.impl.client.cache;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 
-
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
 import com.apigee.sdk.apm.http.client.cache.Resource;

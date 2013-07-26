@@ -3,12 +3,6 @@ package com.apigee.sdk.apm.android;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.apm.android.ApigeeURLWrapper;
-import com.apigee.sdk.apm.android.DefaultURLWrapper;
-import com.apigee.sdk.apm.android.Log;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
-import com.apigee.sdk.apm.android.URLWrapper;
 import com.apigee.sdk.apm.android.model.ClientLog;
 
 

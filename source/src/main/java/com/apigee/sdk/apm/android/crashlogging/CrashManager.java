@@ -7,23 +7,17 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.HashMap;
 import java.util.UUID;
 
-import com.apigee.sdk.AppIdentification;
+import android.content.Context;
+import android.util.Log;
 
-import com.apigee.sdk.apm.android.MonitoringClient;
+import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.android.AndroidLog;
-import com.apigee.sdk.apm.android.crashlogging.Constants;
-import com.apigee.sdk.apm.android.crashlogging.CrashManager;
-import com.apigee.sdk.apm.android.crashlogging.CrashManagerListener;
+import com.apigee.sdk.apm.android.MonitoringClient;
 import com.apigee.sdk.apm.android.crashlogging.internal.ExceptionHandler;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.util.StringUtils;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * <h4>Description</h4>

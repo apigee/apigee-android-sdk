@@ -26,7 +26,6 @@
  */
 package com.apigee.sdk.apm.http.client.cache;
 
-import com.apigee.sdk.apm.http.client.cache.HttpCacheStorage;
 
 /**
  * Signals that {@link HttpCacheStorage} encountered an error performing an

@@ -2,8 +2,6 @@ package com.apigee.sdk.apm.android.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
-
 /**
  * 
  * @author prabhat

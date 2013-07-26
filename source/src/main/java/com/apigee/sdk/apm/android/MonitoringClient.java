@@ -1,25 +1,23 @@
 package com.apigee.sdk.apm.android;
 
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -32,28 +30,12 @@ import android.util.Log;
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.DefaultAndroidLog;
 import com.apigee.sdk.Logger;
-import com.apigee.sdk.data.client.DataClient;
-
-import com.apigee.sdk.apm.android.AndroidLog;
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.CompositeConfigurationServiceImpl;
-import com.apigee.sdk.apm.android.ConfigurationReloadedListener;
-import com.apigee.sdk.apm.android.HttpClientWrapper;
-import com.apigee.sdk.apm.android.InitializationException;
-import com.apigee.sdk.apm.android.LoadConfigurationException;
-import com.apigee.sdk.apm.android.MetricsCollector2;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
-import com.apigee.sdk.apm.android.UploadListener;
-import com.apigee.sdk.apm.android.MetricsUploadService;
-import com.apigee.sdk.apm.android.SessionManager;
-import com.apigee.sdk.apm.android.SessionTimeoutListener;
-import com.apigee.sdk.apm.android.UploadService;
 import com.apigee.sdk.apm.android.crashlogging.CrashManager;
 import com.apigee.sdk.apm.android.metrics.LowPriorityThreadFactory;
+import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.data.client.DataClient;
 
 
 public class MonitoringClient implements SessionTimeoutListener {

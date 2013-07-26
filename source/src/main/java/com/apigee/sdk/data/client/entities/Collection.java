@@ -1,14 +1,14 @@
 package com.apigee.sdk.data.client.entities;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.apigee.sdk.data.client.DataClient;
-import com.apigee.sdk.data.client.response.ApiResponse;
 import com.apigee.sdk.data.client.DataClient.Query;
+import com.apigee.sdk.data.client.response.ApiResponse;
 
 
 public class Collection

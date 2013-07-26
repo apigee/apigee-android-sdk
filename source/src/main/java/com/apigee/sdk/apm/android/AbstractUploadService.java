@@ -5,11 +5,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -19,25 +14,20 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
-
-import com.apigee.sdk.apm.android.AndroidLog;
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.MetricsCollectorService;
-import com.apigee.sdk.apm.android.MetricsUploadException;
-import com.apigee.sdk.apm.android.UploadListener;
-import com.apigee.sdk.apm.android.MetricsUploadService;
-import com.apigee.sdk.apm.android.SessionManager;
 import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 import com.apigee.sdk.apm.android.model.ClientSessionMetrics;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public abstract class AbstractUploadService implements MetricsUploadService {

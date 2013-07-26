@@ -3,12 +3,10 @@ package com.apigee.sdk.apm.android.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-//import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
+//import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 public class ApplicationConfigurationModel implements Serializable {
 

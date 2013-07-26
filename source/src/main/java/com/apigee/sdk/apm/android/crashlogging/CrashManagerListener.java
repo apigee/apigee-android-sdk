@@ -1,6 +1,5 @@
 package com.apigee.sdk.apm.android.crashlogging;
 
-import com.apigee.sdk.apm.android.crashlogging.StringListener;
 
 /**
  * <h4>Description</h4>

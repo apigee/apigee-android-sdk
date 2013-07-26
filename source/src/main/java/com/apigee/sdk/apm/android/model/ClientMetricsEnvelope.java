@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
-import com.apigee.sdk.apm.android.model.ClientSessionMetrics;
-
 
 public class ClientMetricsEnvelope implements Serializable {
 

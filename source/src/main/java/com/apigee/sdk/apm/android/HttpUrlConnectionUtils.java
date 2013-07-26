@@ -2,8 +2,8 @@ package com.apigee.sdk.apm.android;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 

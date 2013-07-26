@@ -1,16 +1,14 @@
 package com.apigee.sdk.data.client.entities;
 
-import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_NULL;
 import static com.apigee.sdk.data.client.utils.JsonUtils.getBooleanProperty;
-import static com.apigee.sdk.data.client.utils.JsonUtils.getStringProperty;
 import static com.apigee.sdk.data.client.utils.JsonUtils.setBooleanProperty;
 import static com.apigee.sdk.data.client.utils.JsonUtils.setStringProperty;
+import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_NULL;
 
 import java.util.List;
 
 import com.apigee.sdk.data.client.DataClient;
 import com.apigee.sdk.data.client.response.ApiResponse;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

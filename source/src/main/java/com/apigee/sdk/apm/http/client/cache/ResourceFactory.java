@@ -29,9 +29,6 @@ package com.apigee.sdk.apm.http.client.cache;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.apigee.sdk.apm.http.client.cache.InputLimit;
-import com.apigee.sdk.apm.http.client.cache.Resource;
-
 /**
  * Generates {@link Resource} instances.
  * 

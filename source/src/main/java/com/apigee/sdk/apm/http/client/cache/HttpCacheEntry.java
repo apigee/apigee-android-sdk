@@ -39,9 +39,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.message.HeaderGroup;
 
 import com.apigee.sdk.apm.http.annotation.Immutable;
-import com.apigee.sdk.apm.http.client.cache.HeaderConstants;
-import com.apigee.sdk.apm.http.client.cache.HttpCacheEntry;
-import com.apigee.sdk.apm.http.client.cache.Resource;
 
 /**
  * Structure used to store an {@link HttpResponse} in a cache. Some entries can

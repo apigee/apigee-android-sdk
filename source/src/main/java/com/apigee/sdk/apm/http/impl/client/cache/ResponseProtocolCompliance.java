@@ -47,7 +47,6 @@ import org.apache.http.protocol.HTTP;
 
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.HeaderConstants;
-import com.apigee.sdk.apm.http.impl.client.cache.WarningValue;
 
 /**
  * @since 4.1

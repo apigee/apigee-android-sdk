@@ -19,8 +19,6 @@
 package com.apigee.sdk.data.client.entities;
 
 
-import static com.apigee.sdk.data.client.utils.JsonUtils.getStringProperty;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -29,13 +27,11 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import com.apigee.sdk.data.client.DataClient;
-
-//import javax.xml.bind.annotation.XmlRootElement;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
+//import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An entity type for representing activity stream actions. These are similar to

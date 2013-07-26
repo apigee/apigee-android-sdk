@@ -1,8 +1,5 @@
 package com.apigee.sdk.apm.android;
 
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.apm.android.ApplicationConfigurationService;
-import com.apigee.sdk.apm.android.MA;
 
 public class MAConfig {
 

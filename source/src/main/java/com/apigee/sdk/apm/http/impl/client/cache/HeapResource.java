@@ -29,7 +29,6 @@ package com.apigee.sdk.apm.http.impl.client.cache;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-
 import com.apigee.sdk.apm.http.annotation.Immutable;
 import com.apigee.sdk.apm.http.client.cache.Resource;
 
