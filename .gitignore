@@ -2,6 +2,7 @@
 *.apk
 *.dex
 bin/
+**/bin/**
 gen/
 target/
 .settings/*
