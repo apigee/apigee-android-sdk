@@ -1,7 +1,7 @@
 *.class
 *.apk
 *.dex
-bin/classes/*
+bin/
 gen/
 target/
 .settings/*
