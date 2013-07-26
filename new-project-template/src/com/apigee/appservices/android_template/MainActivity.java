@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
         - Keep the APPNAME as 'sandbox': it's a context we automatically created for you.
           It's completely open by default, but don't worry, other apps you create are not!      */
         
-        String ORGNAME = "pdardeau.apigee";
+        String ORGNAME = "YOUR APIGEE.COM USERNAME"; // <-- Put your username here!!!
         String APPNAME = "sandbox";
         
         ApigeeClient apigeeClient = new ApigeeClient(ORGNAME,APPNAME,this.getBaseContext());
