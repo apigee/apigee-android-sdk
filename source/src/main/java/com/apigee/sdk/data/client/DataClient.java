@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Context;
 import android.location.Location;
+import android.os.Build;
 
 import com.apigee.sdk.Logger;
 import com.apigee.sdk.URLConnectionFactory;
@@ -808,6 +809,12 @@ public class DataClient {
             properties = new HashMap<String, Object>();
         }
         properties.put("refreshed", System.currentTimeMillis());
+        
+        // add device meta-data
+        properties.put("deviceModel", Build.MODEL);
+        properties.put("devicePlatform", "android");
+        properties.put("deviceOSVersion", Build.VERSION.RELEASE);
+        
         ApiResponse response = apiRequest(HTTP_METHOD_PUT, null, properties,
                 organizationId, applicationId, "devices", deviceId.toString());
         return response.getFirstEntity(Device.class);
