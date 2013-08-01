@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Push Test</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="send_notification">Send myself a Notification</string>
+    <string name="gcm_error">GCM error (%1$s).</string>
+    <string name="gcm_recoverable_error">GCM recoverable error (%1$s).</string>
+    <string name="gcm_deleted">GCM server deleted %1$d pending messages!</string>
+    <string name="gcm_registered">Device Registered: (%1$s).</string>
+    <string name="gcm_unregistered">Device Unregistered: (%1$s).</string>
+    <string name="gcm_alert_title">Message</string>
+    <string name="gcm_message">Message: (%1$s)</string>
+</resources>
