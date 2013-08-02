@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.provider.Settings.Secure;
 import android.util.Log;
 
+import com.apigee.sdk.ApigeeClient;
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.DefaultAndroidLog;
 import com.apigee.sdk.Logger;
@@ -40,9 +41,6 @@ import com.apigee.sdk.data.client.DataClient;
 
 public class MonitoringClient implements SessionTimeoutListener {
 
-	public static final String SDK_VERSION = "1.6.0";
-	public static final String SDK_TYPE = "Android";
-	
 	public static final boolean DEFAULT_AUTO_UPLOAD_ENABLED = true;
 	public static final boolean DEFAULT_CRASH_REPORTING_ENABLED = true;
 	
@@ -823,20 +821,24 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return this.listListeners;
 	}
 
-	public String getDeviceModel() {
+	public static String getDeviceModel() {
 		return Build.MODEL;
 	}
 	
-	public String getDeviceType() {
+	public static String getDeviceType() {
 		return Build.TYPE;
 	}
 	
-	public String getDeviceOSVersion() {
+	public static String getDeviceOSVersion() {
 		return Build.VERSION.RELEASE;
 	}
 	
-	public String getDevicePlatform() {
-		return SDK_TYPE;
+	public static String getDevicePlatform() {
+		return ApigeeClient.SDK_TYPE;
+	}
+	
+	public static String getSDKVersion() {
+		return ApigeeClient.SDK_VERSION;
 	}
 
 }

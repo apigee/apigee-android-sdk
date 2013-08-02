@@ -35,7 +35,6 @@ public class GatewayInterceptor implements HttpRequestInterceptor {
 	@Override
 	public void process(HttpRequest arg0, HttpContext arg1)
 			throws HttpException, IOException {
-		// TODO Auto-generated method stub
 		
 		if ( arg0 instanceof HttpRequestBase )
 		{

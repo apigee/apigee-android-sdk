@@ -17,14 +17,10 @@ public class DefaultConfigBuilder {
 		ApplicationConfigurationModel model = new ApplicationConfigurationModel();
 		
 		model.setAgentUploadIntervalInSeconds(60L);
-		//model.setAgentUploadInterval(60000L);
-		//model.setAppConfigId(0L);
 		model.setAppConfigType(ApigeeMobileAPMConstants.CONFIG_TYPE_DEFAULT);
 		model.setBatteryStatusCaptureEnabled(false);
-		//model.setCacheConfig(null);
 		model.setCachingEnabled(false);
 		
-		//model.setDescription("Default Description");
 		model.setDeviceIdCaptureEnabled(true);
 		model.setDeviceModelCaptureEnabled(true);
 		model.setEnableLogMonitoring(true);

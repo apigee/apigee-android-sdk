@@ -9,7 +9,10 @@ import com.apigee.sdk.data.client.DataClient;
 
 public class ApigeeClient {
 	
-	public static final String LOGGING_TAG = "APIGEE_CLIENT";
+	public static final String LOGGING_TAG  = "APIGEE_CLIENT";
+	public static final String SDK_VERSION  = "1.6.0";
+	public static final String SDK_TYPE     = "Android";
+
 	
 	private DataClient dataClient;
 	private MonitoringClient monitoringClient;

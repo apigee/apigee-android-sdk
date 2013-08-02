@@ -18,6 +18,7 @@
     <developer>
       <id>sganyo</id>
       <name>Scott Ganyo</name>
+      <email>sganyo@apigee.com</email>
     </developer>
     <developer>
       <id>pdardeau</id>
@@ -31,13 +32,13 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>${maven-compiler-plugin-version}</source>
+          <target>${maven-compiler-plugin-version}</target>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.0</version>
+        <version>${maven-shade-plugin-version}</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -95,9 +96,13 @@
     </dependency>
   </dependencies>
   <properties>
-    <apache-http-version>4.1.2</apache-http-version>
+    <android-api-version>14</android-api-version>
+    <maven-compiler-plugin-version>1.6</maven-compiler-plugin-version>
     <jackson-version>2.2.0</jackson-version>
+    <apache-http-version>4.1.2</apache-http-version>
+    <maven-shade-plugin-version>2.0</maven-shade-plugin-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit-version>3.8.1</junit-version>
     <android.libs>/Applications/adt-bundle-mac/sdk/platforms/android-4.2</android.libs>
   </properties>
 </project>

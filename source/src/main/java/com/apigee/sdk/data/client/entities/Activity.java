@@ -31,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
-//import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An entity type for representing activity stream actions. These are similar to

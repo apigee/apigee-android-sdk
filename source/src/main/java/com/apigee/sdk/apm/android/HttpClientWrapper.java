@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.http.HttpException;
@@ -357,23 +356,6 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 				.getConnectionManager();
 
 		connectionManager.shutdown();
-	}
-
-	/**
-	 * Still in progress
-	 */
-	public void configureHttpClient(Properties props) {
-		for (Entry<Object, Object> property : props.entrySet()) {
-			configureHttpClientProperty(property.getKey().toString(), property
-					.getValue().toString());
-		}
-	}
-
-	/**
-	 * Still in progress
-	 */
-	private void configureHttpClientProperty(String key, String value) {
-		// TODO: Add other switch statements
 	}
 
 }

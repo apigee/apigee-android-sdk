@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractUploadService implements MetricsUploadService {
 
-	public static final String PLATFORM_TYPE = "Android";
 	public static final String VALUE_UNKNOWN = "UNKNOWN";
 	public static final String MSG_PAYLOAD_NOT_SENT = "Payload was not sent. Dropping payload : ";
 
@@ -164,10 +163,10 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 
 		try {
 			//set device hardware metadata
-			sessionMetrics.setDeviceModel(monitoringClient.getDeviceModel());
-			sessionMetrics.setDeviceOSVersion(monitoringClient.getDeviceOSVersion());
-			sessionMetrics.setDevicePlatform(monitoringClient.getDevicePlatform());
-			sessionMetrics.setDeviceType(monitoringClient.getDeviceType());
+			sessionMetrics.setDeviceModel(MonitoringClient.getDeviceModel());
+			sessionMetrics.setDeviceOSVersion(MonitoringClient.getDeviceOSVersion());
+			sessionMetrics.setDevicePlatform(MonitoringClient.getDevicePlatform());
+			sessionMetrics.setDeviceType(MonitoringClient.getDeviceType());
 			String android_id = Secure.getString(
 					appActivity.getContentResolver(), Secure.ANDROID_ID);
 			sessionMetrics.setDeviceId(android_id);
@@ -176,8 +175,8 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			sessionMetrics.setSessionId(sessionManager.getSessionUUID());
 			sessionMetrics.setTimeStamp(new Date());			
 			sessionMetrics.setSessionStartTime(sessionManager.getSessionStartTime());
-			sessionMetrics.setSdkVersion(MonitoringClient.SDK_VERSION);
-			sessionMetrics.setSdkType(MonitoringClient.SDK_TYPE);
+			sessionMetrics.setSdkVersion(MonitoringClient.getSDKVersion());
+			sessionMetrics.setSdkType(MonitoringClient.getDevicePlatform());
 
 			//setting all the fields which rely on different permissions.
 			//TODO: double check if there is a permission that could prohibit SDK from getting application version
@@ -356,10 +355,8 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	}
 
 	public ClientMetricsEnvelope getDataToUpload() {
-		// TODO Auto-generated method stub
 
 		ClientMetricsEnvelope envelop = constructWebServiceMetricsBeanMessageEnvelop();
-
 		ClientSessionMetrics sm = getSessionMetrics();
 
 		envelop.setSessionMetrics(sm);

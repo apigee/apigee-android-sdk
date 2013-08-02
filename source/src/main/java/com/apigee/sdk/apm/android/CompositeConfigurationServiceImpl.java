@@ -37,9 +37,8 @@ import com.apigee.sdk.data.client.DataClient;
 
 public class CompositeConfigurationServiceImpl implements ApplicationConfigurationService {
 
-	public static final String CONFIG_FILE_NAME = "webmanagerclientconfig.json";
 	public static final String PROP_CACHE_LAST_MODIFIED_DATE = "WebConfigLastModifiedDate";
-	public static final String COMPOSITE_CONFIGURATION_CACHE_FILE_NAME = "compositeconfigcache.xml";
+	public static final String COMPOSITE_CONFIGURATION_CACHE_FILE_NAME = "compositeconfigcache.json";
 	
 	protected static final String TAG = CompositeConfigurationServiceImpl.class
 			.getSimpleName();
@@ -78,7 +77,6 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		this.appActivity = appActivity;
 
 		this.configurationModel = new ApplicationConfigurationModel();
-		//this.configurationModel.setDescription("Default");
 
 		Random generator = new Random();
 
@@ -111,14 +109,13 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 			System.out.println("RuntimeException caught:");
 			e.printStackTrace();
 			throw new LoadConfigurationException(
-					"Parsing error of the xml file", e);
+					"Parsing of configuration failed", e);
 		} catch (IOException e) {
 			System.out.println("IOException caught:");
 			e.printStackTrace();
 
-			// TODO Auto-generated catch block
 			throw new LoadConfigurationException(
-					"Parsing error of the xml file", e);
+					"Parsing error of configuration", e);
 		}
 	}
 	
@@ -131,12 +128,12 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		/*
 		 * Pseudocode :
 		 * 
-		 * 1. Check to see if an override configuration file exist 2. If does
-		 * not, check first find out the last time the config file was loaded
-		 * from server 3. Check server to see if last modified date != server date 4. If new
-		 * file exists, copy latest configuration file to local storage 5. Read
-		 * local storage and open file 6. Deserialize file and set appropriate
-		 * ApplicationConfigModel
+		 * 1. Check to see if an override configuration file exist
+		 * 2. If does not, check first find out the last time the config file was loaded from server
+		 * 3. Check server to see if last modified date != server date
+		 * 4. If new file exists, copy latest configuration file to local storage
+		 * 5. Read local storage and open file
+		 * 6. Deserialize file and set appropriate ApplicationConfigModel
 		 */	
 
 		InputStream is = null;
@@ -237,14 +234,10 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	        			httpURLConnection = null;
 	        			httpsURLConnection = (javax.net.ssl.HttpsURLConnection) connection;
 	        			httpsURLConnection.setRequestMethod("GET");
-	        			//httpsURLConnection.setConnectTimeout(timeoutMillis);
-	        			//httpsURLConnection.setReadTimeout(timeoutMillis);
 	        		} else if( connection instanceof java.net.HttpURLConnection ) {
 	        			httpsURLConnection = null;
 	        			httpURLConnection = (java.net.HttpURLConnection) connection;
 	        			httpURLConnection.setRequestMethod("GET");
-	        			//httpURLConnection.setConnectTimeout(timeoutMillis);
-	        			//httpURLConnection.setReadTimeout(timeoutMillis);
 	        		}
 
 	        		if( httpURLConnection != null ) {
@@ -360,6 +353,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	private boolean saveConfig(String configJson,String lastModifiedDate) {
 		FileOutputStream fos = null;
 		boolean savedSuccessfully = false;
+		
 		try {
 			fos = appActivity.openFileOutput(
 					COMPOSITE_CONFIGURATION_CACHE_FILE_NAME,
@@ -380,6 +374,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 				}
 			}
 		}
+		
 		return savedSuccessfully;
 	}
 	
@@ -397,8 +392,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 
 	}
 
-	public static String inputStreamAsString(InputStream stream)
-			throws IOException {
+	public static String inputStreamAsString(InputStream stream) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 		StringBuilder sb = new StringBuilder();
 		String line = null;
@@ -411,8 +405,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		return sb.toString();
 	}
 
-	public void setValidApplicationConfiguration(
-			App config) {
+	public void setValidApplicationConfiguration(App config) {
 
 		this.compositeApplicationConfigurationModel = config;
 
@@ -433,8 +426,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 
 	}
 
-	private boolean matchesDeviceLevelFilter(
-			App config) {
+	private boolean matchesDeviceLevelFilter(App config) {
 		if (config.getDeviceLevelOverrideEnabled()) {
 			try {
 				TelephonyManager telephonyManager = (TelephonyManager) appActivity
@@ -474,6 +466,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		{
 			Log.v(ClientLog.TAG_MONITORING_CLIENT, "Device Level override not enabled ");
 		}
+		
 		Log.v(ClientLog.TAG_MONITORING_CLIENT, "Did not find Device Level Match");
 		return false;
 	}
@@ -489,12 +482,8 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 				NetworkInfo networkInfo = connectivityManager
 						.getActiveNetworkInfo();
 	
-				//String deviceType = Build.TYPE;
 				String deviceModel = Build.MODEL;
-	
-				// TODO: Need to fix this......
-				String devicePlatform = UploadService.PLATFORM_TYPE;
-	
+				String devicePlatform = MonitoringClient.getDevicePlatform();
 				String networkOperator = telephonyManager.getNetworkOperatorName();
 				String networkType = networkInfo.getTypeName();
 	
@@ -550,10 +539,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		}
 	}
 
-	private boolean findRegexMatch(Set<AppConfigOverrideFilter> filters,
-			String target) {
-		
-		
+	private boolean findRegexMatch(Set<AppConfigOverrideFilter> filters, String target) {
 		
 		for (AppConfigOverrideFilter filter : filters) {
 			
@@ -561,9 +547,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 			if(filter.getFilterType().equals(FILTER_TYPE.DEVICE_NUMBER))
 			{
 				return findTelephoneMatch(filter.getFilterValue(), target);
-			}
-			else 
-			{
+			} else {
 				String regex = filter.getFilterValue();
 				Pattern patt = Pattern.compile(regex);
 				Matcher matcher = patt.matcher(target);
@@ -577,20 +561,16 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		return false;
 	}
 	
-	public boolean findTelephoneMatch(String filter,
-			String target) {
+	public boolean findTelephoneMatch(String filter, String target) {
 			
-			String strippedTelephoneNumber = target.replaceAll( "[^\\d]", "" );
+		String strippedTelephoneNumber = target.replaceAll( "[^\\d]", "" );
+		String strippedFilter = filter.replaceAll( "[^\\d]", "" );
+		String regex = ".*" + strippedFilter;
 			
-			String strippedFilter = filter.replaceAll( "[^\\d]", "" );
-								
-			String regex = ".*" + strippedFilter;
+		Pattern patt = Pattern.compile(regex);
+		Matcher matcher = patt.matcher(strippedTelephoneNumber);
 			
-			Pattern patt = Pattern.compile(regex);
-			Matcher matcher = patt.matcher(strippedTelephoneNumber);
-			
-			return matcher.matches();
-	
+		return matcher.matches();
 	}
 	
 
