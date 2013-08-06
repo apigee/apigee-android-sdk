@@ -24,8 +24,9 @@ MVN_COMMAND="mvn"
 LIBRARY_BASE_NAME="apigee-android"
 JAR_FILE_NAME="${LIBRARY_BASE_NAME}-${SDK_VERSION}.jar"
 ZIP_BASE_NAME="${LIBRARY_BASE_NAME}-sdk"
-ZIP_FILE_NAME="${ZIP_BASE_NAME}-${SDK_VERSION}.zip"
-DEST_ZIP_DIR="zip"
+ZIP_FILE_NAME="${ZIP_BASE_NAME}.zip"
+TOPLEVEL_ZIP_DIR="zip"
+DEST_ZIP_DIR="${TOPLEVEL_ZIP_DIR}/${LIBRARY_BASE_NAME}-sdk-${SDK_VERSION}"
 BUILT_SDK_JAR_FILE="source/target/${JAR_FILE_NAME}"
 ZIP_JAR_DIR="${DEST_ZIP_DIR}/bin"
 NEW_PROJECT_TEMPLATE_DIR="new-project-template"
@@ -59,12 +60,18 @@ do
 	if [ -f "$entry" ]; then
 		cp "$entry" "${DEST_ZIP_DIR}"
 	elif [ -d "$entry" ]; then
-		if [ "$entry" != "${DEST_ZIP_DIR}" ]; then
+		if [ "$entry" != "${TOPLEVEL_ZIP_DIR}" ]; then
 			cp -r "$entry" "${DEST_ZIP_DIR}"
 		fi
 	fi
 done
 
+
+# if we have source/target in zip directory, delete everything under source/target
+if [ -d "${DEST_ZIP_DIR}/source/target" ]; then
+	rm -rf "${DEST_ZIP_DIR}/source/target"
+	rmdir "${DEST_ZIP_DIR}/source/target"
+fi
 
 # create directory for jar file
 mkdir -p "${ZIP_JAR_DIR}"
@@ -99,5 +106,5 @@ do
 done
 
 # create the zip file
-cd ${DEST_ZIP_DIR} && zip -r -y ${ZIP_FILE_NAME} .
+cd ${TOPLEVEL_ZIP_DIR} && zip -r -y ${ZIP_FILE_NAME} .
 
