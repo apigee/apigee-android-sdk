@@ -10,7 +10,7 @@ import com.apigee.sdk.data.client.DataClient;
 public class ApigeeClient {
 	
 	public static final String LOGGING_TAG  = "APIGEE_CLIENT";
-	public static final String SDK_VERSION  = "2.0.0-SNAPSHOT";
+	public static final String SDK_VERSION  = "2.0.0";
 	public static final String SDK_TYPE     = "Android";
 
 	
