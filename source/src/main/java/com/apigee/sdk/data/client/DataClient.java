@@ -970,6 +970,27 @@ public class DataClient {
     			organizationId, applicationId, updatedProperties.get("type").toString(), entityID);
     	return response;
     }
+
+    
+    /**
+     * Update an existing entity on the server. Properties
+     * must include a "type" property. Executes asynchronously in background and
+     * the callbacks are called in the UI thread.
+     *
+     * @param entityID
+     * @param updatedProperties
+     * @param callback
+     */
+    public void updateEntityAsync(final String entityID, final Map<String, Object> updatedProperties,
+                                      final ApiResponseCallback callback) {
+          (new ClientAsyncTask<ApiResponse>(callback) {
+        	  @Override
+        	  public ApiResponse doTask() {
+        		  return updateEntity(entityID, updatedProperties);
+        	  }
+          }).execute();
+    }
+
     
     public ApiResponse updateUserPassword(String usernameOrEmail, String oldPassword, String newPassword) {
     	Map<String,Object> updatedProperties = new HashMap<String,Object>();
@@ -978,6 +999,7 @@ public class DataClient {
     	return apiRequest(HTTP_METHOD_POST, null, updatedProperties,
     			organizationId, applicationId, "users", usernameOrEmail);
     }
+
     
     /**
      * Remove an existing entity on the server.
@@ -995,7 +1017,26 @@ public class DataClient {
     			organizationId, applicationId, entityType, entityID);
     	return response;
     }
-
+    
+    /**
+     * Remove an existing entity on the server.
+     * Executes asynchronously in background and
+     * the callbacks are called in the UI thread.
+     *
+     * @param entityType
+     * @param entityID
+     * @param callback
+     */
+    public void removeEntityAsync(final String entityType, final String entityID,
+    								final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+            	return removeEntity(entityType, entityID);
+    		}
+    	}).execute();
+    }
+    
     /**
      * Creates a user.
      * 
