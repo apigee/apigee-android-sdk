@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/noise"
+    android:orientation="vertical" >
+
+<RadioGroup
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="20dp"
+    android:paddingBottom="15dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:orientation="horizontal" >
+
+    <RadioButton android:id="@+id/radio_logger"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/logger"
+        android:textColor="#000000"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+    <RadioButton android:id="@+id/radio_crash"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/crash"
+        android:textColor="#000000"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+</RadioGroup>
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal" >
+
+<TextView
+    android:id="@+id/textViewLogLevel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:gravity="center"
+    android:text=""
+    android:textColor="#000000"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+</RelativeLayout>
+
+<SeekBar
+    android:id="@+id/seekBarLogLevel"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="50dp"
+    android:paddingRight="50dp"
+    android:minHeight="10dip"
+    android:maxHeight="10dip"
+    android:max="5" />
+
+<EditText
+    android:id="@+id/editTextLogMessage"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="@string/hintEnterLogMessage"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:ems="10"
+    android:inputType="textMultiLine" >
+    <requestFocus />
+</EditText>
+
+<Button
+    android:id="@+id/buttonLog"
+    android:layout_width="125dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:text="@string/btnLog" />
+
+<TextView 
+    android:id="@+id/noticeTextCrash"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:text="NOTICE!!"
+    android:textStyle="bold"
+    android:textColor="#000000"
+    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+<TextView 
+    android:id="@+id/helpTextCrash"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingBottom="30dp"
+    android:textColor="#000000"
+    android:text="Tapping the 'Force Crash' button will cause this application to crash."
+    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+<Button
+    android:id="@+id/buttonCrash"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:text="@string/btnForceCrash" />
+
+<TextView 
+    android:id="@+id/descriptionTextCrash"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingTop="25dp"
+    android:paddingBottom="25dp"
+    android:textColor="#000000"
+    android:text="Upon relaunch of this application (after a crash), a crash report will be automatically uploaded to the portal where it can be viewed or downloaded."
+    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+<TextView
+    android:id="@+id/textViewCrashExplain"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="#000000"
+    android:ems="10"
+    android:lines="4" />
+
+<TextView 
+    android:id="@+id/helpTextLog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_gravity="center_horizontal|bottom"
+    android:paddingTop="30dp"
+    android:textColor="#000000"
+    android:text="View logged messages in the portal"
+    android:textAppearance="?android:attr/textAppearanceLarge"/>
+</LinearLayout>
