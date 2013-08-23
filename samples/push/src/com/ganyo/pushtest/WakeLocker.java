@@ -12,7 +12,8 @@ public abstract class WakeLocker {
     PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     wakeLock = pm.newWakeLock(PowerManager.ON_AFTER_RELEASE |
         PowerManager.ACQUIRE_CAUSES_WAKEUP |
-        PowerManager.ON_AFTER_RELEASE, "WakeLock");
+        PowerManager.ON_AFTER_RELEASE |
+        PowerManager.SCREEN_DIM_WAKE_LOCK, "WakeLock");
     wakeLock.acquire();
   }
 
