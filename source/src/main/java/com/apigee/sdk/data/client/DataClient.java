@@ -2032,7 +2032,7 @@ public class DataClient {
     }
 
     public void getCollectionAsync(final String type, final Map<String,Object> qs,
-		, final ApiResponseCallback callback) {
+		final ApiResponseCallback callback) {
 	(new ClientAsyncTask<ApiResponse>(callback) {
 		@Override
 		public ApiResponse doTask() {
