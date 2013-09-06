@@ -2031,6 +2031,16 @@ public class DataClient {
         return new Collection(this,type,qs);
     }
 
+    public void getCollectionAsync(final String type, final Map<String,Object> qs,
+		, final ApiResponseCallback callback) {
+	(new ClientAsyncTask<ApiResponse>(callback) {
+		@Override
+		public ApiResponse doTask() {
+			return getCollection(type, qs);
+		}
+	}).execute();
+    }
+	
     public ApiResponse getEntities(String type,String queryString)
     {
         Map<String, Object> params = null;
