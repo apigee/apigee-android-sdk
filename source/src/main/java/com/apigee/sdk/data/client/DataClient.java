@@ -2032,15 +2032,15 @@ public class DataClient {
     }
 
     public void getCollectionAsync(final String type, final Map<String,Object> qs,
-		, final ApiResponseCallback callback) {
-	(new ClientAsyncTask<ApiResponse>(callback) {
-		@Override
-		public ApiResponse doTask() {
-			return getCollection(type, qs);
-		}
-	}).execute();
+		final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return getCollection(type, qs).fetch();
+            }
+        }).execute();
     }
-	
+    
     public ApiResponse getEntities(String type,String queryString)
     {
         Map<String, Object> params = null;
