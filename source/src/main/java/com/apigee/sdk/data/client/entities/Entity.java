@@ -72,9 +72,10 @@ public class Entity {
         properties.add(PROPERTY_UUID);
         return properties;
     }
-    
+
     public String getStringProperty(String name) {
-    	return this.properties.get(name).textValue();
+        Object val = this.properties.get(name);
+    	return val != null ? val.textValue() : null;
     }
     
     public boolean getBoolProperty(String name) {
