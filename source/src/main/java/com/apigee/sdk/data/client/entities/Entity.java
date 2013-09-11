@@ -75,7 +75,7 @@ public class Entity {
 
     public String getStringProperty(String name) {
         Object val = this.properties.get(name);
-    	return val != null ? val.textValue() : null;
+        return val != null ? val.textValue() : null;
     }
     
     public boolean getBoolProperty(String name) {
