@@ -33,15 +33,7 @@ public class ApigeeClient {
      * @param context the Android context
      */
     public ApigeeClient(String organizationId, String applicationId, Context context) {
-    	appIdentification = new AppIdentification(organizationId,applicationId);
-        dataClient = new DataClient(organizationId,applicationId);
-        monitoringClient = MA.initialize(appIdentification, dataClient, context);
-        if( monitoringClient != null ) {
-        	DataClient.setLogger(monitoringClient.getLogger());
-        } else {
-        	Log.d(LOGGING_TAG,"MA.initialize returned null");
-        	DataClient.setLogger(new DefaultAndroidLog());
-        }
+    	this(organizationId,applicationId,null,null,context);
     }
 
     /**
@@ -53,15 +45,7 @@ public class ApigeeClient {
      * @param context the Android context
      */
     public ApigeeClient(String organizationId, String applicationId, MonitoringOptions monitoringOptions, Context context) {
-    	appIdentification = new AppIdentification(organizationId,applicationId);
-        dataClient = new DataClient(organizationId,applicationId);
-        monitoringClient = MA.initialize(appIdentification, dataClient, context, monitoringOptions);
-        if( monitoringClient != null ) {
-        	DataClient.setLogger(monitoringClient.getLogger());
-        } else {
-        	Log.d(LOGGING_TAG,"MA.initialize returned null");
-        	DataClient.setLogger(new DefaultAndroidLog());
-        }
+    	this(organizationId,applicationId,null,monitoringOptions,context);
     }
 
     /**
@@ -73,17 +57,7 @@ public class ApigeeClient {
      * @param context the Android context
      */
     public ApigeeClient(String organizationId, String applicationId, String baseURL, Context context) {
-    	appIdentification = new AppIdentification(organizationId,applicationId);
-    	appIdentification.setBaseURL(baseURL);
-        dataClient = new DataClient(organizationId,applicationId);
-        dataClient.setApiUrl(baseURL);
-        monitoringClient = MA.initialize(appIdentification, dataClient, context);
-        if( monitoringClient != null ) {
-        	DataClient.setLogger(monitoringClient.getLogger());
-        } else {
-        	Log.d(LOGGING_TAG,"MA.initialize returned null");
-        	DataClient.setLogger(new DefaultAndroidLog());
-        }
+    	this(organizationId,applicationId,baseURL,null,context);
     }
 
     /**
@@ -97,16 +71,29 @@ public class ApigeeClient {
      */
     public ApigeeClient(String organizationId, String applicationId, String baseURL, MonitoringOptions monitoringOptions, Context context) {
     	appIdentification = new AppIdentification(organizationId,applicationId);
-    	appIdentification.setBaseURL(baseURL);
+    	
+    	boolean urlSpecified = false;
+    	
+    	if ((baseURL != null) && (baseURL.length() > 0)) {
+    		urlSpecified = true;
+    		appIdentification.setBaseURL(baseURL);
+    	} else {
+    		appIdentification.setBaseURL(DataClient.PUBLIC_API_URL);
+    	}
     	
         dataClient = new DataClient(organizationId,applicationId);
-        dataClient.setApiUrl(baseURL);
+        Log.d(LOGGING_TAG,"dataClient created");
+        
+        if (urlSpecified) {
+        	dataClient.setApiUrl(baseURL);
+        }
 
         monitoringClient = MA.initialize(appIdentification, dataClient, context, monitoringOptions);
         if( monitoringClient != null ) {
+        	Log.d(LOGGING_TAG,"monitoringClient created");
         	DataClient.setLogger(monitoringClient.getLogger());
         } else {
-        	Log.d(LOGGING_TAG,"MA.initialize returned null");
+        	Log.d(LOGGING_TAG,"unable to create monitoringClient");
         	DataClient.setLogger(new DefaultAndroidLog());
         }
     }
