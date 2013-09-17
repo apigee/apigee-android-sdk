@@ -9,7 +9,7 @@ import com.apigee.sdk.data.client.DataClient;
 
 public class MA {
 
-	public static final String ERR_INIT_FAILURE_MSG = "Apigee Mobile Analytics was unable to initialize ";
+	public static final String ERR_INIT_FAILURE_MSG = "Apigee App Monitoring was unable to initialize ";
 	
 
 	public static MonitoringClient initialize(AppIdentification appIdentification, DataClient dataClient, Context appActivity)
@@ -55,13 +55,13 @@ public class MA {
 		return refreshed;
 	}
 	
-	public static boolean uploadAnalytics()
+	public static boolean uploadMetrics()
 	{
 		boolean uploaded = false;
 		if (isInitialized()) {
 			MonitoringClient client = MonitoringClient.getInstance();
 			if (null != client) {
-				uploaded = client.uploadAnalytics();
+				uploaded = client.uploadMetrics();
 			}
 		}
 		

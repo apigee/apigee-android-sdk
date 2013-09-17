@@ -195,9 +195,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		{
 			if (enableAutoUpload)
 			{
-				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Enabling auto sending of analytics data ");
+				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Enabling auto sending of metrics");
 			} else {
-				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Auto sending of analytics data disabled");
+				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Auto sending of metrics disabled");
 			}
 			
 			log.i(ClientLog.TAG_MONITORING_CLIENT, ClientLog.EVENT_INIT_AGENT);
@@ -502,7 +502,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 					long uiMillis = loader.getConfigurations().getAgentUploadIntervalInSeconds() * 1000;		
 					sendMetricsHandler.postDelayed(this, uiMillis);
 				} else {
-					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Configuration was not able to initialize. Not initiating analytics send loop");
+					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Configuration was not able to initialize. Not initiating metrics send loop");
 				}
 				
 			}
@@ -534,9 +534,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return networkConnected;
 	}
 	
-	public boolean uploadAnalytics()
+	public boolean uploadMetrics()
 	{
-		boolean analyticsUploaded = false;
+		boolean metricsUploaded = false;
 		if(isInitialized && isActive)
 		{
 			if( ! sessionManager.isSessionValid() ) {
@@ -544,17 +544,17 @@ public class MonitoringClient implements SessionTimeoutListener {
 			}
 			
 			if( isDeviceNetworkConnected() ) {
-				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Manually uploading analytics now");
+				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Manually uploading metrics now");
 				sExecutor.execute(new ForcedUploadDataTask(this));
-				analyticsUploaded = true;
+				metricsUploaded = true;
 			} else {
-				Log.i(ClientLog.TAG_MONITORING_CLIENT, "uploadAnalytics called, device not connected to network");
+				Log.i(ClientLog.TAG_MONITORING_CLIENT, "uploadMetrics called, device not connected to network");
 			}
 		} else {
-			Log.i(ClientLog.TAG_MONITORING_CLIENT, "Configuration was not able to initialize. Not initiating analytics send loop");
+			Log.i(ClientLog.TAG_MONITORING_CLIENT, "Configuration was not able to initialize. Not initiating metrics send loop");
 		}
 		
-		return analyticsUploaded;
+		return metricsUploaded;
 	}
 	
 	public boolean refreshConfiguration(ConfigurationReloadedListener reloadListener)
