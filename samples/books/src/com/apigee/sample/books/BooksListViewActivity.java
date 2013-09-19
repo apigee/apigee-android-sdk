@@ -25,8 +25,8 @@ import com.apigee.sdk.data.client.response.ApiResponse;
 
 public class BooksListViewActivity extends Activity {
 
-	private static final String ORGNAME = "YOUR APIGEE.COM USERNAME"; // <-- Put your username here!!!
-    private static final String APPNAME = "sandbox";
+	private static final String ORGNAME = "<YOUR_ORG_NAME>"; // <-- Put your username here!!!
+    private static final String APPNAME = "<YOUR_APP_NAME>";
 	
     private BooksApplication bookApp;
 	

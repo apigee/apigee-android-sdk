@@ -35,7 +35,7 @@ public class HttpUrlConnectionUtils {
 			httpHeaders = new HashMap<String,Object>();
 			
 			if( contentLength > -1 ) {
-				httpHeaders.put(ClientNetworkMetrics.HttpContentLength, new Integer(contentLength));
+				httpHeaders.put(ClientNetworkMetrics.HttpContentLength, new Long(contentLength));
 			}
 			
 			if( httpStatusCode > -1) {

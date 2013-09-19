@@ -1,0 +1,21 @@
+<html>
+<body>
+<h3>How It Works</h3>
+Our portal provides a wide-range of configuration options that you can specify. Our mobile agent reads the configuration that you specify for your application on initialization and acts according to your specified configuration.
+
+<h3>See it in Action</h3>
+Go to the <b>Configs</b> tab and scroll down to the <b>Custom Config Parameters</b> section. The entries that you see here are application-specific custom configuration properties. A property is comprised of 3 attributes: a <b>category</b> ('DEMO_URL' in this case), a <b>key</b> (name of search engine in this case), and a <b>value</b> (url for search engine url in this case). We use these custom configuration properties as pre-configured web services to use for music artist searches in this app.
+<p>
+Go to the <b>Network</b> tab and tap on <b>Web Service</b>. Tap on the <b>Artist Search:</b> cell. A selection screen will appear with all custom config parameters that have a category of 'DEMO_URL'. Tap on the desired search service and then tap on <b>Done</b>. Tap in the single-line text entry field (just below the 'Artist Search:' cell) and type in the name of a musical artist. Next, tap on the <b>Go</b> button on the keyboard.
+<p>
+The app will use the selected web service search engine to search for the artist that you've entered. The results from the web service call (usually in XML or JSON format) will be displayed in the text view (just below the music artist search entry field). After a predetermined amount of time (configurable by app in the portal), the network performance metrics associated with this network search (and possibly other metrics) will be uploaded to the portal.
+<p>
+Using a web browser, go to the portal (mobileanalytics.apigee.com) and sign in using your credentials. From the <b>Analytics</b> page, select <b>Android Demo App</b> as the current application. Then click on the <b>Network Performance</b> link on the left-hand side of the web page. The network metrics for your search will be displayed in the <b>Network Metrics Overview</b> chart as well as in the <b>Network Metrics Raw Data</b> section. It may take a couple of minutes for these metrics to appear on the portal.
+
+<h3>Up and Running</h3>
+Our default values for your app's configuration should be a good starting point. You can start tweaking the configuration as you get more comfortable with the functionality.
+
+<h3>Next Steps</h3>
+Once you have a good grasp of the configuration fundamentals, you might want to try doing device-specific configuration to see how fine-grained your control of configuration can be. Be sure to look into our A/B configuration and how it helps you to gradually roll out new functionality with a limited trial and then progress toward a full deployment of new features and functionality.
+</body>
+</html>

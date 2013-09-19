@@ -1,0 +1,18 @@
+<html>
+<body>
+<h3>How It Works</h3>
+You make very small coding changes to make use of our instrumented networking classes. This will allow our mobile agent to capture network performance metrics on all the network calls that your app makes.
+
+<h3>See it in Action</h3>
+Go to the <b>Network</b> tab and tap on <b>Web Site</b>. Tap in the single-line text entry field (to select it) and type in a web site url (e.g., www.cnn.com). The web page for the entered site url will be displayed in the web view below the entry field. After a predetermined amount of time (configurable by app in the portal), the network performance metrics associated with this network request (and possibly other metrics) will be uploaded to the portal.
+<p>
+Using a web browser, go to the portal (mobileanalytics.apigee.com) and sign in using your credentials. From the <b>Analytics</b> page, select <b>Android Demo App</b> as the current application. Then click on the <b>Network Performance</b> link on the left-hand side of the web page. The network performance metrics for loading the web site will be displayed in the <b>Network Metrics Overview</b> chart as well as in the <b>Network Metrics Raw Data</b> section. It may take a couple of minutes for these metrics to appear on the portal.
+
+<h3>Up and Running</h3>
+Instead of using <b>DefaultHttpClient</b>, use <b>MANet.getHttpClient()</b>. Instead of using <b>java.net.URL</b> for use with HttpURLConnection, use <b>MANet.urlForUri(uri)</b>. If you're using a WebView, set our custom web view client (<b>ApigeeWebViewClient</b>) using the <b>setWebViewClient</b> method on your WebView. The performance metrics get uploaded to the portal at predefined intervals (as defined for your app in the portal).
+
+<h3>Next Steps</h3>
+We are currently investigating mechanisms to optimize certain types of network traffic. If you're interested in learning more about this advanced topic, please contact us -- we'd love to talk about it with you.
+
+</body>
+</html>
