@@ -74,7 +74,7 @@ public class Entity {
     }
 
     public String getStringProperty(String name) {
-        Object val = this.properties.get(name);
+        JsonNode val = this.properties.get(name);
         return val != null ? val.textValue() : null;
     }
     
