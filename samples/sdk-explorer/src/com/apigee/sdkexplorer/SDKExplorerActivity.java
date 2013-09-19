@@ -40,9 +40,8 @@ public class SDKExplorerActivity extends FragmentActivity implements ActionBar.T
 
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
-    private static final String ORG_NAME = "dit1";
-    private static final String APP_NAME = "sandbox";
-    private static final String BASE_URL = "http://apigee-internal-prod.jupiter.apigee.net";
+    private static final String ORG_NAME = "<YOUR_ORG_NAME>";
+    private static final String APP_NAME = "<YOUR_APP_NAME>";
 
     private static boolean hadConnectivityOnStartup = false;
     public static int timeoutMillis = 5000;
@@ -64,7 +63,7 @@ public class SDKExplorerActivity extends FragmentActivity implements ActionBar.T
         MonitoringOptions monitoringOptions = new MonitoringOptions();
         monitoringOptions.setUploadListener(this);
 
-        apigeeClient = new ApigeeClient(ORG_NAME,APP_NAME,BASE_URL,monitoringOptions,this);
+        apigeeClient = new ApigeeClient(ORG_NAME,APP_NAME,monitoringOptions,this);
 
         
         MonitoringClient monitoringClient = apigeeClient.getMonitoringClient();
