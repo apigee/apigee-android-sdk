@@ -87,7 +87,10 @@ public class ApigeeClient {
         if (urlSpecified) {
         	dataClient.setApiUrl(baseURL);
         }
+        
+        Log.d(LOGGING_TAG,"monitoring not enabled");
 
+        /*
         monitoringClient = MA.initialize(appIdentification, dataClient, context, monitoringOptions);
         if( monitoringClient != null ) {
         	Log.d(LOGGING_TAG,"monitoringClient created");
@@ -96,6 +99,7 @@ public class ApigeeClient {
         	Log.d(LOGGING_TAG,"unable to create monitoringClient");
         	DataClient.setLogger(new DefaultAndroidLog());
         }
+        */
     }
 
     /**

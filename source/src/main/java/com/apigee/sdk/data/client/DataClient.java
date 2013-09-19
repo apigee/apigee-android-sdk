@@ -60,7 +60,7 @@ public class DataClient {
     public static boolean FORCE_PUBLIC_API = false;
 
     // Public API
-    public static String PUBLIC_API_URL = "http://apigee-internal-prod.jupiter.apigee.net"; //"https://api.usergrid.com";
+    public static String PUBLIC_API_URL = "https://api.usergrid.com";
 
     // Local API of standalone server
     public static String LOCAL_STANDALONE_API_URL = "http://localhost:8080";
