@@ -26,9 +26,9 @@ public class UploadMetricsService extends IntentService {
 		SDKExplorerApplication app = (SDKExplorerApplication) getApplication();
 		MonitoringClient monitoringClient = app.getMonitoringClient();
 		if( monitoringClient != null ) {
-			monitoringClient.uploadAnalytics();
+			monitoringClient.uploadMetrics();
 		} else {
-			MA.uploadAnalytics();
+			MA.uploadMetrics();
 		}
 		Log.d("SERVICE", "completed upload of metrics");
 	}
