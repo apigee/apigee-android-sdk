@@ -3,7 +3,7 @@ package com.apigee.sdk;
 import android.content.Context;
 import android.util.Log;
 
-import com.apigee.sdk.apm.android.MA;
+//import com.apigee.sdk.apm.android.MA;
 import com.apigee.sdk.apm.android.MonitoringClient;
 import com.apigee.sdk.apm.android.MonitoringOptions;
 import com.apigee.sdk.data.client.DataClient;
@@ -17,7 +17,7 @@ import com.apigee.sdk.data.client.DataClient;
 public class ApigeeClient {
 	
 	public static final String LOGGING_TAG  = "APIGEE_CLIENT";
-	public static final String SDK_VERSION  = "2.0.1-SNAPSHOT";
+	public static final String SDK_VERSION  = "2.0.3";
 	public static final String SDK_TYPE     = "Android";
 
 	private DataClient dataClient;
