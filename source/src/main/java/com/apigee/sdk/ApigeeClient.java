@@ -17,7 +17,7 @@ import com.apigee.sdk.data.client.DataClient;
 public class ApigeeClient {
 	
 	public static final String LOGGING_TAG  = "APIGEE_CLIENT";
-	public static final String SDK_VERSION  = "2.0.3";
+	public static final String SDK_VERSION  = "2.0.4-SNAPSHOT";
 	public static final String SDK_TYPE     = "Android";
 
 	private DataClient dataClient;
@@ -81,7 +81,7 @@ public class ApigeeClient {
     		appIdentification.setBaseURL(DataClient.PUBLIC_API_URL);
     	}
     	
-        dataClient = new DataClient(organizationId,applicationId);
+        dataClient = new DataClient(organizationId,applicationId,null,context);
         Log.d(LOGGING_TAG,"dataClient created");
         
         if (urlSpecified) {

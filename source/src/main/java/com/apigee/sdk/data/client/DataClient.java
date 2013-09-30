@@ -21,8 +21,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Context;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Looper;
 
 import com.apigee.sdk.Logger;
 import com.apigee.sdk.URLConnectionFactory;
@@ -50,7 +56,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
  * class though the appropriate constructor.
  * 
  */
-public class DataClient {
+public class DataClient implements LocationListener {
 
     private static Logger log = null; //new DefaultAndroidLog();
     
@@ -89,6 +95,11 @@ public class DataClient {
 
     private String currentOrganization = null;
     private URLConnectionFactory urlConnectionFactory = null;
+    
+    private LocationManager locationManager;
+    private UUID deviceID;
+    
+    private Context context = null;
 
     //static RestTemplate restTemplate = new RestTemplate(true);  // include default converters
 
@@ -162,20 +173,25 @@ public class DataClient {
      * @param applicationId
      *            the application id or name
      */
-    public DataClient(String organizationId, String applicationId) {
+    public DataClient(String organizationId, String applicationId, Context context) {
         init();
         this.organizationId = organizationId;
         this.applicationId = applicationId;
+        this.context = context;
+        captureDeviceLocation();
     }
 
-    public DataClient(String organizationId, String applicationId, String baseURL) {
+    public DataClient(String organizationId, String applicationId, String baseURL, Context context) {
         init();
         this.organizationId = organizationId;
         this.applicationId = applicationId;
-     
+        this.context = context;
+
         if( baseURL != null ) {
         	this.setApiUrl(baseURL);
         }
+        
+        captureDeviceLocation();
     }
 
     public void init() {
@@ -1817,6 +1833,88 @@ public class DataClient {
 				getApplicationId(), connectingEntityType, connectingEntityId,
 				connectionType);
 	}
+	
+	public void captureDeviceLocation() {
+		if (this.context != null) {
+			if (locationManager == null) {
+				locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+			}
+			
+			if (locationManager != null) {
+				try {
+					String locationProvider = LocationManager.GPS_PROVIDER;
+					if ( locationManager.isProviderEnabled( locationProvider ) ) {
+						locationManager.requestLocationUpdates(locationProvider,
+								5000,          // milliseconds between location updates (minimum)
+								(float) 10.0,  // minimum distance in meters between location updates (minimum)
+								this,          // location update listener
+								Looper.getMainLooper());  // message thread for receiving location updates
+					}
+				} catch (SecurityException e) {
+					// ignore it -- developer probably didn't add ACCESS_FINE_LOCATION to manifest
+				}
+			}
+		}
+	}
+	
+	@Override
+    public void onLocationChanged(Location location) {
+	    if (location != null) {
+	    	locationManager.removeUpdates(this);
+	        
+	        final UUID deviceId = getUniqueDeviceID();
+	        
+	        final Map<String,Object> entity = new HashMap<String,Object>();
+	        entity.put("type", "device");
+	        entity.put("uuid", deviceId);
+	        
+	        // grab device meta-data
+	        entity.put("deviceModel", Build.MODEL);
+	        entity.put("devicePlatform", "android");
+	        entity.put("deviceOSVersion", Build.VERSION.RELEASE);
+
+	        Map<String,Object> locationData = new HashMap<String,Object>();
+	        locationData.put("latitude", new Double(location.getLatitude()));
+	        locationData.put("longitude", new Double(location.getLongitude()));
+	        entity.put("location", locationData);
+
+	        // perform the update on a background thread
+	        new AsyncTask<Void, Void, Void>() {
+
+	            @Override
+	            protected Void doInBackground(Void... params)
+	            {
+	    	        updateEntity(deviceId.toString(), entity);
+					return null;
+	            }
+
+	        }.execute();
+	        
+	    }
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+    	
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    	
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    	
+    }
+    
+    public UUID getUniqueDeviceID() {
+    	if (deviceID == null) {
+    		deviceID = new DeviceUuidFactory(context).getDeviceUuid();
+    	}
+    	
+    	return deviceID;
+    }
 	
     public interface Query {
 
