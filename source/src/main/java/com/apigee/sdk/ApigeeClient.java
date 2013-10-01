@@ -3,7 +3,7 @@ package com.apigee.sdk;
 import android.content.Context;
 import android.util.Log;
 
-//import com.apigee.sdk.apm.android.MA;
+import com.apigee.sdk.apm.android.MA;
 import com.apigee.sdk.apm.android.MonitoringClient;
 import com.apigee.sdk.apm.android.MonitoringOptions;
 import com.apigee.sdk.data.client.DataClient;
@@ -87,19 +87,19 @@ public class ApigeeClient {
         if (urlSpecified) {
         	dataClient.setApiUrl(baseURL);
         }
-        
-        Log.d(LOGGING_TAG,"monitoring not enabled");
 
-        /*
-        monitoringClient = MA.initialize(appIdentification, dataClient, context, monitoringOptions);
-        if( monitoringClient != null ) {
-        	Log.d(LOGGING_TAG,"monitoringClient created");
-        	DataClient.setLogger(monitoringClient.getLogger());
+        if ((monitoringOptions != null) && monitoringOptions.getMonitoringEnabled()) {
+        	monitoringClient = MA.initialize(appIdentification, dataClient, context, monitoringOptions);
+        	if( monitoringClient != null ) {
+        		Log.d(LOGGING_TAG,"monitoringClient created");
+        		DataClient.setLogger(monitoringClient.getLogger());
+        	} else {
+        		Log.d(LOGGING_TAG,"unable to create monitoringClient");
+        		DataClient.setLogger(new DefaultAndroidLog());
+        	}
         } else {
-        	Log.d(LOGGING_TAG,"unable to create monitoringClient");
-        	DataClient.setLogger(new DefaultAndroidLog());
+            Log.d(LOGGING_TAG,"monitoring not enabled");
         }
-        */
     }
 
     /**
