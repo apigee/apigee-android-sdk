@@ -43,14 +43,6 @@ To initialize the App Services SDK, do the following:
 </pre>
 Once the SDK has been initialized, App Services will automatically begin logging usage, crash and error metrics for your app. This information can be viewed in the App Services admin portal for your account.
 
-AndroidManifest.xml Settings
-----------------------------
-Please ensure that your application includes the following permission:
-
-<pre>
-	android.permission.INTERNET
-</pre>
-
 Building From Source
 --------------------
 To build from source, please use Maven.  Issue this command from the 'source' directory of your repository:
