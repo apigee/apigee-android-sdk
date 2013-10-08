@@ -10,6 +10,39 @@ There are 2 main areas of functionality provided: (1) AppServices (UserGrid), an
 
 NOTE -- app monitoring is temporarily disabled until the back-end systems are configured.
 
+Installing the SDK
+--------------------
+
+To initialize the App Services SDK, do the following:
+
+1. Add 'apigee-android-<version>.jar' to the build path for your project.
+2. Add the following to your source code to import commonly used SDK classes:
+<pre>
+    import com.apigee.sdk.ApigeeClient;
+    import com.apigee.sdk.data.client.DataClient;
+    import com.apigee.sdk.apm.android.MonitoringClient;
+    import com.apigee.sdk.apm.android.AndroidLog;
+    import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
+    import com.apigee.sdk.data.client.response.ApiResponse;  
+</pre>
+3. Add the following to your 'AndroidManifest.xml':
+<pre>
+    &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+    &lt;uses-permission android:name="android.permission.READ_PHONE_STATE" /&gt;
+    &lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
+    &lt;uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /&gt;
+    &lt;uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /&gt;
+</pre>
+4. If it is present in your project, remove 'android.util.log'. The 'AndroidLog' class of the App Services SDK replaces the functionality of 'android.util.log'.
+5. Instantiate the 'ApigeeClient' class to initialize the App Services SDK:
+<pre>
+    //App Services app credentials, available in the admin portal
+    String ORGNAME = "your-org";
+    String APPNAME = "your-app";
+    ApigeeClient apigeeClient = new ApigeeClient(ORGNAME,APPNAME,this.getBaseContext());    
+</pre>
+Once the SDK has been initialized, App Services will automatically begin logging usage, crash and error metrics for your app. This information can be viewed in the App Services admin portal for your account.
+
 AndroidManifest.xml Settings
 ----------------------------
 Please ensure that your application includes the following permission:
