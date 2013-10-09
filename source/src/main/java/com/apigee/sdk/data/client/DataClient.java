@@ -191,7 +191,7 @@ public class DataClient implements LocationListener {
         	this.setApiUrl(baseURL);
         }
         
-        captureDeviceLocation();
+        //captureDeviceLocation();
     }
 
     public void init() {
@@ -1835,6 +1835,7 @@ public class DataClient implements LocationListener {
 	}
 	
 	public void captureDeviceLocation() {
+		/*
 		if (this.context != null) {
 			if (locationManager == null) {
 				locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -1855,10 +1856,12 @@ public class DataClient implements LocationListener {
 				}
 			}
 		}
+		*/
 	}
 	
 	@Override
     public void onLocationChanged(Location location) {
+		/*
 	    if (location != null) {
 	    	locationManager.removeUpdates(this);
 	        
@@ -1891,6 +1894,7 @@ public class DataClient implements LocationListener {
 	        }.execute();
 	        
 	    }
+	    */
     }
 
     @Override
