@@ -8,7 +8,7 @@ public class MonitoringOptions {
 	
 	
 	public MonitoringOptions() {
-		this.monitoringEnabled = false;
+		this.monitoringEnabled = true;
 		this.crashReportingEnabled = true;
 		this.enableAutoUpload = true;
 		this.uploadListener = null;

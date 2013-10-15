@@ -17,7 +17,7 @@ import com.apigee.sdk.data.client.DataClient;
 public class ApigeeClient {
 	
 	public static final String LOGGING_TAG  = "APIGEE_CLIENT";
-	public static final String SDK_VERSION  = "2.0.4-SNAPSHOT";
+	public static final String SDK_VERSION  = "2.0.4";
 	public static final String SDK_TYPE     = "Android";
 
 	private DataClient dataClient;
@@ -98,7 +98,14 @@ public class ApigeeClient {
         		DataClient.setLogger(new DefaultAndroidLog());
         	}
         } else {
-            Log.d(LOGGING_TAG,"monitoring not enabled");
+        	monitoringClient = MA.initialize(appIdentification, dataClient, context, monitoringOptions);
+        	if( monitoringClient != null ) {
+        		Log.d(LOGGING_TAG,"monitoringClient created");
+        		DataClient.setLogger(monitoringClient.getLogger());
+        	} else {
+        		Log.d(LOGGING_TAG,"unable to create monitoringClient");
+        		DataClient.setLogger(new DefaultAndroidLog());
+        	}
         }
     }
 
