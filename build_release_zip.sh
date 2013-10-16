@@ -76,10 +76,10 @@ do
 done
 
 
-# if we have source/target in zip directory, delete everything under source/target
-if [ -d "${DEST_ZIP_DIR}/source/target" ]; then
-	rm -rf "${DEST_ZIP_DIR}/source/target"
-	rmdir "${DEST_ZIP_DIR}/source/target"
+# delete source directory
+if [ -d "${DEST_ZIP_DIR}/source" ]; then
+	rm -rf "${DEST_ZIP_DIR}/source"
+	rmdir "${DEST_ZIP_DIR}/source"
 fi
 
 # create directory for jar file
@@ -98,6 +98,12 @@ fi
 
 cp "${BUILT_SDK_JAR_FILE}" "${PROJECT_TEMPLATE_LIBS_DIR}"
 
+# does new-project-template have 'bin' subdirectory?
+if [ -d "${DEST_ZIP_DIR}/${NEW_PROJECT_TEMPLATE_DIR}/bin" ]; then
+	# delete it
+	rm -r "${DEST_ZIP_DIR}/${NEW_PROJECT_TEMPLATE_DIR}/bin"
+	rmdir "${DEST_ZIP_DIR}/${NEW_PROJECT_TEMPLATE_DIR}/bin"
+fi
 
 # copy new jar file to each sample app lib directory
 for sample_entry in ${DEST_SAMPLES_DIR}/*
@@ -111,8 +117,28 @@ do
 		
 		# copy jar file to libs dir for sample app
 		cp "${BUILT_SDK_JAR_FILE}" "${SAMPLE_LIBS_DIR}"
+		
+		# does the sample app directory have a 'bin' subdirectory?
+		if [ -d "${sample_entry}/bin" ]; then
+			# delete it
+			rm -r "${sample_entry}/bin"
+			rmdir "${sample_entry}/bin"
+		fi
 	fi
 done
+
+# have sdk-explorer in samples?
+if [ -d "${DEST_SAMPLES_DIR}/sdk-explorer" ]; then
+	# delete it
+	rm -r "${DEST_SAMPLES_DIR}/sdk-explorer"
+	rmdir "${DEST_SAMPLES_DIR}/sdk-explorer"
+fi
+
+# have build_release_zip.sh?
+if [ -f "${DEST_ZIP_DIR}/build_release_zip.sh" ]; then
+	# delete it
+	rm "${DEST_ZIP_DIR}/build_release_zip.sh"
+fi
 
 # create the zip file
 cd ${TOPLEVEL_ZIP_DIR} && zip -r -y ${ZIP_FILE_NAME} .
