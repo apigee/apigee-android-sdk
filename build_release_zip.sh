@@ -76,10 +76,10 @@ do
 done
 
 
-# delete source directory
-if [ -d "${DEST_ZIP_DIR}/source" ]; then
-	rm -rf "${DEST_ZIP_DIR}/source"
-	rmdir "${DEST_ZIP_DIR}/source"
+# if we have source/target in zip directory, delete everything under source/target
+if [ -d "${DEST_ZIP_DIR}/source/target" ]; then
+	rm -rf "${DEST_ZIP_DIR}/source/target"
+	rmdir "${DEST_ZIP_DIR}/source/target"
 fi
 
 # create directory for jar file
