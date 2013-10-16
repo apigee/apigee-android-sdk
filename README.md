@@ -1,14 +1,8 @@
-NOTICE
-======
-This SDK has not been released yet -- it should not be used for active development.
-
 Apigee Android SDK Overview
 =======================
 
 There are 2 main areas of functionality provided: (1) AppServices (UserGrid), and (2) App Monitoring.  App Services provides server-side storage functionality.  App Monitoring provides crash reporting, error tracking, application configuration management, and network performance monitoring.  You may use both of these areas or decide to just use one of them.
 
-
-NOTE -- app monitoring is temporarily disabled until the back-end systems are configured.
 
 AndroidManifest.xml Settings
 ----------------------------
