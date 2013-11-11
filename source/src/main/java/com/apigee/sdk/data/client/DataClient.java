@@ -860,11 +860,13 @@ public class DataClient implements LocationListener {
      * asynchronously in background and the callbacks are called in the UI
      * thread.
      *
-     * @param context
+     * @param deviceId
+     * @param notifier
+     * @param token
      * @param properties
      * @param callback
      */
-    public void registerDeviceForPushAsync(final Context context,
+    public void registerDeviceForPushAsync(final UUID deviceId,
                                            final String notifier,
                                            final String token,
                                            final Map<String, Object> properties,
@@ -872,8 +874,6 @@ public class DataClient implements LocationListener {
       (new ClientAsyncTask<Device>(callback) {
         @Override
         public Device doTask() {
-          UUID deviceId = new DeviceUuidFactory(context).getDeviceUuid();
-
           return registerDeviceForPush(deviceId, notifier, token, properties);
         }
       }).execute();
@@ -884,18 +884,16 @@ public class DataClient implements LocationListener {
 	 * asynchronously in background and the callbacks are called in the UI
 	 * thread.
 	 * 
-	 * @param context
+	 * @param deviceId
 	 * @param properties
 	 * @param callback
 	 */
-	public void registerDeviceAsync(final Context context,
+	public void registerDeviceAsync(final UUID deviceId,
 			final Map<String, Object> properties,
 			final DeviceRegistrationCallback callback) {
 		(new ClientAsyncTask<Device>(callback) {
 			@Override
 			public Device doTask() {
-			    UUID deviceId = new DeviceUuidFactory(context).getDeviceUuid();
-		        
 				return registerDevice(deviceId, properties);
 			}
 		}).execute();
