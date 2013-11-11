@@ -25,7 +25,7 @@ public final class AppServices {
 
   static synchronized DataClient getClient(Context context) {
     if (client == null) {
-    	if (ORG.equals(UNASSIGNED_ORG_VALUE)) {
+    	if (ORG.equals("<<your org name here>>")) {
     		Log.e(TAG, "ORG value has not been set.");
     	} else {
     		ApigeeClient apigeeClient = new ApigeeClient(ORG,APP,API_URL,context);
