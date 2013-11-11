@@ -18,7 +18,7 @@ import com.google.android.gcm.GCMRegistrar;
 import static com.ganyo.pushtest.Util.*;
 import static com.ganyo.pushtest.Util.TAG;
 
-public class MainActivity extends Activity {
+public class PushMainActivity extends Activity {
 
   private TextView messageTextView;
   private Button sendButton;
