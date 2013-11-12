@@ -7,16 +7,38 @@ import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.data.client.DataClient;
 
-public class MA {
+/**
+ * High-level convenience methods for interacting with Apigee App Monitoring
+ */
+public class AppMon {
 
 	public static final String ERR_INIT_FAILURE_MSG = "Apigee App Monitoring was unable to initialize ";
 	
-
+	/**
+	 * Initialize Apigee App Monitoring functionality
+	 * @param appIdentification object that identifies the application
+	 * @param dataClient the Apigee DataClient in use
+	 * @param appActivity the Android context
+	 * @return an initialized MonitoringClient instance or null on error
+	 * @see AppIdentification
+	 * @see DataClient
+	 */
 	public static MonitoringClient initialize(AppIdentification appIdentification, DataClient dataClient, Context appActivity)
 	{
 		return initialize(appIdentification, dataClient, appActivity, null);
 	}
 	
+	/**
+	 * Initialize Apigee App Monitoring functionality
+	 * @param appIdentification object that identifies the application
+	 * @param dataClient the Apigee DataClient in use
+	 * @param appActivity the Android context
+	 * @param monitoringOptions options to control App Monitoring functionality (can be null)
+	 * @return an initialized MonitoringClient instance or null on error
+	 * @see AppIdentification
+	 * @see DataClient
+	 * @see MonitoringOptions
+	 */
 	public static MonitoringClient initialize(AppIdentification appIdentification, DataClient dataClient, Context appActivity, MonitoringOptions monitoringOptions)
 	{
 		if (!isInitialized()) {
@@ -32,6 +54,10 @@ public class MA {
 		return null;
 	}
 	
+	/**
+	 * Retrieves the device identifier used by Apigee to uniquely identify the device
+	 * @return the identifier for the current device
+	 */
 	public static String getApigeeDeviceId(){
 		String deviceId = null;
 		MonitoringClient client = MonitoringClient.getInstance();
@@ -42,6 +68,12 @@ public class MA {
 		return deviceId;
 	}
 	
+	/**
+	 * Refresh configuration by pulling fresh copy from server and updating client SDK
+	 * @param reloadListener listener to be notified when the configuration is retrieved
+	 * @return boolean indicating whether server configuration was able to be retrieved
+	 * @see ConfigurationReloadedListener
+	 */
 	public static boolean refreshConfiguration(ConfigurationReloadedListener reloadListener)
 	{
 		boolean refreshed = false;
@@ -55,6 +87,10 @@ public class MA {
 		return refreshed;
 	}
 	
+	/**
+	 * Force App Monitoring metrics to be uploaded to server (synchronously)
+	 * @return boolean indicating whether the metrics could be uploaded
+	 */
 	public static boolean uploadMetrics()
 	{
 		boolean uploaded = false;
@@ -68,6 +104,10 @@ public class MA {
 		return uploaded;
 	}
 	
+	/**
+	 * Determines whether Apigee App Monitoring has been successfully initialized
+	 * @return boolean indicating whether Apigee App Monitoring has been initialized
+	 */
 	public static boolean isInitialized() {
 		boolean isInitialized = false;
 		MonitoringClient client = MonitoringClient.getInstance();
@@ -78,6 +118,9 @@ public class MA {
 		return isInitialized;
 	}
 	
+	/**
+	 * Let Apigee App Monitoring know that we just had user interaction (session is active)
+	 */
 	public static void onUserInteraction() {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -85,6 +128,12 @@ public class MA {
 		}
 	}
 	
+	/**
+	 * Add the specified upload listener to monitor uploads to server
+	 * @param metricsUploadListener the listener to add
+	 * @return boolean indicating whether the specified listener could be added
+	 * @see UploadListener
+	 */
 	public static boolean addMetricsUploadListener(UploadListener metricsUploadListener) {
 		boolean listenerAdded = false;
 
@@ -96,6 +145,12 @@ public class MA {
 		return listenerAdded;
 	}
 	
+	/**
+	 * Remove the specified upload listener
+	 * @param metricsUploadListener the upload listener to remove
+	 * @return boolean indicating whether the specified listener could be removed
+	 * @see UploadListener
+	 */
 	public static boolean removeMetricsUploadListener(UploadListener metricsUploadListener) {
 		boolean listenerRemoved = false;
 

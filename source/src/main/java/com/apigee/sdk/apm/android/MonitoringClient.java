@@ -217,7 +217,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	{
 		log = new AndroidLog(loader);
 		
-		collector = new MetricsCollector2(loader);
+		collector = new MetricsCollector(loader);
 
 		httpClient = new HttpClientWrapper(originalHttpClient, appIdentification, collector, loader);
 					

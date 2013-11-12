@@ -1,9 +1,19 @@
 package com.apigee.sdk.apm.android;
 
 
-
+/**
+ * Logging wrapper class that sends logging records to standard Android Log facility and
+ * Apigee's App Monitoring. In the event that Apigee's App Monitoring is not available
+ * (or has not been initialized), the fallback behavior is the standard Android Log facility.
+ */
 public class Log {
 	
+	/**
+	 * Log a debugging message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @return
+	 */
 	public static int d(String tag, String msg) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -13,6 +23,13 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log a debugging message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @param tr an exception to log
+	 * @return
+	 */
 	public static int d(String tag, String msg, Throwable tr) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -22,6 +39,12 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log an error message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @return
+	 */
 	public static int e(String tag, String msg) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -31,6 +54,13 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log an error message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @param tr an exception to log
+	 * @return
+	 */
 	public static int e(String tag, String msg, Throwable tr) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -40,6 +70,12 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log an informational message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @return
+	 */
 	public static int i(String tag, String msg) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -49,6 +85,13 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log an informational message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @param tr an exception to log
+	 * @return
+	 */
 	public static int i(String tag, String msg, Throwable tr) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -58,6 +101,12 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log a verbose message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @return
+	 */
 	public static int v(String tag, String msg) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -67,6 +116,13 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log a verbose message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @param tr an exception to log
+	 * @return
+	 */
 	public static int v(String tag, String msg, Throwable tr) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -76,6 +132,12 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log a warning message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @return
+	 */
 	public static int w(String tag, String msg) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -85,6 +147,13 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log a warning message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @param tr an exception to log
+	 * @return
+	 */
 	public static int w(String tag, String msg, Throwable tr) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -94,6 +163,12 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log a critical message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @return
+	 */
 	public static int wtf(String tag, String msg) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {
@@ -103,6 +178,13 @@ public class Log {
 		}
 	}
 
+	/**
+	 * Log a critical message
+	 * @param tag the source of the message
+	 * @param msg the message to log
+	 * @param tr an exception to log
+	 * @return
+	 */
 	public static int wtf(String tag, String msg, Throwable tr) {
 		MonitoringClient client = MonitoringClient.getInstance();
 		if (null != client) {

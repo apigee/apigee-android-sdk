@@ -9,7 +9,7 @@ import com.apigee.sdk.URLConnectionFactory;
 
 public class InstrumentedURLConnectionFactory implements URLConnectionFactory {
 	public URLConnection openConnection(String urlAsString) throws MalformedURLException, IOException {
-		URLWrapper urlWrapper = MANet.urlForUri(urlAsString);
+		URLWrapper urlWrapper = AppMonNet.urlForUri(urlAsString);
 		return urlWrapper.openConnection();
 	}
 

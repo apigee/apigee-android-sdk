@@ -88,7 +88,7 @@ public class ApigeeURLWrapper extends AbstractURLWrapper implements URLWrapper
 			errorOccurred = true;
 			throw e;
 		} finally {
-			MANet.recordNetworkAttemptForUrl(urlAsString(), startTimeMillis, endTimeMillis, errorOccurred, exception);
+			AppMonNet.recordNetworkAttemptForUrl(urlAsString(), startTimeMillis, endTimeMillis, errorOccurred, exception);
 		}
 		
 		return content;
@@ -111,7 +111,7 @@ public class ApigeeURLWrapper extends AbstractURLWrapper implements URLWrapper
 			errorOccurred = true;
 			throw e;
 		} finally {
-			MANet.recordNetworkAttemptForUrl(urlAsString(), startTimeMillis, endTimeMillis, errorOccurred, exception);
+			AppMonNet.recordNetworkAttemptForUrl(urlAsString(), startTimeMillis, endTimeMillis, errorOccurred, exception);
 		}
 		
 		return content;

@@ -9,7 +9,7 @@ import java.util.Map;
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
 
-public class MetricsCollector2 implements MetricsCollectorService {
+public class MetricsCollector implements MetricsCollectorService {
 
 	public final static int MAX_NUM_METRICS = 100;
 
@@ -20,7 +20,7 @@ public class MetricsCollector2 implements MetricsCollectorService {
 		return metrics;
 	}
 
-	public MetricsCollector2(ApplicationConfigurationService configLoader) {
+	public MetricsCollector(ApplicationConfigurationService configLoader) {
 		this.configLoader = configLoader;
 		initializeMetrics();
 	}
