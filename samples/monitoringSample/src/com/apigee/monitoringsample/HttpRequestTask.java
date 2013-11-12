@@ -14,7 +14,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpConnectionParams;
 
-import com.apigee.sdk.apm.android.MANet;
+import com.apigee.sdk.apm.android.AppMonNet;
 
 
 public class HttpRequestTask extends AsyncTask<String, String, String>
@@ -68,7 +68,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
     	//this.httpClient = new org.apache.http.impl.client.DefaultHttpClient();
     	
     	// to get network performance metrics, do this instead:
-        this.httpClient = MANet.getHttpClient();
+        this.httpClient = AppMonNet.getHttpClient();
         //DOCSNIPPET_END
         
         HttpResponse response;
@@ -146,7 +146,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
         	//java.net.URL url = new java.net.URL(uri);
         	
         	// To have network performance metrics collected, do this instead:
-        	com.apigee.sdk.apm.android.URLWrapper url = MANet.urlForUri(uri);
+        	com.apigee.sdk.apm.android.URLWrapper url = AppMonNet.urlForUri(uri);
         	
         	//The InstaOpsURL class wraps an instance of java.net.URL. The
         	//InstaOpsURL does not extend java.net.URL because that class
