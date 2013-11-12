@@ -71,7 +71,7 @@ public final class AppServices {
 	DataClient dataClient = getClient(context);
 	if (dataClient != null) {
 
-		dataClient.registerDeviceForPushAsync(context, NOTIFIER, regId, null, new DeviceRegistrationCallback() {
+		dataClient.registerDeviceForPushAsync(dataClient.getUniqueDeviceID(), NOTIFIER, regId, null, new DeviceRegistrationCallback() {
 
       @Override
       public void onResponse(Device device) {
