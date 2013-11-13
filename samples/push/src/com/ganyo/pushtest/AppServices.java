@@ -12,6 +12,10 @@ import com.apigee.sdk.data.client.entities.Device;
 import com.apigee.sdk.data.client.entities.Entity;
 import com.apigee.sdk.data.client.response.ApiResponse;
 import com.apigee.sdk.data.client.utils.JsonUtils;
+import com.google.android.gcm.GCMRegistrar;
+
+import com.apigee.sdk.data.client.push.GCMPayload;
+import com.apigee.sdk.data.client.push.GCMDestination;
 
 import java.util.HashMap;
 
@@ -35,9 +39,9 @@ public final class AppServices {
     return client;
   }
 
-  static void login(final Context context) {
+  static void loginAndRegisterForPush(final Context context) {
 
-    if (USER != null) {
+    if ((USER != null) && (USER.length() > 0)) {
     	DataClient dataClient = getClient(context);
     	if (dataClient != null) {
     		dataClient.authorizeAppUserAsync(USER, PASSWORD, new ApiResponseCallback() {
@@ -61,6 +65,22 @@ public final class AppServices {
       registerPush(context);
     }
   }
+  
+  static void registerPush(Context context) {
+
+    final String regId = GCMRegistrar.getRegistrationId(context);
+
+    if ("".equals(regId)) {
+      GCMRegistrar.register(context, Settings.GCM_SENDER_ID);
+    } else {
+      if (GCMRegistrar.isRegisteredOnServer(context)) {
+        Log.i(TAG, "Already registered with GCM");
+      } else {
+        AppServices.register(context, regId);
+      }
+    }
+  }
+
 
   /**
    * Register this user/device pair on App Services.
@@ -123,13 +143,11 @@ public final class AppServices {
 	  } else {
 		  DataClient dataClient = getClient(context);
 		  if (dataClient != null) {
-			  String entityPath = "devices/" + device.getUuid().toString() + "/notifications";
-			  Entity notification = new Entity(dataClient,entityPath);
-
-			  HashMap<String,String> payloads = new HashMap<String, String>();
-			  payloads.put("google", "Hi there!");
-			  notification.setProperty("payloads", JsonUtils.toJsonNode(payloads));
-			  dataClient.createEntityAsync(notification, new ApiResponseCallback() {
+			  GCMDestination destination = GCMDestination.destinationSingleDevice(device.getUuid());
+			  GCMPayload payload = new GCMPayload();
+			  payload.setAlertText("Hi there!");
+			  
+			  dataClient.pushNotificationAsync(payload, destination, "google", new ApiResponseCallback() {
 
 				  @Override
 				  public void onResponse(ApiResponse apiResponse) {

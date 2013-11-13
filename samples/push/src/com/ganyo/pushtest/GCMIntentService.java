@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
@@ -91,7 +93,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
     PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-    Notification notification = new Notification.Builder(context)
+    Notification notification = new NotificationCompat.Builder(context)
     	.setContentText(message)
     	.setContentTitle(context.getString(R.string.app_name))
     	.setSmallIcon(icon)

@@ -44,9 +44,14 @@ import com.apigee.sdk.data.client.entities.Message;
 import com.apigee.sdk.data.client.entities.User;
 import com.apigee.sdk.data.client.response.ApiResponse;
 import com.apigee.sdk.data.client.utils.DeviceUuidFactory;
+import com.apigee.sdk.data.client.utils.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
+import com.apigee.sdk.data.client.push.GCMDestination;
+import com.apigee.sdk.data.client.push.GCMPayload;
+
 
 /**
  * The DataClient class for accessing the Usergrid API. Start by instantiating this
@@ -874,6 +879,67 @@ public class DataClient implements LocationListener {
           return registerDeviceForPush(deviceId, notifier, token, properties);
         }
       }).execute();
+    }
+    
+    /**
+     * Creates a Entity and populates it with push notification parameters in preparation for sending to server
+     * @param payload the push notification payload
+     * @param destination the destination for the push notification
+     * @param notifier the notifier name
+     * @return populated Entity instance
+     * @see GCMPayload
+     * @see GCMDestination
+     */
+    protected Entity populatePushEntity(GCMPayload payload,GCMDestination destination,String notifier) {
+    	if ((payload != null) && (destination != null) && (notifier != null)) {
+    		String notificationsPath = destination.getDeliveryPath() + "/notifications";
+    		Entity notification = new Entity(this,notificationsPath);
+    		HashMap<String,String> payloads = new HashMap<String, String>();
+    		payloads.put(notifier, payload.getAlertText());
+    		notification.setProperty("payloads", JsonUtils.toJsonNode(payloads));
+    		return notification;
+    	} else {
+    		if (payload == null) {
+    			throw new IllegalArgumentException("payload cannot be null or empty");
+    		} else if (destination == null) {
+    			throw new IllegalArgumentException("destination cannot be null or empty");
+    		} else if (notifier == null) {
+    			throw new IllegalArgumentException("notifier cannot be null or empty");
+    		}
+
+    		return null;
+    	}
+    }
+    
+    /**
+     * Send a push notification synchronously
+     * @param payload the payload to send
+     * @param destination the destination for the notification
+     * @param notifier the notifier name
+     * @return ApiResponse instance
+     * @see GCMPayload
+     * @see GCMDestination
+     */
+    public ApiResponse pushNotification(GCMPayload payload,
+    					GCMDestination destination,
+    					String notifier) {
+    	return this.createEntity(populatePushEntity(payload,destination,notifier));
+    }
+
+    /**
+     * Send a push notification asynchronously
+     * @param payload the payload to send
+     * @param destination the destination for the notification
+     * @param notifier the notifier name
+     * @param callback the callback when the request is completed
+     * @see GCMPayload
+     * @see GCMDestination
+     */
+    public void pushNotificationAsync(GCMPayload payload,
+			GCMDestination destination,
+			String notifier,
+			final ApiResponseCallback callback) {
+    	this.createEntityAsync(populatePushEntity(payload,destination,notifier),callback);
     }
 
 	/**
