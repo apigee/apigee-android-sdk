@@ -17,18 +17,4 @@ public final class Util {
     context.sendBroadcast(intent);
   }
 
-  static void registerPush(Context context) {
-
-    final String regId = GCMRegistrar.getRegistrationId(context);
-
-    if ("".equals(regId)) {
-      GCMRegistrar.register(context, Settings.GCM_SENDER_ID);
-    } else {
-      if (GCMRegistrar.isRegisteredOnServer(context)) {
-        Log.i(TAG, "Already registered with GCM");
-      } else {
-        AppServices.register(context, regId);
-      }
-    }
-  }
 }

@@ -28,12 +28,18 @@ public class PushMainActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    // this is a hack to force AsyncTask to be initialized on main thread. Without this things
+    // won't work correctly on older versions of Android (2.2, apilevel=8)
+    try {
+    	Class.forName("android.os.AsyncTask");
+    } catch (Exception ignored) {}
+    
     GCMRegistrar.checkDevice(this);
     GCMRegistrar.checkManifest(this);
 
     initUI();
 
-    AppServices.login(this);
+    AppServices.loginAndRegisterForPush(this);
   }
 
   private void initUI() {
