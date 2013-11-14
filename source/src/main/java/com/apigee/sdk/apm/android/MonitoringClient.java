@@ -414,8 +414,8 @@ public class MonitoringClient implements SessionTimeoutListener {
 	}
 
 	public boolean readUpdateAndApplyConfiguration(HttpClient client,
-								boolean enableAutoUpload,
-								ConfigurationReloadedListener reloadListener) {
+								final boolean enableAutoUpload,
+								final ConfigurationReloadedListener reloadListener) {
 		boolean success = true;
 		loader = new CompositeConfigurationServiceImpl(appActivity,
 														appIdentification,
@@ -448,7 +448,6 @@ public class MonitoringClient implements SessionTimeoutListener {
 				if (crashReportingEnabled)
 				{
 					sExecutor.execute(new CrashManagerTask(this));
-					sExecutor.execute(new ForcedUploadDataTask(this));
 				}
 				else
 				{
@@ -456,13 +455,21 @@ public class MonitoringClient implements SessionTimeoutListener {
 				}
 			}
 			
-			// read configuration
-			sExecutor.execute(new LoadRemoteConfigTask(reloadListener));
+			final MonitoringClient monitoringClient = this;
 			
-			if (enableAutoUpload)
-			{
-				initiateSendLoop();
-			}
+			// read configuration
+			sExecutor.execute(new Runnable() {
+				public void run() {
+					LoadRemoteConfigTask loadRemoteConfigTask = new LoadRemoteConfigTask(reloadListener);
+					loadRemoteConfigTask.run();
+					if (isActive && enableAutoUpload) {
+						ForcedUploadDataTask uploadDataTask = new ForcedUploadDataTask(monitoringClient);
+						uploadDataTask.run();
+						
+						initiateSendLoop();
+					}
+				}
+			});
 			
 		} catch (LoadConfigurationException e) {
 			success = false;
@@ -487,7 +494,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 		if (null != sendMetricsHandler) {
 			sendMetricsHandler.removeMessages(0);
 		} else {
-			sendMetricsHandler = new Handler();
+			sendMetricsHandler = new Handler(appActivity.getMainLooper());
 		}
 
 		final MonitoringClient client = this;
