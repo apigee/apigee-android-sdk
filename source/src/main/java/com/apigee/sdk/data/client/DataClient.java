@@ -1030,7 +1030,42 @@ public class DataClient implements LocationListener {
   			}
   		}).execute();
   	}
-
+  	
+  	/**
+  	 * Create a set of entities on the server from an ArrayList. Each item in the array
+  	 * contains a set of properties that define a entity.
+  	 * 
+  	 * @param type
+  	 * @param entities
+  	 */
+  	public ApiResponse createEntities(String type, ArrayList<Map<String, Object>> entities) {
+        assertValidApplicationId();                
+        if (isEmpty(type)) {
+            throw new IllegalArgumentException("Missing entity type");
+        }
+        ApiResponse response = apiRequest(HTTP_METHOD_POST, null, entities,
+   		     organizationId, applicationId, type);	           		
+   		return response;	
+    }
+    
+    /**
+  	 * Create a set of entities on the server from an ArrayList. Each item in the array
+  	 * contains a set of properties that define a entity. Executes asynchronously in 
+  	 * background and the callbacks are called in the UI thread.
+  	 * 
+  	 * @param type
+  	 * @param entities
+  	 */
+    public void createEntitiesAsync(final String type, final ArrayList<Map<String, Object>> entities,
+  			final ApiResponseCallback callback) {
+  		(new ClientAsyncTask<ApiResponse>(callback) {
+  			@Override
+  			public ApiResponse doTask() {
+  				return createEntities(type, entities);
+  			}
+  		}).execute();
+  	}
+    
     /**
      * Update an existing entity on the server.
      * 
