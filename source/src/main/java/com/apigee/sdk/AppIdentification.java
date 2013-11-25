@@ -50,7 +50,7 @@ public class AppIdentification {
 				(appUUIDAsString != null) &&
 				(orgUUIDAsString.length() > 0) &&
 				(appUUIDAsString.length() > 0) ) {
-				uniqueIdentifier = orgUUIDAsString + "." + appUUIDAsString;
+				uniqueIdentifier = orgUUIDAsString + "_" + appUUIDAsString;
 			}
 		}
 		
@@ -59,7 +59,7 @@ public class AppIdentification {
 				(applicationId != null) &&
 				(organizationId.length() > 0) &&
 				(applicationId.length() > 0) ) {
-				uniqueIdentifier = organizationId + "." + applicationId;
+				uniqueIdentifier = organizationId + "_" + applicationId;
 			}
 		}
 		
