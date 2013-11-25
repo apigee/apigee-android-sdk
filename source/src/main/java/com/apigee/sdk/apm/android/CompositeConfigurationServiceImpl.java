@@ -38,7 +38,7 @@ import com.apigee.sdk.data.client.DataClient;
 public class CompositeConfigurationServiceImpl implements ApplicationConfigurationService {
 
 	public static final String PROP_CACHE_LAST_MODIFIED_DATE = "WebConfigLastModifiedDate";
-	public static final String COMPOSITE_CONFIGURATION_CACHE_FILE_NAME = "compositeconfigcache.json";
+	public static final String CONFIGURATION_FILE_NAME = "config.json";
 	
 	protected static final String TAG = CompositeConfigurationServiceImpl.class
 			.getSimpleName();
@@ -151,7 +151,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 			// Attempts to load from cache
 			try {
 				is = appActivity
-						.openFileInput(COMPOSITE_CONFIGURATION_CACHE_FILE_NAME);
+						.openFileInput(getConfigFileName());
 				App config = getCompositeApplicationConfigurationModelFromInputStream(is);
 				this.compositeApplicationConfigurationModel = config;
 
@@ -186,7 +186,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 			
 			try {
 				is = appActivity
-						.openFileInput(COMPOSITE_CONFIGURATION_CACHE_FILE_NAME);
+						.openFileInput(getConfigFileName());
 				App config = getCompositeApplicationConfigurationModelFromInputStream(is);
 				this.compositeApplicationConfigurationModel = config;
 
@@ -356,7 +356,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		
 		try {
 			fos = appActivity.openFileOutput(
-					COMPOSITE_CONFIGURATION_CACHE_FILE_NAME,
+					getConfigFileName(),
 					Context.MODE_PRIVATE);
 			byte[] jsonBytes = configJson.getBytes();
 			fos.write(jsonBytes,0,jsonBytes.length);
@@ -380,7 +380,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	
 	
 	private void cleanCache() {
-		appActivity.deleteFile(COMPOSITE_CONFIGURATION_CACHE_FILE_NAME);
+		appActivity.deleteFile(getConfigFileName());
 		editor.putString(PROP_CACHE_LAST_MODIFIED_DATE, "");
 	}
 
@@ -605,6 +605,10 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		} else {
 			return null;
 		}
+	}
+	
+	public String getConfigFileName() {
+		return this.monitoringClient.getUniqueIdentifierForApp() + "_" + CONFIGURATION_FILE_NAME;
 	}
 
 }
