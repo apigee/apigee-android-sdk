@@ -38,7 +38,20 @@ import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.data.client.DataClient;
 
+/*
+ * App monitoring server communications:
+ * 
+ * Crash report upload:
+ * 		CrashManager.java (submitStackTrace)
+ * 
+ * Metrics upload:
+ * 		UploadService.java (sendMetrics)
+ * 		MonitoringClient.java (postString)
 
+ * Retrieve configuration from server:
+ * 		CompositeConfigurationServiceImpl.java (retrieveConfigFromServer)
+ * 
+ */
 public class MonitoringClient implements SessionTimeoutListener {
 
 	public static final boolean DEFAULT_AUTO_UPLOAD_ENABLED = true;
@@ -846,6 +859,10 @@ public class MonitoringClient implements SessionTimeoutListener {
 	
 	public static String getSDKVersion() {
 		return ApigeeClient.SDK_VERSION;
+	}
+	
+	public String getUniqueIdentifierForApp() {
+		return appIdentification.getUniqueIdentifier();
 	}
 
 }
