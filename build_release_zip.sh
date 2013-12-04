@@ -7,6 +7,13 @@
 # Example: build_sdk_zip.sh 1.4.3
 #******************************************************************************
 
+# variables used for javadoc generation
+MAVEN_REPO="/Users/ApigeeCorporation/.m2/repository"
+ANDROID_SDK_PATH="/Applications/adt-bundle-mac/sdk/platforms/android-4.2"
+JAVADOC_EXE_PATH="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin"
+JAVA_VERSION="1.6"
+
+
 # verify that we've been given an argument (the version string)
 if [ $# -eq 0 ]
   then
@@ -139,6 +146,24 @@ if [ -f "${DEST_ZIP_DIR}/build_release_zip.sh" ]; then
 	# delete it
 	rm "${DEST_ZIP_DIR}/build_release_zip.sh"
 fi
+
+# generate javadocs
+JAVADOC_OUTPUT_DIR="${DEST_ZIP_DIR}/docs"
+if [ -d "${JAVADOC_OUTPUT_DIR}" ]; then
+  # delete everything that may be there
+  rm -r "${JAVADOC_OUTPUT_DIR}/*"
+else
+  mdir "${JAVADOC_OUTPUT_DIR}"
+fi
+
+CLASSPATH="./source/target/test-classes:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-core/2.2.3/jackson-core-2.2.3.jar:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-annotations/2.2.3/jackson-annotations-2.2.3.jar:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-databind/2.2.3/jackson-databind-2.2.3.jar:${MAVEN_REPO}/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:${MAVEN_REPO}/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:${MAVEN_REPO}/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar:${MAVEN_REPO}/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar:${ANDROID_SDK_PATH}/android.jar"
+SOURCEPATH="./source/src/main/java"
+JAVADOC_OPTIONS="-splitindex -use -version -public -author"
+PACKAGE_LIST="com.apigee.sdk.data.client.exception com.apigee.sdk.apm.http.impl.client.cache com.apigee.sdk.data.client.push com.apigee.sdk.apm.http.annotation com.apigee.sdk.apm.android.metrics com.apigee.sdk.apm.android.crashlogging.internal com.apigee.sdk.data.client.response com.apigee.sdk.apm.android com.apigee.sdk com.apigee.sdk.data.client.utils com.apigee.sdk.data.client com.apigee.sdk.data.client.entities com.apigee.sdk.apm.android.util com.apigee.sdk.apm.android.model com.apigee.sdk.apm.http.client.cache com.apigee.sdk.apm.android.crashlogging com.apigee.sdk.data.client.callbacks"
+
+JDOC_CMD="${JAVADOC_EXE_PATH}/javadoc ${JAVADOC_OPTIONS} -classpath ${CLASSPATH} -d ${JAVADOC_OUTPUT_DIR} -source ${JAVA_VERSION} -sourcepath ${SOURCEPATH} ${PACKAGE_LIST}"
+echo ${JDOC_CMD}
+${JDOC_CMD}
 
 # create the zip file
 cd ${TOPLEVEL_ZIP_DIR} && zip -r -y ${ZIP_FILE_NAME} .
