@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Apigee Geolocation Example App</string>
+    <string name="placeholder">"Wait a second while we attempt to contact the Apigee servers…\n\nIf you haven’t done so already, follow the instructions in src/com/apigee/geolocation_example/MainActivity.java\n\nThen restart the app!"</string>
+
+</resources>

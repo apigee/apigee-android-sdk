@@ -1558,12 +1558,12 @@ public class DataClient implements LocationListener {
 	 * @param ql
 	 * @param callback
 	 */
-	public void queryUsersAsync(String ql, QueryResultsCallback callback) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ql", ql);
-		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null,
-				getApplicationId(), "users");
-	}
+    public void queryUsersAsync(String ql, QueryResultsCallback callback) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ql", ql);
+        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null, 
+                getOrganizationId(), getApplicationId(), "users");
+    }
 	
     /**
      * Perform a query of the users collection within the specified distance of
