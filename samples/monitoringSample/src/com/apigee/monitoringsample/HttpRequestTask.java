@@ -9,12 +9,18 @@ import android.os.AsyncTask;
 
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.impl.client.BasicResponseHandler;
 
 import com.apigee.sdk.apm.android.AppMonNet;
+import com.apigee.sdk.apm.android.Log;
+
 
 
 public class HttpRequestTask extends AsyncTask<String, String, String>
@@ -30,8 +36,10 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
 	private HttpGet httpGet;
 	private boolean connectionTimedOut;
 	private String url;
+	private int httpClientMethodToUse;
+
 	
-	public HttpRequestTask(String connectionType, int timeoutMillis)
+	public HttpRequestTask(String connectionType, int timeoutMillis, int httpClientMethodToUse)
 	{
 		useHttpURLConnection = true;
 
@@ -46,6 +54,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
 		connectionTimedOut = false;
 		httpURLConnection = null;
 		httpsURLConnection = null;
+		this.httpClientMethodToUse = httpClientMethodToUse;
 	}
 	
 	public void setNetworkResponseListener(NetworkResponseListener listener)
@@ -53,14 +62,61 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
 		this.listener = listener;
 	}
 	
-	public String callUsingHttpClient(String uri)
+	public String getStringResponse(HttpResponse response)
+	{
+		String responseString = null;
+		
+    	if (response != null) {
+    		StatusLine statusLine = response.getStatusLine();
+    		if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+    			responseIsSuccess = true;
+    			ByteArrayOutputStream out = new ByteArrayOutputStream();
+    			try {
+    				response.getEntity().writeTo(out);
+    			} catch (IOException e) {
+    				
+    			} finally {
+    				if (out != null) {
+    					try {
+    						out.close();
+    					} catch (IOException ignored) {
+    					}
+    				}
+    			}
+    			responseString = out.toString();
+    		} else {
+    			//Closes the connection.
+    			HttpEntity entity = response.getEntity();
+    			if( entity != null )
+    			{
+    				InputStream contentStream = null;
+    				try {
+    					contentStream = entity.getContent();
+    				} catch (IOException e) {
+    					
+    				} finally {
+        				if (contentStream != null) {
+        					try {
+        						contentStream.close();
+        					} catch (IOException ignored) {
+        					}
+        				}
+    				}
+    			}
+    		}
+    	}
+    	
+    	return responseString;
+	}
+	
+	public String callUsingHttpClient(String uri,int overloadedMethodIndex)
 	{
 		url = uri;
     	responseIsSuccess = false;
     	exception = null;
     	
     	//DOCSNIPPET_START
-    	// Ask the Apigee Mobile Analytics mobile agent for an http client
+    	// Ask the Apigee App Monitoring mobile agent for an http client
     	// (that has the instrumentation hooks in it) instead of creating
     	// a typical DefaultHttpClient instance
     	
@@ -71,7 +127,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
         this.httpClient = AppMonNet.getHttpClient();
         //DOCSNIPPET_END
         
-        HttpResponse response;
+        HttpResponse response = null;
         String responseString = null;
         
         try {
@@ -92,27 +148,78 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
         	getOperation.setParams(httpParameters);
         	httpGet = getOperation;
         	
-            response = httpClient.execute(getOperation);
-            StatusLine statusLine = response.getStatusLine();
-            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-            	responseIsSuccess = true;
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                response.getEntity().writeTo(out);
-                out.close();
-                responseString = out.toString();
-            } else {
-                //Closes the connection.
-            	HttpEntity entity = response.getEntity();
-            	if( entity != null )
-            	{
-            		InputStream contentStream = entity.getContent();
-            		if( contentStream != null )
-            		{
-            			contentStream.close();
-            		}
-            	}
-                throw new IOException(statusLine.getReasonPhrase());
-            }
+        	HttpContext httpContext = new BasicHttpContext();
+        	
+        	String host = "";
+        	String scheme = "http";
+        	if (uri.startsWith("https://")) {
+        		scheme = "https";
+        		host = uri.substring(8);
+        	} else if (uri.startsWith("http://")) {
+        		scheme = "http";
+        		host = uri.substring(7);
+        	}
+
+        	HttpHost target = new HttpHost(host,80,scheme);
+        	
+        	ResponseHandler<String> responseHandler = null;
+        	
+        	if (overloadedMethodIndex < 0) {
+        		overloadedMethodIndex = 0;
+        	} else if (overloadedMethodIndex > 7) {
+        		overloadedMethodIndex = 7;
+        	}
+        	
+        	//String tag = "HttpRequestTask";
+
+        	if (overloadedMethodIndex == 0) {
+        		//execute(HttpHost target, HttpRequest request)
+        		//Log.d(tag,"0: execute(HttpHost target, HttpRequest request)");
+        		response = httpClient.execute(target, getOperation);
+        	} else if (overloadedMethodIndex == 1) {
+        		//execute(HttpHost target, HttpRequest request, HttpContext context)
+        		//Log.d(tag,"1: execute(HttpHost target, HttpRequest request, HttpContext context)");
+        		response = httpClient.execute(target, getOperation, httpContext);
+        	} else if (overloadedMethodIndex == 2) {
+        		//execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler)
+        		//Log.d(tag,"2: execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler)");
+        		responseHandler = new BasicResponseHandler();
+        		responseString = httpClient.execute(target, getOperation, responseHandler);
+        	} else if (overloadedMethodIndex == 3) {
+        		//execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context)
+        		//Log.d(tag,"3: execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context)");
+        		responseHandler = new BasicResponseHandler();
+        		responseString = httpClient.execute(target, getOperation, responseHandler, httpContext);
+        	} else if (overloadedMethodIndex == 4) {
+        		//execute(HttpUriRequest request)
+        		//Log.d(tag,"4: execute(HttpUriRequest request)");
+                response = httpClient.execute(getOperation);
+        	} else if (overloadedMethodIndex == 5) {
+        		//execute(HttpUriRequest request, HttpContext context)
+        		//Log.d(tag,"5: execute(HttpUriRequest request, HttpContext context)");
+        		response = httpClient.execute(getOperation, httpContext);
+        	} else if (overloadedMethodIndex == 6) {
+        		//execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler)
+        		//Log.d(tag,"6: execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler)");
+        		responseHandler = new BasicResponseHandler();
+        		responseString = httpClient.execute(getOperation, responseHandler);
+        	} else if (overloadedMethodIndex == 7) {
+        		//execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context)
+        		//Log.d(tag,"7: execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context)");
+        		responseHandler = new BasicResponseHandler();
+        		responseString = httpClient.execute(getOperation, responseHandler, httpContext);
+        	}
+        	
+        	if (responseString != null) {
+        		if (responseString.length() > 0) {
+        			this.responseIsSuccess = true;
+        		}
+        	} else {
+        		if ((responseHandler == null) && (response != null)) {
+        			responseString = this.getStringResponse(response);
+        		}
+        	}
+
         } catch (java.net.SocketTimeoutException e) {
         	exception = e;
         	responseString = null;
@@ -289,7 +396,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String>
     	}
     	else
     	{
-    		httpResponse = callUsingHttpClient(uriToCall);
+    		httpResponse = callUsingHttpClient(uriToCall,httpClientMethodToUse);
     	}
     	
     	return httpResponse;

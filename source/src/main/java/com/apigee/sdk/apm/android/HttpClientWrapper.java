@@ -137,105 +137,107 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 	public String getAppId() {
 		return appIdentification.getApplicationId();
 	}
+	
+	protected void captureRequest(HttpUriRequest request, HttpContext context) throws IOException {
+		try {
+			httpproc.process(request, context);
+		} catch (HttpException e) {
+			throw new ClientProtocolException(e);
+		}
+	}
+
+	protected void captureRequest(HttpRequest request, HttpContext context) throws IOException {
+		try {
+			httpproc.process(request, context);
+		} catch (HttpException e) {
+			throw new ClientProtocolException(e);
+		}
+	}
+
+	protected void captureResponse(HttpResponse response, HttpContext context) throws IOException {
+		try {
+			httpproc.process(response, context);
+		} catch (HttpException e) {
+			throw new ClientProtocolException(e);
+		}
+	}
 
 	@Override
-	public HttpResponse execute(HttpUriRequest arg0) throws IOException,
+	public HttpResponse execute(HttpUriRequest request) throws IOException,
 			ClientProtocolException {
+		return execute(request, new BasicHttpContext());
+	}
 
+	@Override
+	public HttpResponse execute(HttpUriRequest request, HttpContext context)
+			throws IOException, ClientProtocolException {
 		//TODO: should we be using the startTime?
 		//long startTime = System.currentTimeMillis();
 		
 		boolean errorOccurred = false;
 
 		// Pre-Process requests
-		HttpContext context = new BasicHttpContext();
-
-		try {
-			httpproc.process(arg0, context);
-		} catch (HttpException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		captureRequest(request, context);
 
 		HttpResponse response = null;
 		try {
 
-			if (context.getAttribute(ATTR_SKIP_PROCESSING) != null
+			if ((context != null) && (context.getAttribute(ATTR_SKIP_PROCESSING) != null)
 					&& (Boolean) context.getAttribute(ATTR_SKIP_PROCESSING)) {
 				response = (HttpResponse) context
 						.getAttribute(ATTR_OVERRIDDEN_RESPONSE);
 			} else {
-				response = delgatedHttpClientImpl.execute(arg0);
+				response = delgatedHttpClientImpl.execute(request);
 			}
 
 		} catch (ClientProtocolException e) {
 			errorOccurred = true;
-			context.setAttribute(ATTR_DELEGATE_EXCEPTION_OCCURRED, errorOccurred);
-			context.setAttribute(ATTR_DELEGATE_EXCEPTION, e);
-
+			if (context != null) {
+				context.setAttribute(ATTR_DELEGATE_EXCEPTION_OCCURRED, errorOccurred);
+				context.setAttribute(ATTR_DELEGATE_EXCEPTION, e);
+			}
 			throw e;
 		} catch (IOException e) {
 			errorOccurred = true;
-			context.setAttribute(ATTR_DELEGATE_EXCEPTION_OCCURRED, errorOccurred);
-			context.setAttribute(ATTR_DELEGATE_EXCEPTION, e);
+			if (context != null) {
+				context.setAttribute(ATTR_DELEGATE_EXCEPTION_OCCURRED, errorOccurred);
+				context.setAttribute(ATTR_DELEGATE_EXCEPTION, e);
+			}
 			throw e;
 		} finally {
-
-			try {
-				httpproc.process(response, context);
-			} catch (HttpException e) {
-				throw new ClientProtocolException(e);
-			}
+			captureResponse(response, context);
 		}
 
 		return response;
 	}
 
 	@Override
-	public HttpResponse execute(HttpUriRequest arg0, HttpContext arg1)
-			throws IOException, ClientProtocolException {
-		return delgatedHttpClientImpl.execute(arg0, arg1);
-	}
-
-	@Override
-	public HttpResponse execute(HttpHost arg0, HttpRequest arg1)
-			throws IOException, ClientProtocolException {
-		return delgatedHttpClientImpl.execute(arg0, arg1);
-	}
-
-	@Override
-	public <T> T execute(final HttpUriRequest arg0,
-			final ResponseHandler<? extends T> arg1) throws IOException,
+	public <T> T execute(final HttpUriRequest request,
+			final ResponseHandler<? extends T> responseHandler) throws IOException,
 			ClientProtocolException {
-
-		// Pre-Process requests
 		final HttpContext context = new BasicHttpContext();
+		return execute(request, responseHandler, context);
+	}
+
+	@Override
+	public <T> T execute(HttpUriRequest request,
+			final ResponseHandler<? extends T> responseHandler, final HttpContext context)
+			throws IOException, ClientProtocolException {
+		// Pre-Process requests
 
 		ResponseHandler<? extends T> wrappedHandler = new ResponseHandler<T>() {
-
 			@Override
-			public T handleResponse(HttpResponse arg00)
+			public T handleResponse(HttpResponse theResponse)
 					throws ClientProtocolException, IOException {
-
-				try {
-					httpproc.process(arg00, context);
-				} catch (HttpException e) {
-					throw new ClientProtocolException(e);
-				}
-
-				return arg1.handleResponse(arg00);
+				captureResponse(theResponse, context);
+				return responseHandler.handleResponse(theResponse);
 			}
 		};
 
-		try {
-			httpproc.process(arg0, context);
-		} catch (HttpException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		captureRequest(request, context);
 
 		HttpResponse response;
-		if (context.getAttribute(ATTR_SKIP_PROCESSING) != null
+		if ((context != null) && (context.getAttribute(ATTR_SKIP_PROCESSING) != null)
 				&& (Boolean) context.getAttribute(ATTR_SKIP_PROCESSING)) {
 			response = (HttpResponse) context
 					.getAttribute(ATTR_OVERRIDDEN_RESPONSE);
@@ -245,36 +247,96 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 		} else {
 			// TODO: Need to add proper error handling. Really need to put in
 			// the correct wrapper
-			T result = delgatedHttpClientImpl.execute(arg0, wrappedHandler);
+			T result = delgatedHttpClientImpl.execute(request, wrappedHandler);
 			return result;
 		}
 	}
 
 	@Override
-	public HttpResponse execute(HttpHost arg0, HttpRequest arg1,
-			HttpContext arg2) throws IOException, ClientProtocolException {
-		return delgatedHttpClientImpl.execute(arg0, arg1, arg2);
-	}
-
-	@Override
-	public <T> T execute(HttpUriRequest arg0,
-			ResponseHandler<? extends T> arg1, HttpContext arg2)
+	public HttpResponse execute(HttpHost target, HttpRequest request)
 			throws IOException, ClientProtocolException {
-		return delgatedHttpClientImpl.execute(arg0, arg1, arg2);
+		HttpContext context = null;
+		return execute(target, request, context);
 	}
 
 	@Override
-	public <T> T execute(HttpHost arg0, HttpRequest arg1,
-			ResponseHandler<? extends T> arg2) throws IOException,
+	public HttpResponse execute(HttpHost target, HttpRequest request,
+			HttpContext context) throws IOException, ClientProtocolException {
+		
+		boolean errorOccurred = false;
+		
+		if (context == null) {
+			context = new BasicHttpContext();
+		}
+
+		// Pre-Process requests
+		captureRequest(request, context);
+
+		HttpResponse response = null;
+		try {
+			if ((context.getAttribute(ATTR_SKIP_PROCESSING) != null)
+					&& (Boolean) context.getAttribute(ATTR_SKIP_PROCESSING)) {
+				response = (HttpResponse) context
+						.getAttribute(ATTR_OVERRIDDEN_RESPONSE);
+			} else {
+				response = delgatedHttpClientImpl.execute(target, request, context);
+			}
+
+		} catch (ClientProtocolException e) {
+			errorOccurred = true;
+			context.setAttribute(ATTR_DELEGATE_EXCEPTION_OCCURRED, errorOccurred);
+			context.setAttribute(ATTR_DELEGATE_EXCEPTION, e);
+			throw e;
+		} catch (IOException e) {
+			errorOccurred = true;
+			context.setAttribute(ATTR_DELEGATE_EXCEPTION_OCCURRED, errorOccurred);
+			context.setAttribute(ATTR_DELEGATE_EXCEPTION, e);
+			throw e;
+		} finally {
+			captureResponse(response, context);
+		}
+
+		return response;
+	}
+
+
+	@Override
+	public <T> T execute(HttpHost target, HttpRequest request,
+			ResponseHandler<? extends T> responseHandler) throws IOException,
 			ClientProtocolException {
-		return delgatedHttpClientImpl.execute(arg0, arg1, arg2);
+		HttpContext context = new BasicHttpContext();
+		return execute(target, request, responseHandler, context);
 	}
 
 	@Override
-	public <T> T execute(HttpHost arg0, HttpRequest arg1,
-			final ResponseHandler<? extends T> arg2, HttpContext arg3)
+	public <T> T execute(HttpHost target, HttpRequest request,
+			final ResponseHandler<? extends T> responseHandler, final HttpContext context)
 			throws IOException, ClientProtocolException {
-		return delgatedHttpClientImpl.execute(arg0, arg1, arg2, arg3);
+		ResponseHandler<? extends T> wrappedHandler = new ResponseHandler<T>() {
+			@Override
+			public T handleResponse(HttpResponse theResponse)
+					throws ClientProtocolException, IOException {
+				captureResponse(theResponse, context);
+				return responseHandler.handleResponse(theResponse);
+			}
+		};
+
+		captureRequest(request, context);
+
+		HttpResponse response;
+		if ((context != null) && (context.getAttribute(ATTR_SKIP_PROCESSING) != null)
+				&& (Boolean) context.getAttribute(ATTR_SKIP_PROCESSING)) {
+			response = (HttpResponse) context
+					.getAttribute(ATTR_OVERRIDDEN_RESPONSE);
+			T result;
+			result = wrappedHandler.handleResponse(response);
+			return result;
+		} else {
+			// TODO: Need to add proper error handling. Really need to put in
+			// the correct wrapper
+			T result = delgatedHttpClientImpl.execute(target, request, wrappedHandler, context);
+			return result;
+		}
 	}
 
 	@Override
