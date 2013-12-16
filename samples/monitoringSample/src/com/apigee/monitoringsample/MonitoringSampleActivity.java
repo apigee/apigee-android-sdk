@@ -40,6 +40,7 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 	private String[] listErrorMessages;
 	private String[] listUrls;
 	private MonitoringClient monitoringClient;
+	private int httpClientMethodToUse;
 
 	
 	@Override
@@ -51,6 +52,7 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 		
 		loggingLevelIndex = 0;
 		errorLevelIndex = 0;
+		httpClientMethodToUse = 0;
 		
     	seekBarLogLevel = (SeekBar) activity.findViewById(R.id.seekBarLogLevel);
     	seekBarErrorLevel = (SeekBar) activity.findViewById(R.id.seekBarErrorLevel);
@@ -269,9 +271,17 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 	        
 	        Log.d(TAG_LOGGING, "making call to " + urlAsString);
 	        
-    		HttpRequestTask httpTask = new HttpRequestTask("HttpURLConnection",6000);  // timeout in milliseconds
+	        String httpClient = "HttpClient";
+	        //String httpUrlConnection = "HttpURLConnection";
+	        String mechanismToUse = httpClient;
+	        
+    		HttpRequestTask httpTask = new HttpRequestTask(mechanismToUse,6000,httpClientMethodToUse);  // timeout in milliseconds
     		httpTask.setNetworkResponseListener(this);
     		httpTask.execute(urlString);
+    		++httpClientMethodToUse;
+    		if (httpClientMethodToUse > 7) {
+    			httpClientMethodToUse = 0;
+    		}
 	    }
 	}
 
@@ -286,8 +296,18 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 		Log.d(TAG_LOGGING,"network response received successfully");
 	}
 	
-	public void notifyNetworkResponseFailure(Exception exception,String response) {
-		Log.e(TAG_LOGGING,"error: " + exception.getLocalizedMessage() + ";" + response);
+	public void notifyNetworkResponseFailure(Exception exception, String response) {
+		if (exception != null) {
+			if (response != null) {
+				Log.e(TAG_LOGGING,"error: " + exception.getLocalizedMessage() + ";" + response);
+			} else {
+				Log.e(TAG_LOGGING,"error: " + exception.getLocalizedMessage());
+			}
+		} else {
+			if (response != null) {
+				Log.e(TAG_LOGGING,"error: (no exception given); " + response);
+			}
+		}
 	}
 
 
