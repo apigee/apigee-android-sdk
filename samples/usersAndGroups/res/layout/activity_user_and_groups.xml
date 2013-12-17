@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".UsersAndGroupsHomeActivity" >
+
+    <Button
+        android:id="@+id/displayAddUserForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/displayUserList"
+        android:layout_marginLeft="33dp"
+        android:onClick="displayAddUserForm"
+        android:text="@string/displayAddUserForm" />
+
+    <Button
+        android:id="@+id/displayAddGroupForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/displayGroupList"
+        android:layout_marginLeft="33dp"
+        android:onClick="displayAddGroupForm"
+        android:text="@string/displayAddGroupForm" />
+
+    <Button
+        android:id="@+id/displayUserList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/displayAddUserForm"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="64dp"
+        android:onClick="displayUserList"
+        android:text="@string/displayUserList" />
+
+    <Button
+        android:id="@+id/displayGroupList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/displayAddGroupForm"
+        android:layout_below="@+id/displayAddUserForm"
+        android:layout_marginTop="17dp"
+        android:onClick="displayGroupList"
+        android:text="@string/displayGroupList" />
+
+<!--     <Button
+        android:id="@+id/displayGroupsForUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/displayAddGroupForm"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp"
+        android:onClick="displayGroupsForUser"
+        android:text="@string/displayGroupsForUser" />
+ -->
+
+    <EditText
+        android:id="@+id/homeUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addUserToGroup"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="@string/userName" />
+
+    <Button
+        android:id="@+id/addUserToGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/displayAddGroupForm"
+        android:layout_below="@+id/displayAddGroupForm"
+        android:layout_marginTop="18dp"
+        android:onClick="addUserToGroup"
+        android:text="@string/addUserToGroup" />
+
+</RelativeLayout>

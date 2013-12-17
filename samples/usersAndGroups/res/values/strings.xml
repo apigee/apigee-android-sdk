@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Users and Groups</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_go_home">Home</string>
+    
+    <string name="displayUserList">View User List</string>
+    <string name="displayAddUserForm">Add a User</string>    
+    <string name="displayGroupList">View Group List</string>
+    <string name="displayAddGroupForm">Add a Group</string>
+    <string name="displayGroupsForUser">Display Groups for User</string>    
+    <string name="title_groups_for_user">Groups for User</string>
+    
+    <string name="action_add_user">Add User</string>
+    <string name="title_activity_new_user">Add a User</string>
+    
+    <string name="action_list_users">List Users</string>
+    <string name="title_activity_list_users">Users</string>
+
+    <string name="action_add_group">Add Group</string>
+    <string name="title_activity_new_group">Add a Group</string>
+    
+    <string name="action_list_groups">List Groups</string>
+    <string name="title_activity_list_groups">Groups</string>
+    <string name="groupListError"></string>
+    
+    <string name="textUserName">User Name</string>
+    <string name="userName">Enter a user name</string>
+    <string name="userNameError"></string>    
+
+    <string name="textName">Name</string>
+    <string name="name">Enter a display name</string>
+    
+    <string name="textEmail">Email</string>
+    <string name="email">Enter an email address</string>
+    
+    <string name="textPassword">Password</string>
+    <string name="password">Enter a password</string>
+    
+    <string name="create">Add User</string>
+
+    <string name="textGroupTitle">Display Name</string>
+    <string name="groupTitle">Enter a display name</string>
+    <string name="groupTitleError"></string>    
+
+    <string name="textGroupPath">Group Path</string>
+    <string name="groupPath">Enter a path</string>
+    
+    <string name="userForGroups">Groups for</string>
+    <string name="userGroupListMessage"></string>    
+ 
+    <string name="groupsSpinner">Select group</string>
+    <string name="addUserToGroup">Add User to Group</string>
+    <string name="title_add_user_to_group">Add User to Group</string>
+    <string name="addUserToGroupMessage"></string>
+    
+    <string name="createGroup">Create Group</string>
+
+    <string name="welcome">Welcome!</string>
+    
+</resources>
