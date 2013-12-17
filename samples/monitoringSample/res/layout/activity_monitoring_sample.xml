@@ -5,6 +5,15 @@
     android:orientation="vertical"
     tools:context=".MonitoringSampleActivity" >
 
+
+<CheckBox
+    android:id="@+id/checkBoxPause"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="Pause Monitoring"/>
+    
 	<TextView
     	android:id="@+id/textViewCrashReporting"
     	android:layout_width="match_parent"

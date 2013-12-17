@@ -37,4 +37,34 @@ public class MonitoringSampleApplication extends Application {
 	{
 		return this.apigeeClient;
 	}
+	
+	public void onTrimMemory(int level)
+	{
+		String levelAsString = null;
+		
+		if (level == TRIM_MEMORY_COMPLETE) {
+			levelAsString = "TRIM_MEMORY_COMPLETE";
+		} else if (level == TRIM_MEMORY_MODERATE) {
+			levelAsString = "TRIM_MEMORY_MODERATE";
+		} else if (level == TRIM_MEMORY_BACKGROUND) {
+			levelAsString = "TRIM_MEMORY_BACKGROUND";
+		} else if (level == TRIM_MEMORY_UI_HIDDEN) {
+			levelAsString = "TRIM_MEMORY_UI_HIDDEN";
+		} else if (level == TRIM_MEMORY_RUNNING_CRITICAL) {
+			levelAsString = "TRIM_MEMORY_RUNNING_CRITICAL";
+		} else if (level == TRIM_MEMORY_RUNNING_LOW) {
+			levelAsString = "TRIM_MEMORY_RUNNING_LOW";
+		} else if (level == TRIM_MEMORY_RUNNING_MODERATE) {
+			levelAsString = "TRIM_MEMORY_RUNNING_MODERATE";
+		} else {
+			levelAsString = "other/unrecognized trim memory level";
+		}
+		 
+		Log.w("MSA_MEMORY", "onTrimMemory: " + levelAsString);
+	}
+	
+	public void onLowMemory()
+	{
+		Log.w("MSA_MEMORY", "onLowMemory");
+	}
 }
