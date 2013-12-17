@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 //import android.util.Log;
 
@@ -30,6 +31,7 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 	private TextView textViewLogLevel;
 	private TextView textViewErrorLevel;
 	private SeekBar seekBarLogLevel;
+	private CheckBox checkBoxPaused;
 	private SeekBar seekBarErrorLevel;
 	private Object connection;
 	private String urlString;
@@ -64,6 +66,8 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
     	
     	textViewLogLevel = (TextView) activity.findViewById(R.id.textViewLogLevel);
     	textViewErrorLevel = (TextView) activity.findViewById(R.id.textViewErrorLevel);
+    	
+    	checkBoxPaused = (CheckBox) activity.findViewById(R.id.checkBoxPause);
     	
     	updateLogLevelIndicator();
     	updateErrorLevelIndicator();
@@ -149,6 +153,13 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
     		@Override
     		public void onClick(View v) {
     			captureNetworkPerformanceMetricsPressed();
+    		}
+    	});
+    	
+    	checkBoxPaused.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View v) {
+    			monitoringPauseCheckBoxToggled();
     		}
     	});
 
@@ -310,5 +321,14 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 		}
 	}
 
+	public void monitoringPauseCheckBoxToggled() {
+		if (this.checkBoxPaused.isChecked()) {
+			Log.i(TAG_LOGGING, "pausing monitoring");
+			this.monitoringClient.pause();
+		} else {
+			Log.i(TAG_LOGGING, "resuming monitoring");
+			this.monitoringClient.resume();
+		}
+	}
 
 }
