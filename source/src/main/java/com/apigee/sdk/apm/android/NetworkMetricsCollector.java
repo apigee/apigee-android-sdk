@@ -9,7 +9,7 @@ import java.util.Map;
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
 
-public class MetricsCollector implements MetricsCollectorService {
+public class NetworkMetricsCollector implements NetworkMetricsCollectorService {
 
 	public final static int MAX_NUM_METRICS = 100;
 
@@ -20,7 +20,7 @@ public class MetricsCollector implements MetricsCollectorService {
 		return metrics;
 	}
 
-	public MetricsCollector(ApplicationConfigurationService configLoader) {
+	public NetworkMetricsCollector(ApplicationConfigurationService configLoader) {
 		this.configLoader = configLoader;
 		initializeMetrics();
 	}
@@ -33,6 +33,14 @@ public class MetricsCollector implements MetricsCollectorService {
 	public void analyze(String url, long start, long end,
 			boolean error,
 			Map<String,Object> httpHeaders) {
+		
+		// is monitoring paused?
+		MonitoringClient client = MonitoringClient.getInstance();
+		if (client != null) {
+			if (client.isPaused()) {
+				return;
+			}
+		}
 
 		long latency = end - start;
 		
@@ -82,6 +90,9 @@ public class MetricsCollector implements MetricsCollectorService {
 		}
 	}
 
+	/**
+	 * Discards any metrics that have already been collected.
+	 */
 	public void clear() {
 		if (metrics != null) {
 			synchronized(metrics) {

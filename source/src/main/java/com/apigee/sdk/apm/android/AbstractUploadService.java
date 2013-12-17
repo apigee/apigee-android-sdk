@@ -38,7 +38,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	private Context appActivity;
 	private AppIdentification appIdentification;
 	private AndroidLog logger;
-	private MetricsCollectorService httpMetrics;
+	private NetworkMetricsCollectorService httpMetrics;
 	private ApplicationConfigurationService configurationService;
 	private SessionManager sessionManager;
 	private ObjectMapper objectMapper;
@@ -48,7 +48,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	protected AbstractUploadService(Context appActivity,
 			AppIdentification appIdentification,
 			AndroidLog log,
-			MetricsCollectorService httpMetrics,
+			NetworkMetricsCollectorService httpMetrics,
 			ApplicationConfigurationService configService,
 			SessionManager sessionManager,
 			MonitoringClient monitoringClient) {
@@ -61,6 +61,19 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 		this.objectMapper = new ObjectMapper();
 		this.monitoringClient = monitoringClient;
 		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+	}
+	
+	/**
+	 * Discards all log records and network performance metrics
+	 */
+	public void clear() {
+		if (logger != null) {
+			logger.clear();
+		}
+		
+		if (httpMetrics != null) {
+			httpMetrics.clear();
+		}
 	}
 
 	/**

@@ -118,6 +118,14 @@ public class AndroidLog implements Logger {
 			return;
 		}
 		
+		// is monitoring paused?
+		MonitoringClient client = MonitoringClient.getInstance();
+		if (client != null) {
+			if (client.isPaused()) {
+				return;
+			}
+		}
+		
 		ClientLog logRecord = new ClientLog();
 		logRecord.setTag(tag);
 
@@ -177,6 +185,14 @@ public class AndroidLog implements Logger {
 				+ "] " + msg;
 	}
 
+	/**
+	 * Discard all existing log records
+	 */
+	public synchronized void clear() {
+		if (log != null) {
+			log.clear();
+		}
+	}
 
 	public synchronized List<ClientLog> flush() {
 

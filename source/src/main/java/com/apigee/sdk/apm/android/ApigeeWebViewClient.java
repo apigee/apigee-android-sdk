@@ -40,7 +40,7 @@ public class ApigeeWebViewClient extends WebViewClient
 				MonitoringClient monitoringClient = MonitoringClient.getInstance();
 		
 				if( (monitoringClient != null) && monitoringClient.isInitialized() ) {
-					MetricsCollectorService metricsCollectorService = monitoringClient.getMetricsCollectorService();
+					NetworkMetricsCollectorService metricsCollectorService = monitoringClient.getMetricsCollectorService();
 					if( metricsCollectorService != null ) {
 						metricsCollectorService.analyze(url,
 								new Long(startTimeMillis),

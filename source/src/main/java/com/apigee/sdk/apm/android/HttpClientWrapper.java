@@ -38,7 +38,7 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 	
 	private HttpClient delgatedHttpClientImpl;
 	private AppIdentification appIdentification;
-	private MetricsCollectorService metricsCollector;
+	private NetworkMetricsCollectorService metricsCollector;
 	private ApplicationConfigurationService webManagerClientConfigLoader;
 
 	BasicHttpProcessor httpproc = new BasicHttpProcessor();
@@ -50,7 +50,7 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 	
 	// Added constructor to make this look closer to Apache's HttpClient constructors
 	public HttpClientWrapper(AppIdentification appIdentification,
-			MetricsCollectorService metricsCollector,
+			NetworkMetricsCollectorService metricsCollector,
 			ApplicationConfigurationService webManagerClientConfigLoader)
 	{
 		
@@ -61,7 +61,7 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 
 	public HttpClientWrapper(HttpClient delegateClient,
 			AppIdentification appIdentification,
-			MetricsCollectorService metricsCollector,
+			NetworkMetricsCollectorService metricsCollector,
 			ApplicationConfigurationService webManagerClientConfigLoader) {
 		initialize(appIdentification, metricsCollector, webManagerClientConfigLoader,
 				delegateClient);
@@ -105,7 +105,7 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 	}
 
 	protected void initialize(AppIdentification appIdentification,
-			MetricsCollectorService metricsCollector,
+			NetworkMetricsCollectorService metricsCollector,
 			ApplicationConfigurationService webManagerClientConfigLoader,
 			HttpClient delegateClient) {
 		this.appIdentification = appIdentification;
@@ -130,7 +130,7 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 		return webManagerClientConfigLoader;
 	}
 
-	public MetricsCollectorService getMetricsCollector() {
+	public NetworkMetricsCollectorService getMetricsCollector() {
 		return metricsCollector;
 	}
 
