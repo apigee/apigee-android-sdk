@@ -1,10 +1,6 @@
 package com.apigee.sdk.apm.android;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.http.HttpException;
@@ -28,7 +24,7 @@ import android.net.http.AndroidHttpClient;
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.http.impl.client.cache.CachingHttpClient;
 
-public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
+public class HttpClientWrapper implements HttpClient {
 
 	public static final String ATTR_DELEGATE_EXCEPTION          = "delegate_exception";
 	public static final String ATTR_DELEGATE_EXCEPTION_OCCURRED = "delegate_exception_occurred";
@@ -79,10 +75,6 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 		 * In this section, add interceptors
 		 */
 
-		GatewayInterceptor apigeeInterceptor = new GatewayInterceptor(webManagerClientConfigLoader);
-		
-		httpproc.addInterceptor(apigeeInterceptor);		
-		
 		PerformanceMonitoringInterceptor performanceMonitoringInterceptor = new PerformanceMonitoringInterceptor();
 
 		performanceMonitoringInterceptor
@@ -95,15 +87,6 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 		return httpproc;
 	}
 	
-	protected Map<String,String> getHostMapping()
-	{
-	
-		Map<String,String> hostMap = new HashMap<String,String>();
-		hostMap.put("karlunho.wordpress.com", "wordpress-helloworldtest.apigee.com");
-		
-		return hostMap;
-	}
-
 	protected void initialize(AppIdentification appIdentification,
 			NetworkMetricsCollectorService metricsCollector,
 			ApplicationConfigurationService webManagerClientConfigLoader,
@@ -354,47 +337,6 @@ public class HttpClientWrapper implements HttpClient, PropertyChangeListener {
 	 */
 	public HttpClient getDelgatedHttpClientImpl() {
 		return delgatedHttpClientImpl;
-	}
-
-	@Override
-	/**
-	 * Still in progress
-	 */
-	public void propertyChange(PropertyChangeEvent arg0) {
-		// Basically sets each of the wrapped HTTP client parameters if a
-		// delegate HTTP Client Impl is
-		// set
-
-		if (delgatedHttpClientImpl != null) {
-
-			// ClientConnectionManager connectionManager =
-			// delgatedHttpClientImpl.getConnectionManager();
-			//
-			// if (arg0.getPropertyName().equals("http.socket.timeout"))
-			// {
-			// //TODO : Need a mechanism to set the http socket timeout
-			//
-			// connectionManager.
-			// }
-			//
-			//
-			// if ( connectionManager instanceof ThreadSafeClientConnManager)
-			// {
-			// ThreadSafeClientConnManager manager =
-			// (ThreadSafeClientConnManager)connectionManager;
-			//
-			// delgatedHttpClientImpl.
-			// }
-
-			// Need to re-initialize connection manager
-
-			// DefaultHttpClient client = new
-
-			if (arg0.getPropertyName().startsWith("http")) {
-				// Need to re-initialize http client
-				initializeHttpClient(null);
-			}
-		}
 	}
 
 	/**
