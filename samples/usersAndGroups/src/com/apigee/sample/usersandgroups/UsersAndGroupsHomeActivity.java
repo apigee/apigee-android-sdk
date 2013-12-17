@@ -24,8 +24,8 @@ import com.apigee.sdk.ApigeeClient;
  */
 public class UsersAndGroupsHomeActivity extends Activity {
 	
-	private static final String ORGNAME = "steventraut"; // <-- Put your username here!!!
-    private static final String APPNAME = "mynewapp";
+	private static final String ORGNAME = "<your_org_name>"; // <-- Put your org name here!!!
+    private static final String APPNAME = "sandbox";
 	
     private UsersAndGroupsApplication usersGroupsApp;
     TextView textUserId;
