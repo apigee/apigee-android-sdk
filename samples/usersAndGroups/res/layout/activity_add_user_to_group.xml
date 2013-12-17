@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".AddUserToGroupActivity" >
+
+    <TextView
+        android:id="@+id/textAddUserToGroupMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/groupsSpinner"
+        android:layout_marginTop="0dp"
+        android:text="@string/addUserToGroupMessage" />
+    
+    <TextView
+        android:id="@+id/textUserGroupListMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:textSize="12sp"
+        android:text="@string/userGroupListMessage" />
+
+    <ListView
+        android:id="@+id/groupsForUserListview"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:layout_alignLeft="@+id/textAddUserToGroupMessage"
+        android:layout_marginTop="200dp" >
+    </ListView>
+
+    <Button
+        android:id="@+id/addUserToGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/groupsForUserListview"
+        android:layout_below="@+id/textUserGroupListMessage"
+        android:layout_marginTop="99dp"
+        android:onClick="addUserToGroup"
+        android:text="@string/addUserToGroup" />
+
+    <Spinner
+        android:id="@+id/groupsSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/addUserToGroup"
+        android:layout_alignLeft="@+id/addUserToGroup"
+        android:layout_marginBottom="49dp"
+        android:text="@string/groupsSpinner" />
+
+    <TextView
+        android:id="@+id/textUserForGroups"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textAddUserToGroupMessage"
+        android:layout_alignLeft="@+id/textAddUserToGroupMessage"
+        android:text="@string/userForGroups" />
+
+</RelativeLayout>

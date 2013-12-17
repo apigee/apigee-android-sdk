@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".NewGroupActivity" >
+
+    <TextView
+        android:id="@+id/textGroupTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/groupTitle"
+        android:layout_alignLeft="@+id/groupTitle"
+        android:layout_marginTop="30dp"
+        android:text="@string/textGroupTitle" />
+
+    <EditText
+        android:id="@+id/groupTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textGroupTitleError"
+        android:ems="10"
+        android:hint="@string/groupTitle" >
+        <requestFocus />
+	</EditText>
+
+    <TextView
+        android:id="@+id/textGroupTitleError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textGroupPath"
+        android:layout_alignLeft="@+id/groupTitle"
+        android:layout_marginTop="0dp"
+        android:textColor="#FF0000"
+        android:textSize="12sp"
+        android:text="@string/groupTitleError" />
+    
+    <TextView
+        android:id="@+id/textGroupPath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/groupPath"
+        android:layout_alignLeft="@id/textGroupTitle"
+        android:layout_marginTop="20dp"
+        android:text="@string/textGroupPath" />
+
+    <EditText
+        android:id="@+id/groupPath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/groupCreate"
+        android:layout_alignLeft="@+id/textGroupPath"
+        android:ems="10"
+        android:hint="@string/groupPath" />
+
+    <Button
+        android:id="@+id/groupCreate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/groupPath"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="createGroup"
+        android:text="@string/createGroup" />
+
+</RelativeLayout>
