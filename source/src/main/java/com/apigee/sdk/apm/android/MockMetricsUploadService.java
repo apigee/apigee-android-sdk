@@ -33,4 +33,8 @@ public class MockMetricsUploadService implements MetricsUploadService {
 		// we do nothing because we're just a mock class
 		this.listListeners = listListeners;
 	}
+	
+	public void clear() {
+		
+	}
 }

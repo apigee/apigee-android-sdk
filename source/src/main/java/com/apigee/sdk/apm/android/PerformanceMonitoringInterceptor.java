@@ -38,13 +38,13 @@ public class PerformanceMonitoringInterceptor implements
 	public static final String ATTR_REQ_START_TIME = "RequestStartTime";
 	public static final String ATTR_URI            = "URI";
 	
-	MetricsCollectorService metricsCollector;
+	NetworkMetricsCollectorService metricsCollector;
 
-	public MetricsCollectorService getMetricsCollector() {
+	public NetworkMetricsCollectorService getMetricsCollector() {
 		return metricsCollector;
 	}
 
-	public void setMetricsCollector(MetricsCollectorService metricsCollector) {
+	public void setMetricsCollector(NetworkMetricsCollectorService metricsCollector) {
 		this.metricsCollector = metricsCollector;
 	}
 

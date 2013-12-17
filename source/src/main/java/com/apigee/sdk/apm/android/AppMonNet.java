@@ -85,7 +85,7 @@ public class AppMonNet {
 		MonitoringClient client = MonitoringClient.getInstance();
 		
 		if( (client != null) && client.isInitialized() ) {
-			MetricsCollectorService metricsCollectorService = client.getMetricsCollectorService();
+			NetworkMetricsCollectorService metricsCollectorService = client.getMetricsCollectorService();
 			if( metricsCollectorService != null ) {
 				metricsCollectorService.analyze(url,
 						new Long(startTimeMillis),

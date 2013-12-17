@@ -66,7 +66,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	private HttpClient httpClient;
 	private HttpClient originalHttpClient;
 
-	private MetricsCollectorService collector;
+	private NetworkMetricsCollectorService collector;
 	private CompositeConfigurationServiceImpl loader;
 	private MetricsUploadService uploadService;
 	private DefaultAndroidLog defaultLogger;
@@ -79,6 +79,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	
 	private boolean isActive;
 	private boolean isInitialized = false;
+	private boolean monitoringPaused;
 	
 	private boolean enableAutoUpload;
 	private boolean crashReportingEnabled;
@@ -170,6 +171,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 
 		this.isActive = false;
 		this.isInitialized = false;
+		this.monitoringPaused = false;
 
 		this.listListeners = new ArrayList<UploadListener>();
 
@@ -230,7 +232,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	{
 		log = new AndroidLog(loader);
 		
-		collector = new MetricsCollector(loader);
+		collector = new NetworkMetricsCollector(loader);
 
 		httpClient = new HttpClientWrapper(originalHttpClient, appIdentification, collector, loader);
 					
@@ -317,23 +319,83 @@ public class MonitoringClient implements SessionTimeoutListener {
 	public String getMetricsUploadURL() {
 		return getBaseServerURL() + "/apm/apmMetrics";
 	}
-
-	public void resumeAgent() {
-		if (isInitialized && !isActive) {
-			log.i(ClientLog.TAG_MONITORING_CLIENT, ClientLog.EVENT_RESUME_AGENT);
-			isActive = true;
-			sessionManager.resume();
+	
+	/**
+	 * Discards all log records and network performance metrics
+	 */
+	public void discardAllMetrics() {
+		if (uploadService != null) {
+			Log.v(ClientLog.TAG_MONITORING_CLIENT, "Discarding all metrics");
+			uploadService.clear();
+		}
+	}
+	
+	/**
+	 * Determine if monitoring is currently paused
+	 * @return boolean indicating whether monitoring is currently paused
+	 */
+	public boolean isPaused() {
+		return monitoringPaused;
+	}
+	
+	/**
+	 * Pauses monitoring. If monitoring is already paused when pause is called, there is no change to
+	 * monitoring functionality, but a log message is generated.
+	 */
+	public void pause() {
+		if (isInitialized) {
+			if (!isPaused()) {
+				Log.i(ClientLog.TAG_MONITORING_CLIENT, ClientLog.EVENT_PAUSE_AGENT);
+				monitoringPaused = true;
+				cancelTimer();
+			
+				// discard all outstanding log records and network metrics
+				discardAllMetrics();
+				
+			} else {
+				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Pause called when monitoring is already paused");
+			}
+		} else {
+			// we've never been initialized, so there's nothing to do
+		}
+	}
+	
+	/**
+	 * Resumes monitoring after being paused. If monitoring is not paused when resume is called, there
+	 * is no change to monitoring functionality, but a log message is generated.
+	 */
+	public void resume() {
+		if (isInitialized) {
+			if (isPaused()) {
+				monitoringPaused = false;
+				Log.i(ClientLog.TAG_MONITORING_CLIENT, ClientLog.EVENT_RESUME_AGENT);
+				establishTimer();
+			} else {
+				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Resume called when monitoring is not paused");
+			}
+		} else {
+			// we've never been initialized, so there's nothing to do
 		}
 	}
 
+	/**
+	 * Resumes monitoring after being paused. If monitoring is not paused when resume is called, there
+	 * is no change to monitoring functionality, but a log message is generated.
+	 * @deprecated
+	 * @see #resume()
+	 */
+	public void resumeAgent() {
+		resume();
+	}
+
+	/**
+	 * Pauses monitoring. If monitoring is already paused when pause is called, there is no change to
+	 * monitoring functionality, but a log message is generated.
+	 * @deprecated
+	 * @see #pause()
+	 */
 	public void pauseAgent() {
-		if (isInitialized && isActive) {
-			log.i(ClientLog.TAG_MONITORING_CLIENT, ClientLog.EVENT_PAUSE_AGENT);
-			//uploadService.uploadData();
-			//sExecutor.execute(new UploadDataTask());
-			isActive = false;
-			sessionManager.pause();
-		}
+		pause();
 	}
 	
 	public String putOrPostString(String httpMethod, String body, String urlAsString, String contentType) {
@@ -478,8 +540,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 					if (isActive && enableAutoUpload) {
 						ForcedUploadDataTask uploadDataTask = new ForcedUploadDataTask(monitoringClient);
 						uploadDataTask.run();
-						
-						initiateSendLoop();
+						establishTimer();
 					}
 				}
 			});
@@ -494,42 +555,51 @@ public class MonitoringClient implements SessionTimeoutListener {
 		
 		return success;
 	}
-
 	
-	// initiate Send Loop is done from the main thread. The logic should be:
-	/*
-	 * 1. Check to see that the configuration is loaded
-	 * 2. Check to see if there is already an task on the thread queue to upload data
-	 * 3. If not, put data onto the thread queue
+	/**
+	 * Cancels any outstanding upload requests that are set up with our timer mechanism
 	 */
-	private void initiateSendLoop() {
-
+	protected void cancelTimer() {
 		if (null != sendMetricsHandler) {
-			sendMetricsHandler.removeMessages(0);
+			sendMetricsHandler.removeCallbacksAndMessages(null);
+		}
+	}
+
+	/**
+	 * Sets up timer mechanism so that upload will occur at the next scheduled interval
+	 */
+	protected void establishTimer() {
+		if (null != sendMetricsHandler) {
+			sendMetricsHandler.removeCallbacksAndMessages(null);
 		} else {
 			sendMetricsHandler = new Handler(appActivity.getMainLooper());
 		}
 
 		final MonitoringClient client = this;
+		final long uploadIntervalMillis = loader.getConfigurations().getAgentUploadIntervalInSeconds() * 1000;		
 		
 		Runnable runnable = new Runnable() {
 
 			public void run() {
 				
-				if(isInitialized && isActive)
+				if (isInitialized && isActive)
 				{
-					sExecutor.execute(new UploadDataTask(client));
-					long uiMillis = loader.getConfigurations().getAgentUploadIntervalInSeconds() * 1000;		
-					sendMetricsHandler.postDelayed(this, uiMillis);
+					if (!client.isPaused()) {
+						sExecutor.execute(new UploadDataTask(client));
+						
+						// schedule the upload for the next interval
+						sendMetricsHandler.postDelayed(this, uploadIntervalMillis);
+					} else {
+						// monitoring is paused and our send loop will terminate on its own
+					}
 				} else {
 					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Configuration was not able to initialize. Not initiating metrics send loop");
 				}
-				
 			}
 		};
 
 		// Start the automatic sending of data
-		sendMetricsHandler.postDelayed(runnable, loader.getConfigurations().getAgentUploadIntervalInSeconds() * 1000);
+		sendMetricsHandler.postDelayed(runnable, uploadIntervalMillis);
 
 		Log.v(ClientLog.TAG_MONITORING_CLIENT, "Initiating data to be sent on a regular interval");
 	}
@@ -777,7 +847,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return loader;
 	}
 
-	public MetricsCollectorService getMetricsCollectorService() {
+	public NetworkMetricsCollectorService getMetricsCollectorService() {
 		return collector;
 	}
 	

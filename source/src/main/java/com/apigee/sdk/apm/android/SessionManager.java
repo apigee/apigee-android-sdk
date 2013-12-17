@@ -93,19 +93,25 @@ public class SessionManager {
 	}
 	
 	public synchronized void onUserInteraction() {
-		if( this.isPaused ) {
+		if (this.isPaused) {
 			this.isPaused = false;
+			resetSessionTimeoutTimer();
 		}
-		resetSessionTimeoutTimer();
 	}
 	
 	public synchronized void pause() {
-		this.isPaused = true;
+		if (!this.isPaused) {
+			this.isPaused = true;
+		}
 	}
 	
 	public synchronized void resume() {
 		this.isPaused = false;
 		resetSessionTimeoutTimer();
+	}
+	
+	public synchronized boolean isPaused() {
+		return this.isPaused;
 	}
 
 }

@@ -18,7 +18,7 @@ public class UploadService extends AbstractUploadService implements MetricsUploa
 	public UploadService(MonitoringClient monitoringClient,
 			Context appActivity,
 			AppIdentification appIdentification, AndroidLog log,
-			MetricsCollectorService httpMetrics,
+			NetworkMetricsCollectorService httpMetrics,
 			ApplicationConfigurationService configService, SessionManager sessionManager) {
 		
 		super(appActivity, appIdentification, log, httpMetrics, configService, sessionManager,monitoringClient);
@@ -62,6 +62,11 @@ public class UploadService extends AbstractUploadService implements MetricsUploa
 		if (monitoringDisabled) {
 			Log.v(ClientLog.TAG_MONITORING_CLIENT,
 					"Not sending data app is inactive");
+			return false;
+		}
+		
+		if (this.monitoringClient.isPaused()) {
+			Log.v(ClientLog.TAG_MONITORING_CLIENT, "Not sending data -- monitoring is paused");
 			return false;
 		}
 

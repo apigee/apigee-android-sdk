@@ -42,7 +42,7 @@ public class ApigeeHttpsURLConnection extends HttpsURLConnection
 			
 			Map<String,Object> httpHeaders = HttpUrlConnectionUtils.captureHttpHeaders(this);
 
-			MetricsCollectorService metricsCollectorService = monitoringClient.getMetricsCollectorService();
+			NetworkMetricsCollectorService metricsCollectorService = monitoringClient.getMetricsCollectorService();
 			if( metricsCollectorService != null ) {
 				metricsCollectorService.analyze(urlAsString,
 						new Long(startTimeMillis),
