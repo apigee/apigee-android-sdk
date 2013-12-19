@@ -105,14 +105,12 @@ public class UsersListViewActivity extends Activity {
 		                					user.getStringProperty("username");
 		                			adapter.add(userName);
 		                		}
-		                		adapter.notifyDataSetChanged();	 
 		                	// If there isn't any user data in the response, 
 		                	// display a message.
 	                		} else {
-	                			usersListErrorMessage.setText("No users to display. " +
-	                					"Use the menu to add some.");
-	                			return;	                			
+	                			adapter.add("No users to display.");
 	                		}
+	                		adapter.notifyDataSetChanged();	 
 	                    // The response might be null for various reasons, including
 	                	// an improperly initialized ApigeeClient or permissions on the
 	                	// server-side application that are too restrictive.

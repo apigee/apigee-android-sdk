@@ -52,12 +52,4 @@
         android:layout_marginBottom="49dp"
         android:text="@string/groupsSpinner" />
 
-    <TextView
-        android:id="@+id/textUserForGroups"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textAddUserToGroupMessage"
-        android:layout_alignLeft="@+id/textAddUserToGroupMessage"
-        android:text="@string/userForGroups" />
-
 </RelativeLayout>
