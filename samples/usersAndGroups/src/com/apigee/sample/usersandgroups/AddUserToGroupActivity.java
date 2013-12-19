@@ -41,7 +41,6 @@ public class AddUserToGroupActivity extends Activity {
 	
 	// Handles on widgets in the UI.
 	private TextView addUserToGroupMessage = null;
-	private TextView userGroupListMessage = null;
 	Spinner groupsSpinner = null;
 
 	// Variables to hold data needed to make the request.
@@ -60,7 +59,6 @@ public class AddUserToGroupActivity extends Activity {
 
 		// Bind UI widgets to variables in this code.
 		addUserToGroupMessage = (TextView) findViewById(R.id.textAddUserToGroupMessage);
-		userGroupListMessage = (TextView) findViewById(R.id.textUserGroupListMessage);
 		groupsSpinner = (Spinner) findViewById(R.id.groupsSpinner);
 
 		// Get the Apigee data client for interacting with the application.
@@ -124,17 +122,16 @@ public class AddUserToGroupActivity extends Activity {
 									Entity group = groups.get(j);
 									String groupTitle = group
 											.getStringProperty("title");
-									adapter.add(groupTitle);
-									adapter.notifyDataSetChanged();
+    	                			if (groupTitle != null){
+    	                				adapter.add(groupTitle);		                				
+    	                			}
 								}
 		                	// If there isn't any group data in the response, 
 		                	// display a message.
 							} else {
-								addUserToGroupMessage
-										.setText("No groups to display. "
-												+ "Use the menu to add some.");
-								return;
+								adapter.add("No groups to display.");
 							}
+							adapter.notifyDataSetChanged();
 	                    // The response might be null for various reasons, including
 	                	// an improperly initialized ApigeeClient or permission on the
 	                	// server-side application that are too restrictive.
@@ -189,16 +186,16 @@ public class AddUserToGroupActivity extends Activity {
 						Collection<Group> groups = response.values();
 						if (groups.size() > 0) {
 							for (Group group : groups) {
-								String title = group.getTitle();
-								adapter.add(title);
+								String groupTitle = group.getTitle();
+	                			if (groupTitle != null){
+	                				adapter.add(groupTitle);		                				
+	                			}
 							}
 							adapter.notifyDataSetChanged();
 						// If there aren't any groups with the current user,
 						// display a message.
 						} else {
-							userGroupListMessage
-									.setText("No groups to display.");
-							return;
+							adapter.add("Not in any groups.");
 						}
                     // Maybe an improperly initialized ApigeeClient or 
 					// overly restrictive application permissions.

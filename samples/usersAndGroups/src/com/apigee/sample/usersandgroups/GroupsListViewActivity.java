@@ -101,15 +101,15 @@ public class GroupsListViewActivity extends Activity {
 		                		for (int j = 0; j < groups.size(); j++) {
 		                			Entity group = groups.get(j);
 		                			String groupTitle = group.getStringProperty("title");
-		                			adapter.add(groupTitle);	                			
-			                		adapter.notifyDataSetChanged();
+		                			if (groupTitle != null){
+		                				adapter.add(groupTitle);		                				
+		                			}
 		                		}
+		                		adapter.notifyDataSetChanged();
 		                	// If there isn't any group data in the response, 
 		                	// display a message.
 	                		} else {
-	                			groupListErrorMessage.setText("No groups to display. " +
-	                					"Use the menu to add some.");
-	                			return;
+	                			adapter.add("No groups to display.");
 	                		}
 	                    // The response might be null for various reasons, including
 	                	// an improperly initialized ApigeeClient or permission on the
