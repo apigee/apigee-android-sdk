@@ -103,7 +103,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 
 			ClientMetricsEnvelope payload = getDataToUpload();
 
-			if (allowedToSendData()) {
+			if ((payload != null) && allowedToSendData()) {
 
 				//TODO: review this -- should we create a new session before uploading if we don't
 				// currently have a valid session?
@@ -349,19 +349,36 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 
 	public ClientMetricsEnvelope constructWebServiceMetricsBeanMessageEnvelop() {
 
-		ClientMetricsEnvelope envelope = new ClientMetricsEnvelope();
-		envelope.setTimeStamp(new Date());
-
+		if (!monitoringClient.isAbleToSendDataToServer()) {
+			return null;
+		}
+		
+		ClientMetricsEnvelope envelope = null;
 		ApplicationConfigurationService configService = monitoringClient.getApplicationConfigurationService();
 		
 		if (null != configService) {
 			App app = configService.getCompositeApplicationConfigurationModel();
 			if( app != null ) {
-				envelope.setOrgName(app.getOrgName());
-				envelope.setAppName(app.getAppName());
-				envelope.setFullAppName(app.getFullAppName());
-				envelope.setInstaOpsApplicationId(app.getInstaOpsApplicationId());
+				String orgName = app.getOrgName();
+				String appName = app.getAppName();
+				Long instaOpsAppId = app.getInstaOpsApplicationId();
+
+				envelope = new ClientMetricsEnvelope();
+				envelope.setTimeStamp(new Date());
+
+				envelope.setOrgName(orgName);
+				envelope.setAppName(appName);
+				envelope.setInstaOpsApplicationId(instaOpsAppId);
+					
+				String fullAppName = app.getFullAppName();
+				if (fullAppName != null) {
+					envelope.setFullAppName(fullAppName);
+				}
 			}
+		}
+		
+		if (envelope == null) {
+			Log.w(ClientLog.TAG_MONITORING_CLIENT, "missing app identification fields needed to send data to server");
 		}
 
 		return envelope;
@@ -370,19 +387,21 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	public ClientMetricsEnvelope getDataToUpload() {
 
 		ClientMetricsEnvelope envelop = constructWebServiceMetricsBeanMessageEnvelop();
-		ClientSessionMetrics sm = getSessionMetrics();
+		
+		if (envelop != null) {
+			ClientSessionMetrics sm = getSessionMetrics();
 
-		envelop.setSessionMetrics(sm);
+			envelop.setSessionMetrics(sm);
 
-		if (!(httpMetrics.getMetrics().size() == 0)) {
-			envelop.setMetrics(httpMetrics.flush());
-		}
+			if (!(httpMetrics.getMetrics().size() == 0)) {
+				envelop.setMetrics(httpMetrics.flush());
+			}
 
-		if (logger.haveLogRecords()) {
-			List<ClientLog> logs = logger.flush();
-			if( logs != null )
-			{
-				envelop.setLogs(logs);
+			if (logger.haveLogRecords()) {
+				List<ClientLog> logs = logger.flush();
+				if( logs != null ) {
+					envelop.setLogs(logs);
+				}
 			}
 		}
 

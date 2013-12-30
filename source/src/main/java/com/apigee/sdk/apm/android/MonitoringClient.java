@@ -677,6 +677,27 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return android_id;
 	}
 	
+	public boolean isAbleToSendDataToServer() {
+		ApplicationConfigurationService configService = getApplicationConfigurationService();
+		
+		if (null != configService) {
+			App app = configService.getCompositeApplicationConfigurationModel();
+			if( app != null ) {
+				String orgName = app.getOrgName();
+				String appName = app.getAppName();
+				Long instaOpsAppId = app.getInstaOpsApplicationId();
+				return ((orgName != null) &&
+						(appName != null) &&
+						(instaOpsAppId != null) &&
+						(orgName.length() > 0) &&
+						(appName.length() > 0) &&
+						(instaOpsAppId.longValue() > 0));
+			}
+		}
+		
+		return false;
+	}
+	
 	public void onCrashReportUpload(String crashReport) {
 		if (listListeners != null) {
 			Iterator<UploadListener> iterator = listListeners.iterator();
@@ -740,18 +761,24 @@ public class MonitoringClient implements SessionTimeoutListener {
 		@Override
 		public void run() {
 			
-			//this is a bit of a hack to prevent data from being uploaded if there is no data to upload. 
-			//this is common if the app has been put into the background
-			if (log.haveLogRecords() || collector.haveSamples())
-			{
-				Log.v(ClientLog.TAG_MONITORING_CLIENT, "There are metrics to send. Sending metrics now");
-				List<UploadListener> listListeners = null;
-				if( client != null ) {
-					listListeners = client.getMetricsUploadListeners();
+			if (!client.isAbleToSendDataToServer()) {
+		        Log.d(ClientLog.TAG_MONITORING_CLIENT, "missing app identification - unable to send data to server");
+		        Log.d(ClientLog.TAG_MONITORING_CLIENT, "attempting to retrieve configuration from server");
+		        client.refreshConfiguration(null);
+			}
+			
+			if (client.isAbleToSendDataToServer()) {
+				//this is a bit of a hack to prevent data from being uploaded if there is no data to upload. 
+				//this is common if the app has been put into the background
+				if (log.haveLogRecords() || collector.haveSamples()) {
+					Log.v(ClientLog.TAG_MONITORING_CLIENT, "There are metrics to send. Sending metrics now");
+					List<UploadListener> listListeners = client.getMetricsUploadListeners();
+					uploadService.uploadData(listListeners);
+				} else {
+					Log.v(ClientLog.TAG_MONITORING_CLIENT, "No metrics to send. Skipping metrics sending");	
 				}
-				uploadService.uploadData(listListeners);
 			} else {
-				Log.v(ClientLog.TAG_MONITORING_CLIENT, "No metrics to send. Skipping metrics sending");	
+				Log.d(ClientLog.TAG_MONITORING_CLIENT, "unable to send data to server - no app identification");
 			}
 		}
 		

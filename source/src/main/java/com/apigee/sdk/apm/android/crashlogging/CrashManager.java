@@ -159,6 +159,11 @@ public class CrashManager {
 
     if ((list != null) && (list.length > 0)) {
       Log.d(ClientLog.TAG_MONITORING_CLIENT, "Found " + list.length + " stacktrace(s).");
+      
+      if (!monitoringClient.isAbleToSendDataToServer()) {
+    	  Log.w(ClientLog.TAG_MONITORING_CLIENT,"Unable to send stack trace(s) to server, missing server configuration");
+    	  return;
+      }
 
       for (int index = 0; index < list.length; index++) {
         try {
