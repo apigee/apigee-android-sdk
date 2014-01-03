@@ -41,13 +41,13 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 	private String[] listLoggingMessages;
 	private String[] listErrorMessages;
 	private String[] listUrls;
-	private MonitoringClient monitoringClient;
 	private int httpClientMethodToUse;
 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_monitoring_sample);
 		
 		Activity activity = this;
@@ -163,13 +163,15 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
     		}
     	});
 
-	    String orgName = "<YOUR_ORG_NAME>";
-	    String appName = "<YOUR_APP_NAME>";
-	        
-	    ApigeeClient apigeeClient = new ApigeeClient(orgName,appName,this.getApplicationContext());
+    	
 	    MonitoringSampleApplication app = (MonitoringSampleApplication) this.getApplication();
-	    app.setApigeeClient(apigeeClient);	    
-	    monitoringClient = apigeeClient.getMonitoringClient();
+	    if (null == app.getApigeeClient()) {
+	    	String orgName = "<YOUR_ORG_NAME>";
+	    	String appName = "<YOUR_APP_NAME>";
+	     
+	    	ApigeeClient apigeeClient = new ApigeeClient(orgName,appName,this.getApplicationContext());
+	    	app.setApigeeClient(apigeeClient);
+	    }
 	}
 	
 	public void updateLogLevelIndicator() {
@@ -322,12 +324,28 @@ public class MonitoringSampleActivity extends Activity implements NetworkRespons
 	}
 
 	public void monitoringPauseCheckBoxToggled() {
+	    MonitoringSampleApplication app = (MonitoringSampleApplication) this.getApplication();
+	    ApigeeClient apigeeClient = app.getApigeeClient();
+	    MonitoringClient monitorClient = null;
+	    
+	    if (apigeeClient != null) {
+	    	monitorClient = apigeeClient.getMonitoringClient();
+	    }
+	    
 		if (this.checkBoxPaused.isChecked()) {
-			Log.i(TAG_LOGGING, "pausing monitoring");
-			this.monitoringClient.pause();
+			if (monitorClient != null) {
+				Log.i(TAG_LOGGING, "pausing monitoring");
+				monitorClient.pause();
+			} else {
+				Log.w(TAG_LOGGING, "monitoring client is null, unable to pause");
+			}
 		} else {
-			Log.i(TAG_LOGGING, "resuming monitoring");
-			this.monitoringClient.resume();
+			if (monitorClient != null) {
+				Log.i(TAG_LOGGING, "resuming monitoring");
+				monitorClient.resume();
+			} else {
+				Log.w(TAG_LOGGING, "monitoring client is null, unable to resume");
+			}
 		}
 	}
 
