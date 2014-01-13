@@ -1,0 +1,66 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">	
+	<LinearLayout
+	   
+	    android:id="@+id/LinearLayout1"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    android:paddingTop="@dimen/activity_vertical_margin"
+	    tools:context=".MenuActivity" >
+	
+	    <TextView
+	        android:id="@+id/introText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Tap each button to perform an API operation. For a detailed explanation of how each operation works, see the code comments in  ApiActivity.java.\n\n"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <TextView
+	        android:id="@+id/createLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Create new entities with location data"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <TextView
+	        android:id="@+id/createDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Calls createEntityAsync() to create three entities that contain location data."
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <Button
+	        android:id="@+id/createButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Create" 
+	        android:onClick="create" />
+	
+	    <TextView
+	        android:id="@+id/retrieveLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Retrieve entities by location"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+		
+	    <TextView
+	        android:id="@+id/retrieveDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Calls retrieveEntitiesAsync() and passes in a geolocation query to retrieve the entities within 5 miles of your current location."
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <Button
+	        android:id="@+id/retrieveButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Retrieve" 
+	        android:onClick="retrieve" />
+	
+	</LinearLayout>
+</ScrollView>

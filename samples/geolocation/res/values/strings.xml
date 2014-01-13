@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Apigee Geolocation Example App</string>
-    <string name="placeholder">"Wait a second while we attempt to contact the Apigee servers…\n\nIf you haven’t done so already, follow the instructions in src/com/apigee/geolocation_example/MainActivity.java\n\nThen restart the app!"</string>
+    <string name="app_name">Apigee Entity Example App</string>
+    <string name="placeholder">"Wait a second while we attempt to contact the Apigee servers…\n\nIf you haven’t done so already, follow the instructions in src/com/apigee/entity_example/MainActivity.java\n\nThen restart the app!"</string>
+    <string name="title_activity_delete">DeleteActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_result">ResultActivity</string>
 
 </resources>
