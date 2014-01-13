@@ -59,9 +59,6 @@ public class Collection
 	    if (this.cursor != null) {
 	    	this.qs.put("cursor", this.cursor);
 	    }
-	    else if ( this.qs.containsKey("cursor")) {
-	    	this.qs.remove("cursor");
-	    }
 	    
 	    Query query = this.dataClient.queryEntitiesRequest("GET", this.qs, null,
                 this.dataClient.getOrganizationId(),  this.dataClient.getApplicationId(), this.type);
