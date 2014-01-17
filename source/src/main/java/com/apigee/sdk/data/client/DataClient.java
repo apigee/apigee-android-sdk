@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Date;
 
 import android.content.Context;
 import android.location.Location;
@@ -2289,6 +2290,134 @@ public class DataClient implements LocationListener {
 				return getEntities(type, queryString);
 			}
 		}).execute();
+	}
+	
+	protected void populateTimestamp(Date timestamp, Map<String,Object> mapEvent)
+	{
+		if (timestamp != null) {
+			mapEvent.put("timestamp", "" + timestamp.getTime());
+		} else {
+			// let the server assign the timestamp
+			mapEvent.put("timestamp", "0");
+		}
+	}
+	
+	protected void populateCounter(CounterIncrement counterIncrement, Map<String,Object> mapEvent)
+	{
+		if ((counterIncrement != null) && (mapEvent != null)) {
+			String counterName = counterIncrement.getCounterName();
+			if ((counterName != null) && (counterName.length() > 0)) {
+				Map<String, Object> mapCounters = null;
+				
+				Object existingCounters = mapEvent.get("counters");
+				
+				if (existingCounters != null) {
+					if (existingCounters instanceof Map) {
+						try {
+							mapCounters = (Map<String,Object>) existingCounters;
+						} catch (Throwable t) {
+							mapCounters = null;
+						}
+					}
+				}
+				
+				if (null == mapCounters) {
+					mapCounters = new HashMap<String,Object>();
+				}
+				
+				mapCounters.put(counterName, new Long(counterIncrement.getCounterIncrementValue()));
+				mapEvent.put("counters", mapCounters);
+			}
+		}
+	}
+	
+	public ApiResponse createEvent(Map<String,Object> mapEvent)
+	{
+		if (mapEvent != null) {
+			boolean needTypeSet = true;
+
+			if (mapEvent.containsKey("type")) {
+				Object typeValue = mapEvent.get("type");
+				if (typeValue != null) {
+					if (typeValue instanceof String) {
+						String typeValueString = (String) typeValue;
+						if (typeValueString.equals("event") || typeValueString.equals("events")) {
+							needTypeSet = false;
+						}
+					}
+				}
+			}
+			
+			if (needTypeSet) {
+				mapEvent.put("type", "events");
+			}
+			
+			if (!mapEvent.containsKey("timestamp")) {
+				// let the server assign the timestamp
+				mapEvent.put("timestamp", "0");
+			}
+		}
+		
+		return createEntity(mapEvent);
+	}
+	
+	public ApiResponse createEvent(Map<String,Object> mapEvent, Date timestamp)
+	{
+		if (mapEvent == null) {
+			mapEvent = new HashMap<String,Object>();
+		}
+
+		populateTimestamp(timestamp, mapEvent);
+		return createEvent(mapEvent);
+	}
+	
+	public ApiResponse createEvent(Map<String,Object> mapEvent, CounterIncrement counterIncrement)
+	{
+		if (mapEvent == null) {
+			mapEvent = new HashMap<String,Object>();
+		}
+		
+		populateTimestamp(null, mapEvent);
+		populateCounter(counterIncrement, mapEvent);
+		return createEvent(mapEvent);
+	}
+	
+	public void createEventAsync(final Map<String,Object> mapEvent, final CounterIncrement counterIncrement, final ApiResponseCallback callback)
+	{
+		(new ClientAsyncTask<ApiResponse>(callback) {
+			@Override
+			public ApiResponse doTask() {
+				return createEvent(mapEvent,counterIncrement);
+			}
+		}).execute();
+	}
+	
+	public ApiResponse createEvent(Map<String,Object> mapEvent, Date timestamp, CounterIncrement counterIncrement)
+	{
+		if (mapEvent == null) {
+			mapEvent = new HashMap<String,Object>();
+		}
+
+		populateTimestamp(timestamp, mapEvent);
+		populateCounter(counterIncrement, mapEvent);
+		return createEvent(mapEvent);
+	}
+	
+	public ApiResponse createEvent(Map<String,Object> mapEvent, Date timestamp, List<CounterIncrement> counterIncrements)
+	{
+		if (mapEvent == null) {
+			mapEvent = new HashMap<String,Object>();
+		}
+
+		populateTimestamp(timestamp, mapEvent);
+		
+		if (counterIncrements != null) {
+			for (CounterIncrement counterIncrement : counterIncrements) {
+				populateCounter(counterIncrement, mapEvent);
+			}
+		}
+		
+		return createEvent(mapEvent);
 	}
 
     private class QueueQuery implements Query {
