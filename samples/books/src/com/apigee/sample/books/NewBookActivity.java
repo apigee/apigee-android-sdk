@@ -6,6 +6,7 @@ import java.util.Map;
 import com.apigee.sample.books.R;
 
 import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.CounterIncrement;
 import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
 import com.apigee.sdk.data.client.response.ApiResponse;
 
@@ -35,7 +36,7 @@ public class NewBookActivity extends Activity {
 
 	public void createBook(View view){
 		BooksApplication bookApp = (BooksApplication) getApplication();
-		DataClient client = bookApp.getDataClient();
+		final DataClient client = bookApp.getDataClient();
 		
 		if (client != null) {
 			EditText title = (EditText)findViewById(R.id.title);
@@ -57,6 +58,19 @@ public class NewBookActivity extends Activity {
 			
 				@Override
 				public void onResponse(ApiResponse response) {
+					CounterIncrement counterIncrement = new CounterIncrement();
+					counterIncrement.setCounterName("book_add");
+					client.createEventAsync(null, counterIncrement, new ApiResponseCallback(){
+						@Override
+						public void onException(Exception ex) {
+							Log.i("book_add", ex.getMessage());
+						}
+						
+						@Override
+						public void onResponse(ApiResponse counterResponse) {
+							Log.i("book_add", "counter incremented");
+						}
+					});
 					finish();		
 				}
 			});
