@@ -1,4 +1,4 @@
-/* APIGEE JavaScript SDK COLLECTION EXAMPLE APP
+/* APIGEE Android SDK Entity EXAMPLE APP
  
    This activity handles our API requests. See the code comments
    for detailed info on how each request type works.
