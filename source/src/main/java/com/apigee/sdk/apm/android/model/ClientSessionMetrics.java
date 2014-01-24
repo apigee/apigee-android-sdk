@@ -13,6 +13,8 @@ public class ClientSessionMetrics implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	Long appId;
+
 	String sessionId;
 
 	//if location is enabled in manifest and location capture is allowed.
@@ -128,6 +130,15 @@ public class ClientSessionMetrics implements Serializable {
 	private Long endWeek;
 
 	private Long endMonth;
+
+	
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
 
 	public String getAppConfigType() {
 		if (this.appConfigType == null)

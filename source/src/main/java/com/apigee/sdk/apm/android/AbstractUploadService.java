@@ -190,6 +190,18 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			sessionMetrics.setSessionStartTime(sessionManager.getSessionStartTime());
 			sessionMetrics.setSdkVersion(MonitoringClient.getSDKVersion());
 			sessionMetrics.setSdkType(MonitoringClient.getDevicePlatform());
+			
+			// application Id
+			ApplicationConfigurationService configService = monitoringClient.getApplicationConfigurationService();
+			if (null != configService) {
+				App app = configService.getCompositeApplicationConfigurationModel();
+				if( app != null ) {
+					Long instaOpsAppId = app.getInstaOpsApplicationId();
+					if (instaOpsAppId != null) {
+						sessionMetrics.setAppId(instaOpsAppId);
+					}
+				}
+			}
 
 			//setting all the fields which rely on different permissions.
 			//TODO: double check if there is a permission that could prohibit SDK from getting application version
