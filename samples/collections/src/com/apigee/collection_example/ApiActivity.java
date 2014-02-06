@@ -291,7 +291,7 @@ public class ApiActivity extends Activity {
 	/* 4. Using cursors (paging through a collection)
     
     By default, the Apigee API only returns the first 10 entities in a collection. 
-    This is why our retrieveCollection() function from step 4 only gave us back the first 
+    This is why our retrieveCollection() function from step 3 only gave us back the first 
     10 entities in our collection.
     
     To get the next 10 results, we send a new GET request that references the 
