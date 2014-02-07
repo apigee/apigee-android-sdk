@@ -178,7 +178,7 @@ public class ApiActivity extends Activity {
 	
 	protected void retrieveEntities(){
 		
-		/* To retrieve our collection we need to provide two arguments:
+		/* To retrieve our entities we need to provide two arguments:
 		   - The entity type associated with the collection we want to retrieve
 		   - An optional query string to refine our result set. In this case, we are going to request
 		     all entities within 8047 meters (~5 miles) of the user's current position. */
