@@ -16,19 +16,15 @@ The sample apps in this directory are intended to show basic usage of some of th
 
 To run the sample apps, simply open its index.html file in a browser.
 
-Before you do, however, each of the sample apps require you to do two things:
+Before you do, however, each of the sample apps require you to include the Apigee Android SDK on your build path.
 
-* Include the Apigee Android SDK on your build path
+For instructions on how to do this, visit our [Android SDK install guide](http://apigee.com/docs/app-services/content/installing-apigee-sdk-android).
 
-	For instructions on how to do this, visit our [Android SDK install guide](http://apigee.com/docs/app-services/content/installing-apigee-sdk-android).
-
-* Initialize the SDK
-
-	Each of these apps are designed to use the default, unsecured 'sandbox' application that was included when you created your Apigee account. To access your data store, you will need to provide your organization name by updating the call to Apigee.Client in each sample app. Near the top of the code in each app, you should see something similar to this:
+Some of the apps also require you to provide your organization name by updating the call to Apigee.Client in the app's source. Near the top of the code in each app, you should see something similar to this:
 
 	```java
 String ORGNAME = "yourorgname"; //Your Apigee.com username
 String APPNAME = "sandbox"; //Your App Services app name
 ```
 
-	Simply change the value of the orgName property to your Apigee organization name.
+Simply change the value of the orgName property to your Apigee organization name.

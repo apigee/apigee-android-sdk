@@ -173,15 +173,15 @@ public class ApiActivity extends Activity {
 	/* 2. Retrieve entities by location
     
     Now that we have data in our collection, let's declare a function to retrieve it. Notice 
-    that we are passing in a Location object. This is contains our current position and is obtained 
+    that we are passing in a Location object. This contains our current position and is obtained 
     below in our onCreate method */
 	
 	protected void retrieveEntities(){
 		
-		/* To retrieve our collection we need to provide two arguments:
+		/* To retrieve our entities we need to provide two arguments:
 		   - The entity type associated with the collection we want to retrieve
 		   - An optional query string to refine our result set. In this case, we are going to request
-		     all entities within 8047 meters (~5 miles) of the Apigee office in San Jose. */
+		     all entities within 8047 meters (~5 miles) of the user's current position. */
 			
 	    /* Then we specify the type of entity we want to retrieve and a query string the requests
 	       the entities based on location 
