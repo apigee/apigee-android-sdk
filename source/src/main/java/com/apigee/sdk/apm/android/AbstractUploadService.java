@@ -185,7 +185,12 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			sessionMetrics.setDeviceId(android_id);
 
 			//session id and start time
-			sessionMetrics.setSessionId(sessionManager.getSessionUUID());
+			String sessionId = sessionManager.getSessionUUID();
+			if (sessionId == null || sessionId.length() == 0) {
+				sessionId = sessionManager.openSession();
+			}
+			
+			sessionMetrics.setSessionId(sessionId);
 			sessionMetrics.setTimeStamp(new Date());			
 			sessionMetrics.setSessionStartTime(sessionManager.getSessionStartTime());
 			sessionMetrics.setSdkVersion(MonitoringClient.getSDKVersion());
