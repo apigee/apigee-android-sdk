@@ -109,8 +109,12 @@ public class AndroidLog implements Logger {
 		return Log.wtf(tag, msg, tr);
 	}
 
+	protected boolean isLogLevelBeingCaptured(int level) {
+		return level >= configService.getConfigurations().getLogLevelToMonitor();
+	}
+	
 	private void writeToLog(int level, String tag, String msg) {
-		if (!(configService.getConfigurations().getLogLevelToMonitor() <= level)) {
+		if (!isLogLevelBeingCaptured(level)) {
 			return;
 		}
 
@@ -209,7 +213,10 @@ public class AndroidLog implements Logger {
 			// drains the queue
 			for (int i = 0; i < numLogs; i++) {
 				ClientLog logRecord = log.remove();
-				newLog.add(logRecord);
+				int logLevelValue = ApigeeMobileAPMConstants.logLevelValueForCode(logRecord.getLogLevel());
+				if (isLogLevelBeingCaptured(logLevelValue)) {
+					newLog.add(logRecord);
+				}
 			}
 
 			return newLog;
