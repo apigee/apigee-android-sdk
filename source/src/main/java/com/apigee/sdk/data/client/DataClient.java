@@ -577,8 +577,8 @@ public class DataClient implements LocationListener {
      * @return non-null ApiResponse if request succeeds, check getError() for
      *         "invalid_grant" to see if access is denied.
      */
-    public ApiResponse authorizeAppUser(String email, String password) {
-        validateNonEmptyParam(email, "email");
+    public ApiResponse authorizeAppUser(String usernameOrEmail, String password) {
+        validateNonEmptyParam(usernameOrEmail, "email");
         validateNonEmptyParam(password,"password");
         assertValidApplicationId();
         loggedInUser = null;
@@ -586,7 +586,7 @@ public class DataClient implements LocationListener {
         currentOrganization = null;
         Map<String, Object> formData = new HashMap<String, Object>();
         formData.put("grant_type", "password");
-        formData.put("username", email);
+        formData.put("username", usernameOrEmail);
         formData.put("password", password);
         ApiResponse response = apiRequest(HTTP_METHOD_POST, formData, null,
                 organizationId, applicationId, "token");
@@ -612,12 +612,12 @@ public class DataClient implements LocationListener {
 	 * @param password
 	 * @param callback
 	 */
-	public void authorizeAppUserAsync(final String email,
+	public void authorizeAppUserAsync(final String usernameOrEmail,
 			final String password, final ApiResponseCallback callback) {
 		(new ClientAsyncTask<ApiResponse>(callback) {
 			@Override
 			public ApiResponse doTask() {
-				return authorizeAppUser(email, password);
+				return authorizeAppUser(usernameOrEmail, password);
 			}
 		}).execute();
 	}
@@ -751,6 +751,37 @@ public class DataClient implements LocationListener {
 		}).execute();
 	}
 
+    /**
+     * Log out the currently logged in user.
+     * 
+     */
+    public ApiResponse logoutAppUser() {
+        String username = this.getLoggedInUser().getUsername();
+        ApiResponse response = apiRequest(HTTP_METHOD_PUT, null, null,
+                organizationId,  applicationId, "/users/",username,"/revoketokens");
+        if (response == null) {
+            return response;
+        } else {
+            logInfo("logoutAppUser(): Response: " + response);
+            setAccessToken(null);
+        }
+        return response;
+    }
+
+    /**
+     * Log out the currently logged in user.
+     * Executes asynchronously in background and the callbacks are called in the
+     * UI thread.
+     * 
+     */
+    public void logoutAppUserAsync(final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return logoutAppUser();
+            }
+        }).execute();
+    }
 
     /**
      * Log the app in with it's client id and client secret key. Not recommended
