@@ -80,9 +80,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 	private boolean isActive;
 	private boolean isInitialized = false;
 	private boolean monitoringPaused;
+	private boolean isPartOfSample;
 	
 	private boolean enableAutoUpload;
 	private boolean crashReportingEnabled;
+	private boolean alwaysUploadCrashReports;
 	
 	private SessionManager sessionManager;
 	
@@ -178,6 +180,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 		if( monitoringOptions != null ) {
 			this.crashReportingEnabled = monitoringOptions.getCrashReportingEnabled();
 			this.enableAutoUpload = monitoringOptions.getEnableAutoUpload();
+			this.alwaysUploadCrashReports = monitoringOptions.getAlwaysUploadCrashReports();
 
 			UploadListener uploadListener = monitoringOptions.getUploadListener();
 			
@@ -190,6 +193,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 		} else {
 			this.crashReportingEnabled = true;
 			this.enableAutoUpload = true;
+			this.alwaysUploadCrashReports = true;
 		}
 		
 		this.dataClient = dataClient;
@@ -240,6 +244,28 @@ public class MonitoringClient implements SessionTimeoutListener {
 				log, collector, loader, sessionManager);
 	}
 	
+	/**
+	 * Retrieves boolean indicating whether we should upload crash reports even if the device is not part of sample
+	 * @return boolean indicator
+	 */
+	public boolean getAlwaysUploadCrashReports() {
+		return this.alwaysUploadCrashReports;
+	}
+	
+	/**
+	 * Retrieves boolean indicating whether the device is part of sample or not
+	 * @return boolean indicator
+	 */
+	public boolean isParticipatingInSample() {
+		synchronized(this) {
+		    if (this.isInitialized) {
+		        return this.isPartOfSample;
+		    } else {
+		        return false;  // at least not yet
+		    }
+		}
+	}
+	
 	private boolean allowedToSendData()
 	{
 		boolean willSendData = false;
@@ -274,13 +300,16 @@ public class MonitoringClient implements SessionTimeoutListener {
 				if (coinflip < sampleRate.intValue())
 				{
 					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring enabled. Sample Rate : " + sampleRate);
+					this.isPartOfSample = true;
 					willSendData = true;
 				} else {
 					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled. Sample Rate :  "  + sampleRate);
+					this.isPartOfSample = false;
 					willSendData = false;
 				}
 			} else {
-				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring Enabled ");
+				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring Enabled");
+				this.isPartOfSample = true;
 				willSendData = true;
 			}
 		}
@@ -518,8 +547,8 @@ public class MonitoringClient implements SessionTimeoutListener {
 				isActive = false;
 			}
 			
-			if (isActive)
-			{ 
+			if (isActive || this.alwaysUploadCrashReports)
+			{
 				if (crashReportingEnabled)
 				{
 					sExecutor.execute(new CrashManagerTask(this));
