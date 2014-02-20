@@ -47,4 +47,15 @@ public class ApigeeMobileAPMConstants {
 		
 		return "";
 	}
+	
+	public static int logLevelValueForCode(String logLevelCode) {
+		
+		for (int i = 0; i < logLevelsString.length; ++i) {
+			if (logLevelsString[i].equals(logLevelCode)) {
+				return i;
+			}
+		}
+		
+		return 0;
+	}
 }
