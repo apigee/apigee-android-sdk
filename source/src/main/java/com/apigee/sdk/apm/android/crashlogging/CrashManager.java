@@ -174,7 +174,6 @@ public class CrashManager {
           
           String stacktrace = contentsOfFile(context, filename);
           if ( (stacktrace != null) && (stacktrace.length() > 0) ) {
-            Log.d(ClientLog.TAG_MONITORING_CLIENT, "Transmitting crash data: \n" + stacktrace);
             
             submitStackTrace(context, filename, monitoringClient);
             

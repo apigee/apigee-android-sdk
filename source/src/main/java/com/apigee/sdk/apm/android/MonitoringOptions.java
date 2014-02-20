@@ -8,6 +8,7 @@ public class MonitoringOptions {
 	private boolean crashReportingEnabled;
 	private boolean enableAutoUpload;
 	private UploadListener uploadListener;
+	private boolean alwaysUploadCrashReports;
 	
 
 	/**
@@ -18,6 +19,7 @@ public class MonitoringOptions {
 		this.crashReportingEnabled = true;
 		this.enableAutoUpload = true;
 		this.uploadListener = null;
+		this.alwaysUploadCrashReports = true;
 	}
 	
 	/**
@@ -84,5 +86,21 @@ public class MonitoringOptions {
 	 */
 	public UploadListener getUploadListener() {
 		return this.uploadListener;
+	}
+	
+	/**
+	 * Retrieves boolean indicating whether crash reports should be uploaded even if device is not part of sample
+	 * @return boolean value
+	 */
+	public boolean getAlwaysUploadCrashReports() {
+		return this.alwaysUploadCrashReports;
+	}
+	
+	/**
+	 * Sets boolean indicating whether crash reports should be uploaded even if device is not part of sample
+	 * @param alwaysUploadCrashReports the boolean indicator
+	 */
+	public void setAlwaysUploadCrashReports(boolean alwaysUploadCrashReports) {
+		this.alwaysUploadCrashReports = alwaysUploadCrashReports;
 	}
 }
