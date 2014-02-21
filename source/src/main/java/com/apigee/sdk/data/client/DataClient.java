@@ -803,7 +803,9 @@ public class DataClient implements LocationListener {
             return response;
         } else {
             logInfo("logoutAppWithTokenUser(): Response: " + response);
-            setAccessToken(null);
+            if (token.equals(getAccessToken())) {
+                setAccessToken(null);
+            }
         }
         return response;
     }
