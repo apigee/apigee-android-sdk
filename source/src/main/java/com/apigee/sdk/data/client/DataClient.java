@@ -577,8 +577,8 @@ public class DataClient implements LocationListener {
      * @return non-null ApiResponse if request succeeds, check getError() for
      *         "invalid_grant" to see if access is denied.
      */
-    public ApiResponse authorizeAppUser(String email, String password) {
-        validateNonEmptyParam(email, "email");
+    public ApiResponse authorizeAppUser(String usernameOrEmail, String password) {
+        validateNonEmptyParam(usernameOrEmail, "email");
         validateNonEmptyParam(password,"password");
         assertValidApplicationId();
         loggedInUser = null;
@@ -586,7 +586,7 @@ public class DataClient implements LocationListener {
         currentOrganization = null;
         Map<String, Object> formData = new HashMap<String, Object>();
         formData.put("grant_type", "password");
-        formData.put("username", email);
+        formData.put("username", usernameOrEmail);
         formData.put("password", password);
         ApiResponse response = apiRequest(HTTP_METHOD_POST, formData, null,
                 organizationId, applicationId, "token");
@@ -612,12 +612,12 @@ public class DataClient implements LocationListener {
 	 * @param password
 	 * @param callback
 	 */
-	public void authorizeAppUserAsync(final String email,
+	public void authorizeAppUserAsync(final String usernameOrEmail,
 			final String password, final ApiResponseCallback callback) {
 		(new ClientAsyncTask<ApiResponse>(callback) {
 			@Override
 			public ApiResponse doTask() {
-				return authorizeAppUser(email, password);
+				return authorizeAppUser(usernameOrEmail, password);
 			}
 		}).execute();
 	}
@@ -751,6 +751,113 @@ public class DataClient implements LocationListener {
 		}).execute();
 	}
 
+    /**
+     * Log out a user and destroy the token on the server.
+     * 
+     * @param username The username to be logged out
+     */
+    public ApiResponse logOutAppUser(String username) {
+        String token = getAccessToken();
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("token",token);
+        ApiResponse response = apiRequest(HTTP_METHOD_PUT, params, null,
+                organizationId,  applicationId, "users",username,"revoketoken?");
+        if (response == null) {
+            return response;
+        } else {
+            logInfo("logoutAppUser(): Response: " + response);
+            setAccessToken(null);
+        }
+        return response;
+    }
+
+    /**
+     * Log out a user and destroy the token on the server.
+     * Executes asynchronously in background and the callbacks are called in the
+     * UI thread.
+     * 
+     * @param username The username to be logged out
+     */
+    public void logOutAppUserAsync(final String username, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return logOutAppUser(username);
+            }
+        }).execute();
+    }
+
+   /**
+     * Destroy a specific user token on the server.
+     * The token will also be cleared from the DataClient instance, if it matches the token provided.
+     * 
+     * @param username The username to be logged out
+     * @param token The access token to be destroyed on the server
+     */
+    public ApiResponse logOutAppUserForToken(String username, String token) {                
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("token",token);
+        ApiResponse response = apiRequest(HTTP_METHOD_PUT, params, null,
+                organizationId,  applicationId, "users",username,"revoketoken?");
+        if (response == null) {
+            return response;
+        } else {
+            logInfo("logoutAppWithTokenUser(): Response: " + response);
+            if (token.equals(getAccessToken())) {
+                setAccessToken(null);
+            }
+        }
+        return response;
+    }
+
+    /**
+     * Destroy a specific user token on the server.
+     * The token will also be cleared from the DataClient instance, if it matches the token provided.
+     * Executes asynchronously in background and the callbacks are called in the UI thread.
+     * 
+     * @param username The username to be logged out
+     * @param token The access token to be destroyed on the server
+     */
+    public void logOutAppUserForTokenAsync(final String username, final String token, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return logOutAppUserForToken(username, token);
+            }
+        }).execute();
+    }
+
+    /**
+     * Log out a user and destroy all associated tokens on the server.
+     * 
+     * @param username The username to be logged out
+     */
+    public ApiResponse logOutAppUserForAllTokens(String username) {
+        ApiResponse response = apiRequest(HTTP_METHOD_PUT, null, null,
+                organizationId,  applicationId, "users",username,"revoketokens");
+        if (response == null) {
+            return response;
+        } else {
+            logInfo("logoutAppUserForAllTokens(): Response: " + response);
+            setAccessToken(null);
+        }
+        return response;
+    }
+
+    /**
+     * Log out a user and destroy all associated tokens on the server.
+     * Executes asynchronously in background and the callbacks are called in the UI thread.
+     * 
+     * @param username The username to be logged out
+     */
+    public void logOutAppUserForAllTokensAsync(final String username, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return logOutAppUserForAllTokens(username);
+            }
+        }).execute();
+    }
 
     /**
      * Log the app in with it's client id and client secret key. Not recommended
