@@ -1,0 +1,73 @@
+body, p {
+    font-family: 'Lucida Sans', Verdana, Geneva, sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+    color: #484848;
+    text-rendering: optimize legibility;
+    line-height: 1.5em;
+}
+
+/*p {
+    margin: 0 0 9px;
+    font-size: 13px;
+    line-height: 1.5em;
+}
+*/
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-family: inherit;
+    font-weight: normal;
+    color: #484848;
+}
+
+h2 {
+    font-size: 26px;
+    line-height: 36px;
+}
+
+h3 {
+    /*color: rgb(72, 72, 72);*/
+    display: block;
+    /*font-family: ars-maquette-web, 'Myriad Pro', 'Gill Sans', 'Lucida Sans', Verdana, Geneva, sans-serif;*/
+    font-family: 'Lucida Sans', Verdana, Geneva, sans-serif;
+    font-size: 19px;
+    /*font-weight: bold;*/
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 18.719999313354492px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 18.719999313354492px;
+    width: 889px;
+}
+
+code, pre {
+
+    border-collapse: separate;
+    /*color: rgb(0, 148, 216);*/
+    cursor: auto;
+    display: inline;
+    font-family: Menlo, Monaco, 'Courier New', monospace;
+    /*font-size: 12px;*/
+    font-weight: normal;
+    height: auto;
+    line-height: 18px;
+    text-decoration: none solid rgb(0, 148, 216);
+    white-space: pre-wrap;
+    width: auto;
+
+}
+
+table {
+    /*font-size: 12px;*/
+    color: #686868;
+}
+
+th {
+    font-weight: normal;
+}
+
+a {
+    color: #0094d8;
+    text-decoration: none;
+}
