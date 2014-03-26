@@ -171,10 +171,12 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Instantiate client for a specific app
+     * Instantiate a data client for a specific app. This is used to call most 
+     * SDK methods.
      * 
-     * @param applicationId
-     *            the application id or name
+     * @param   organizationId  the API BaaS organization name
+     * @param   applicationId   the API BaaS application id or name
+     * @param   context the Android Context
      */
     public DataClient(String organizationId, String applicationId, Context context) {
         init();
@@ -184,6 +186,15 @@ public class DataClient implements LocationListener {
         captureDeviceLocation();
     }
 
+    /**
+     * Instantiate a data client for a specific app with a base URL other than the default
+     * api.usergrid.com. This is used to call most SDK methods.
+     * 
+     * @param   organizationId  the API BaaS organization name
+     * @param   applicationId   the API BaaS application id or name
+     * @param   baseURL the base URL to use for all API calls
+     * @param   context the Android Context
+     */
     public DataClient(String organizationId, String applicationId, String baseURL, Context context) {
         init();
         this.organizationId = organizationId;
@@ -200,30 +211,55 @@ public class DataClient implements LocationListener {
     public void init() {
     }
     
+    /**
+     * Logs a trace-level logging message with tag 'DATA_CLIENT'
+     *
+     * @param   logMessage  the message to log
+     */
     public void logTrace(String logMessage) {
     	if( (log != null) && (logMessage != null) ) {
     		log.v(LOGGING_TAG,logMessage);
     	}
     }
     
+    /**
+     * Logs a debug-level logging message with tag 'DATA_CLIENT'
+     *
+     * @param   logMessage  the message to log
+     */
     public void logDebug(String logMessage) {
     	if( (log != null) && (logMessage != null) ) {
     		log.d(LOGGING_TAG,logMessage);
     	}
     }
     
+    /**
+     * Logs an info-level logging message with tag 'DATA_CLIENT'
+     *
+     * @param   logMessage  the message to log
+     */
     public void logInfo(String logMessage) {
     	if( (log != null) && (logMessage != null) ) {
     		log.i(LOGGING_TAG,logMessage);
     	}
     }
     
+    /**
+     * Logs a warn-level logging message with tag 'DATA_CLIENT'
+     *
+     * @param   logMessage  the message to log
+     */
     public void logWarn(String logMessage) {
     	if( (log != null) && (logMessage != null) ) {
     		log.w(LOGGING_TAG,logMessage);
     	}
     }
     
+    /**
+     * Logs an error-level logging message with tag 'DATA_CLIENT'
+     *
+     * @param   logMessage  the message to log
+     */
     public void logError(String logMessage) {
     	if( (log != null) && (logMessage != null) ) {
     		log.e(LOGGING_TAG,logMessage);
@@ -242,16 +278,18 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * @param apiUrl
-     *            the Usergrid API url (default: http://api.usergrid.com)
+     * Sets the base URL for API requests
+     *
+     * @param apiUrl the API base url to be set (default: http://api.usergrid.com)
      */
     public void setApiUrl(String apiUrl) {
         this.apiUrl = apiUrl;
     }
 
     /**
-     * @param apiUrl
-     *            the Usergrid API url (default: http://api.usergrid.com)
+     * Sets the base URL for API requests and returns the updated DataClient object
+     *
+     * @param apiUrl the Usergrid API url (default: http://api.usergrid.com)
      * @return DataClient object for method call chaining
      */
     public DataClient withApiUrl(String apiUrl) {
@@ -261,9 +299,10 @@ public class DataClient implements LocationListener {
     
     
     /**
-     * the organizationId to set
-     * @param organizationId
-     * @return
+     * Sets the API BaaS organization ID and returns the DataClient object
+     *
+     * @param  organizationId  the organizationId to set
+     * @return  the updated DataClient object
      */
     public DataClient withOrganizationId(String organizationId){
         this.organizationId = organizationId;
@@ -273,29 +312,36 @@ public class DataClient implements LocationListener {
     
 
     /**
-     * @return the organizationId
+     * Gets the current API BaaS organization ID set in the DataClient
+     *
+     * @return the current organizationId
      */
     public String getOrganizationId() {
         return organizationId;
     }
 
     /**
-     * @param organizationId the organizationId to set
+     * Sets the API BaaS organization ID
+     *
+     * @param  organizationId  the organizationId to set     
      */
     public void setOrganizationId(String organizationId) {
         this.organizationId = organizationId;
     }
 
     /**
-     * @return the application id or name
+     * Gets the current API BaaS application ID set in the DataClient
+     *
+     * @return the current organizationId or name
      */
     public String getApplicationId() {
         return applicationId;
     }
 
     /**
-     * @param applicationId
-     *            the application id or name
+     * Sets the API BaaS application Id
+     *
+     * @param  applicationId  the application id or name
      */
     public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
@@ -303,9 +349,10 @@ public class DataClient implements LocationListener {
    
 
     /**
-     * @param applicationId
-     *            the application id or name
-     * @return DataClient object for method call chaining
+     * Sets the API BaaS application ID and returns the DataClient object
+     *
+     * @param  applicationId  the application ID to set
+     * @return  the updated DataClient object
      */
     public DataClient withApplicationId(String applicationId) {
         this.applicationId = applicationId;
@@ -313,26 +360,27 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * @return the client key id for making calls as the application-owner. Not
-     *         safe for most mobile use.
+     * Gets the application (not organization) client ID credential for making calls as the 
+     * application-owner. Not safe for most mobile use. 
+     * @return the client id 
      */
     public String getClientId() {
         return clientId;
     }
 
     /**
-     * @param clientId
-     *            the client key id for making calls as the application-owner.
-     *            Not safe for most mobile use.
+     * Sets the application (not organization) client ID credential, used for making 
+     * calls as the application-owner. Not safe for most mobile use.
+     * @param clientId the client id 
      */
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     /**
-     * @param clientId
-     *            the client key id for making calls as the application-owner.
-     *            Not safe for most mobile use.
+     * Updates the client ID credential in the DataClient object. Not safe for most mobile use.
+     *
+     * @param clientId the client key id
      * @return DataClient object for method call chaining
      */
     public DataClient withClientId(String clientId) {
@@ -341,26 +389,28 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * @return the client key id for making calls as the application-owner. Not
-     *         safe for most mobile use.
+     * Gets the application (not organization) client secret credential for making calls as the 
+     * application-owner. Not safe for most mobile use. 
+     * @return the client secret 
      */
     public String getClientSecret() {
         return clientSecret;
     }
 
     /**
-     * @param clientSecret
-     *            the client key id for making calls as the application-owner.
-     *            Not safe for most mobile use.
+     * Sets the application (not organization) client secret credential, used for making 
+     * calls as the application-owner. Not safe for most mobile use.
+     *
+     * @param clientSecret the client secret 
      */
     public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
     }
 
     /**
-     * @param clientSecret
-     *            the client key id for making calls as the application-owner.
-     *            Not safe for most mobile use.
+     * Updates the client secret credential in the DataClient object. Not safe for most mobile use.
+     *
+     * @param clientSecret the client secret
      * @return DataClient object for method call chaining
      */
     public DataClient withClientSecret(String clientSecret) {
@@ -369,30 +419,36 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * @return the logged-in user after a successful authorizeAppUser request
+     * Gets the UUID of the logged-in user after a successful authorizeAppUser request
+     * @return the UUID of the logged-in user
      */
     public User getLoggedInUser() {
         return loggedInUser;
     }
 
     /**
-     * @param loggedInUser
-     *            the logged-in user, usually not set by host application
+     * Sets the UUID of the logged-in user. Usually not set by host application
+     * @param loggedInUser the UUID of the logged-in user
      */
     public void setLoggedInUser(User loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
 
     /**
-     * @return the OAuth2 access token after a successful authorize request
+     * Gets the OAuth2 access token for the current logged-in user after a 
+     * successful authorize request
+     *
+     * @return the OAuth2 access token
      */
     public String getAccessToken() {
         return accessToken;
     }
 
     /**
-     * @param accessToken
-     *            an OAuth2 access token. Usually not set by host application
+     * Saves the OAuth2 access token in the DataClient after a successful authorize
+     * request. Usually not set by host application.
+     *
+     * @param accessToken an OAuth2 access token
      */
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
@@ -405,13 +461,23 @@ public class DataClient implements LocationListener {
         return currentOrganization;
     }
 
-    /**
+    /**     
      * @param currentOrganization
      */
     public void setCurrentOrganization(String currentOrganization) {
         this.currentOrganization = currentOrganization;
     }
     
+    /**
+     *  Forms and initiates a raw synchronous http request and processes the response.
+     *
+     *  @param  httpMethod the http method in the format: 
+     *      HTTP_METHOD_<method_name> (e.g. HTTP_METHOD_POST)
+     *  @param  params the URL parameters to append to the request URL
+     *  @param  data the body of the request
+     *  @param  segments  additional URL path segments to append to the request URL 
+     *  @return  ApiResponse object
+     */
 	public ApiResponse doHttpRequest(String httpMethod, Map<String, Object> params, Object data, String... segments) {
 		ApiResponse response = null;
 		OutputStream out = null;
@@ -542,13 +608,15 @@ public class DataClient implements LocationListener {
 
 
     /**
-     * High-level Usergrid API request.
+     * High-level synchronous API request. Implements 
+     * {@link #doHttpRequest(String,Map<String,Object>,Object,String...)}
      * 
-     * @param method
-     * @param params
-     * @param data
-     * @param segments
-     * @return
+     *  @param  httpMethod the http method in the format: 
+     *      HTTP_METHOD_<method_name> (e.g. HTTP_METHOD_POST)
+     *  @param  params the URL parameters to append to the request URL
+     *  @param  data the body of the request
+     *  @param  segments  additional URL path segments to append to the request URL 
+     *  @return  ApiResponse object
      */
     public ApiResponse apiRequest(String httpMethod,
             Map<String, Object> params, Object data, String... segments) {
@@ -570,10 +638,10 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Log the user in and get a valid access token.
+     * Logs the user in and get a valid access token.
      * 
-     * @param email
-     * @param password
+     * @param usernameOrEmail the username or email associated with the user in API BaaS
+     * @param password the users API BaaS password
      * @return non-null ApiResponse if request succeeds, check getError() for
      *         "invalid_grant" to see if access is denied.
      */
@@ -608,9 +676,9 @@ public class DataClient implements LocationListener {
 	 * Log the user in and get a valid access token. Executes asynchronously in
 	 * background and the callbacks are called in the UI thread.
 	 * 
-	 * @param email
-	 * @param password
-	 * @param callback
+	 * @param  usernameOrEmail  the username or email associated with the user in API BaaS
+     * @param  password  the users API BaaS password
+     * @param  callback  callback function called when the API returns a response     
 	 */
 	public void authorizeAppUserAsync(final String usernameOrEmail,
 			final String password, final ApiResponseCallback callback) {
@@ -626,10 +694,10 @@ public class DataClient implements LocationListener {
      * Change the password for the currently logged in user. You must supply the
      * old password and the new password.
      * 
-     * @param username
-     * @param oldPassword
-     * @param newPassword
-     * @return
+     * @param username the username or email address associated with the user in API BaaS
+     * @param oldPassword the user's old password
+     * @param newPassword the user's new password
+     * @return ApiResponse object
      */
     public ApiResponse changePassword(String username, String oldPassword,
             String newPassword) {
