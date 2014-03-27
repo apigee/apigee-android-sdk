@@ -106,6 +106,30 @@ public class DataClient implements LocationListener {
 
     //static RestTemplate restTemplate = new RestTemplate(true);  // include default converters
 
+    @Override
+    public void onProviderDisabled(String provider) {
+        
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        
+    }
+
+    public interface Query {
+
+        public ApiResponse getResponse();
+
+        public boolean more();
+
+        public Query next();
+
+    }
 
     public static boolean isUuidValid(UUID uuid) {
     	return( uuid != null );
@@ -211,6 +235,11 @@ public class DataClient implements LocationListener {
     public void init() {
     }
     
+
+    /****************** LOGGING ***********************/
+    /****************** LOGGING ***********************/
+
+
     /**
      * Logs a trace-level logging message with tag 'DATA_CLIENT'
      *
@@ -265,7 +294,23 @@ public class DataClient implements LocationListener {
     		log.e(LOGGING_TAG,logMessage);
     	}
     }
+
+    public void writeLog(String logMessage) {
+        if( log != null ) {
+            //TODO: do we support different log levels in this class?
+            log.d(LOGGING_TAG, logMessage);
+        }
+    }
     
+
+    /****************** ACCESSORS/MUTATORS ***********************/
+    /****************** ACCESSORS/MUTATORS ***********************/
+
+    /**
+     * Sets a new URLConnectionFactory object in the DataClient
+     *
+     * @param  urlConnectionFactory  a new URLConnectionFactory object
+     */
     public void setUrlConnectionFactory(URLConnectionFactory urlConnectionFactory) {
     	this.urlConnectionFactory = urlConnectionFactory;
     }
@@ -378,7 +423,7 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Updates the client ID credential in the DataClient object. Not safe for most mobile use.
+     * Sets the client ID credential in the DataClient object. Not safe for most mobile use.
      *
      * @param clientId the client key id
      * @return DataClient object for method call chaining
@@ -408,7 +453,7 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Updates the client secret credential in the DataClient object. Not safe for most mobile use.
+     * Sets the client secret credential in the DataClient object. Not safe for most mobile use.
      *
      * @param clientSecret the client secret
      * @return DataClient object for method call chaining
@@ -468,6 +513,18 @@ public class DataClient implements LocationListener {
         this.currentOrganization = currentOrganization;
     }
     
+    public UUID getUniqueDeviceID() {
+        if (deviceID == null) {
+            deviceID = new DeviceUuidFactory(context).getDeviceUuid();
+        }
+        
+        return deviceID;
+    }
+
+
+    /****************** API/HTTP REQUEST ***********************/
+    /****************** API/HTTP REQUEST ***********************/
+
     /**
      *  Forms and initiates a raw synchronous http request and processes the response.
      *
@@ -608,7 +665,8 @@ public class DataClient implements LocationListener {
 
 
     /**
-     * High-level synchronous API request. Implements 
+     * High-level synchronous API request. Implements the http request
+     * for most SDK methods by calling 
      * {@link #doHttpRequest(String,Map<String,Object>,Object,String...)}
      * 
      *  @param  httpMethod the http method in the format: 
@@ -637,10 +695,14 @@ public class DataClient implements LocationListener {
         }
     }
 
+
+    /****************** LOG IN/LOG OUT/OAUTH ***********************/
+    /****************** LOG IN/LOG OUT/OAUTH ***********************/
+
     /**
      * Logs the user in and get a valid access token.
      * 
-     * @param usernameOrEmail the username or email associated with the user in API BaaS
+     * @param usernameOrEmail the username or email associated with the user entity in API BaaS
      * @param password the users API BaaS password
      * @return non-null ApiResponse if request succeeds, check getError() for
      *         "invalid_grant" to see if access is denied.
@@ -676,9 +738,9 @@ public class DataClient implements LocationListener {
 	 * Log the user in and get a valid access token. Executes asynchronously in
 	 * background and the callbacks are called in the UI thread.
 	 * 
-	 * @param  usernameOrEmail  the username or email associated with the user in API BaaS
+	 * @param  usernameOrEmail  the username or email associated with the user entity in API BaaS
      * @param  password  the users API BaaS password
-     * @param  callback  callback function called when the API returns a response     
+     * @param  callback  an ApiResponseCallback to handle the async response
 	 */
 	public void authorizeAppUserAsync(final String usernameOrEmail,
 			final String password, final ApiResponseCallback callback) {
@@ -694,7 +756,7 @@ public class DataClient implements LocationListener {
      * Change the password for the currently logged in user. You must supply the
      * old password and the new password.
      * 
-     * @param username the username or email address associated with the user in API BaaS
+     * @param username the username or email address associated with the user entity in API BaaS
      * @param oldPassword the user's old password
      * @param newPassword the user's new password
      * @return ApiResponse object
@@ -714,9 +776,9 @@ public class DataClient implements LocationListener {
     /**
      * Log the user in with their numeric pin-code and get a valid access token.
      * 
-     * @param email
-     * @param pin
-     * @return non-null ApiResponse if request succeeds, check getError() for
+     * @param  email  the email address associated with the user entity in API BaaS
+     * @param  pin  the pin associated with the user entity in API BaaS
+     * @return  non-null ApiResponse if request succeeds, check getError() for
      *         "invalid_grant" to see if access is denied.
      */
     public ApiResponse authorizeAppUserViaPin(String email, String pin) {
@@ -751,9 +813,8 @@ public class DataClient implements LocationListener {
 	 * Executes asynchronously in background and the callbacks are called in the
 	 * UI thread.
 	 * 
-	 * @param email
-	 * @param pin
-	 * @param callback
+	 * @param  email  the email address associated with the user entity in API BaaS
+     * @param  pin  the pin associated with the user entity in API BaaS     
 	 */
 	public void authorizeAppUserViaPinAsync(final String email,
 			final String pin, final ApiResponseCallback callback) {
@@ -767,10 +828,10 @@ public class DataClient implements LocationListener {
 
     /**
      * Log the user in with their Facebook access token retrieved via Facebook
-     * OAuth.
+     * OAuth. Sets the user's identifier and API BaaS OAuth2 access token in DataClient 
+     * if successfully authorized.
      * 
-     * @param email
-     * @param pin
+     * @param fb_access_token the valid OAuth token returned by Facebook     
      * @return non-null ApiResponse if request succeeds, check getError() for
      *         "invalid_grant" to see if access is denied.
      */
@@ -801,14 +862,14 @@ public class DataClient implements LocationListener {
     }
     
 	/**
-	 * Log the user in with their numeric pin-code and get a valid access token.
-	 * Executes asynchronously in background and the callbacks are called in the
-	 * UI thread.
-	 * 
-	 * @param email
-	 * @param pin
-	 * @param callback
-	 */
+     * Log the user in with their Facebook access token retrieved via Facebook
+     * OAuth. Sets the user's identifier and API BaaS OAuth2 access token in DataClient 
+     * if successfully authorized. Executes asynchronously in background and the 
+     * callbacks are called in the UI thread.
+     * 
+     * @param  fb_access_token the valid OAuth token returned by Facebook 
+     * @param  callback  an ApiResponseCallback to handle the async response          
+     */
 	public void authorizeAppUserViaFacebookAsync(final String fb_access_token,
 			final ApiResponseCallback callback) {
 		(new ClientAsyncTask<ApiResponse>(callback) {
@@ -820,9 +881,11 @@ public class DataClient implements LocationListener {
 	}
 
     /**
-     * Log out a user and destroy the token on the server.
+     * Log out a user and destroy the access token currently stored in DataClient 
+     * on the server and in the DataClient.
      * 
-     * @param username The username to be logged out
+     * @param  username  The username to be logged out
+     * @return  non-null ApiResponse if request succeeds
      */
     public ApiResponse logOutAppUser(String username) {
         String token = getAccessToken();
@@ -840,11 +903,13 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Log out a user and destroy the token on the server.
+     * Log out a user and destroy the access token currently stored in DataClient 
+     * on the server and in the DataClient.
      * Executes asynchronously in background and the callbacks are called in the
      * UI thread.
      * 
-     * @param username The username to be logged out
+     * @param  username  The username to be logged out
+     * @param  callback  an ApiResponseCallback to handle the async response     
      */
     public void logOutAppUserAsync(final String username, final ApiResponseCallback callback) {
         (new ClientAsyncTask<ApiResponse>(callback) {
@@ -856,11 +921,12 @@ public class DataClient implements LocationListener {
     }
 
    /**
-     * Destroy a specific user token on the server.
-     * The token will also be cleared from the DataClient instance, if it matches the token provided.
+     * Destroy a specific user token on the server. The token will also be cleared 
+     * from the DataClient instance, if it matches the token provided.
      * 
      * @param username The username to be logged out
      * @param token The access token to be destroyed on the server
+     * @return  non-null ApiResponse if request succeeds
      */
     public ApiResponse logOutAppUserForToken(String username, String token) {                
         Map<String,Object> params = new HashMap<String,Object>();
@@ -879,12 +945,12 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Destroy a specific user token on the server.
-     * The token will also be cleared from the DataClient instance, if it matches the token provided.
+     * Destroy a specific user token on the server. The token will also be cleared 
+     * from the DataClient instance, if it matches the token provided.
      * Executes asynchronously in background and the callbacks are called in the UI thread.
      * 
-     * @param username The username to be logged out
-     * @param token The access token to be destroyed on the server
+     * @param  username  The username to be logged out
+     * @param  token  The access token to be destroyed on the server     
      */
     public void logOutAppUserForTokenAsync(final String username, final String token, final ApiResponseCallback callback) {
         (new ClientAsyncTask<ApiResponse>(callback) {
@@ -897,8 +963,10 @@ public class DataClient implements LocationListener {
 
     /**
      * Log out a user and destroy all associated tokens on the server.
+     * The token stored in DataClient will also be destroyed.
      * 
-     * @param username The username to be logged out
+     * @param  username The username to be logged out
+     * @return  non-null ApiResponse if request succeeds
      */
     public ApiResponse logOutAppUserForAllTokens(String username) {
         ApiResponse response = apiRequest(HTTP_METHOD_PUT, null, null,
@@ -914,9 +982,11 @@ public class DataClient implements LocationListener {
 
     /**
      * Log out a user and destroy all associated tokens on the server.
+     * The token stored in DataClient will also be destroyed.
      * Executes asynchronously in background and the callbacks are called in the UI thread.
      * 
-     * @param username The username to be logged out
+     * @param  username  The username to be logged out
+     * @return  non-null ApiResponse if request succeeds
      */
     public void logOutAppUserForAllTokensAsync(final String username, final ApiResponseCallback callback) {
         (new ClientAsyncTask<ApiResponse>(callback) {
@@ -928,13 +998,11 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Log the app in with it's client id and client secret key. Not recommended
-     * for production apps.
+     * Log the app in with it's application (not organization) client id and 
+     * client secret key. Not recommended for production apps.
      * 
-     * @param email
-     * @param pin
-     * @return non-null ApiResponse if request succeeds, check getError() for
-     *         "invalid_grant" to see if access is denied.
+     * @param  clientId  the API BaaS application's client ID 
+     * @param  clientSecret  the API BaaS application's client secret     
      */
     public ApiResponse authorizeAppClient(String clientId, String clientSecret) {
         validateNonEmptyParam(clientId, "client identifier");
@@ -964,14 +1032,18 @@ public class DataClient implements LocationListener {
         return response;
     }
 
+
+    /****************** PUSH NOTIFICATIONS ***********************/
+    /****************** PUSH NOTIFICATIONS ***********************/
+
 	/**
-	 * Log the app in with it's client id and client secret key. Not recommended
-	 * for production apps. Executes asynchronously in background and the
-	 * callbacks are called in the UI thread.
+	 * Log the app in with it's application (not organization) client id and 
+	 * client secret key. Not recommended for production apps. Executes asynchronously 
+	 * in background and the callbacks are called in the UI thread.
 	 * 
-	 * @param clientId
-	 * @param clientSecret
-	 * @param callback
+	 * @param  clientId  the API BaaS application's client ID 
+     * @param  clientSecret  the API BaaS application's client secret
+	 * @param  callback  an ApiResponseCallback to handle the async response
 	 */
 	public void authorizeAppClientAsync(final String clientId,
 			final String clientSecret, final ApiResponseCallback callback) {
@@ -991,11 +1063,13 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Registers a device using the device's unique device ID.
+     * Creates or updates a device entity using the provided deviceId, and saves the device model, 
+     * device platform, and OS version in the entity. 
+     * If an entity does not exist for the device, it is created with a UUID equal to deviceId.
      * 
-     * @param context
-     * @param properties
-     * @return a Device object if success
+     * @param  deviceId  the device entity's UUID
+     * @param  properties  additional properties to save in the device entity.      
+     * @return  a Device object if success. Models the API BaaS device entity.
      */
     public Device registerDevice(UUID deviceId, Map<String, Object> properties) {
         assertValidApplicationId();
@@ -1015,11 +1089,38 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Registers a device using the device's unique device ID.
+     * Creates or updates a device entity using the provided deviceId, and saves the device model, 
+     * device platform, and OS version in the entity. 
+     * If an entity does not exist for the device, it is created with a UUID equal to deviceId.
+     * Executes asynchronously in background and the callbacks are called in the UI thread.
+     * 
+     * @param  deviceId  the device entity's UUID
+     * @param  properties  additional properties to save in the device entity     
+     * @param  callback  a DeviceRegistrationCallback to handle the async response
+     */
+    public void registerDeviceAsync(final UUID deviceId,
+            final Map<String, Object> properties,
+            final DeviceRegistrationCallback callback) {
+        (new ClientAsyncTask<Device>(callback) {
+            @Override
+            public Device doTask() {
+                return registerDevice(deviceId, properties);
+            }
+        }).execute();
+    }
+
+    /**
+     * Registers a device for push notifications using the device entity UUID. If
+     * the device does not have an associated entity, pass DataClient.getUniqueDeviceID()
+     * and one will be created.
      *
-     * @param context
-     * @param properties
-     * @return a Device object if success
+     * @param  deviceId  the UUID of the device entity associated with this device
+     * @param  notifier  the 'name' property of the notifier that will be used to send
+     *      notifications to this device 
+     * @param  token  the Google Cloud Messaging (GCM) API key. Should be the same as
+     *      the API key saved in the notifier entity.
+     * @param  properties  additional properties to be stored in the device entity
+     * @return  a Device object if success
      */
     public Device registerDeviceForPush(UUID deviceId,
                                         String notifier,
@@ -1034,16 +1135,20 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Registers a device using the device's unique device ID. Executes
-     * asynchronously in background and the callbacks are called in the UI
-     * thread.
+     * Registers a device for push notifications using the device entity UUID. If
+     * the device does not have an associated entity, pass DataClient.getUniqueDeviceID()
+     * and one will be created. Executes asynchronously in background and the callbacks      
+     * are called in the UI thread.
      *
-     * @param deviceId
-     * @param notifier
-     * @param token
-     * @param properties
-     * @param callback
+     * @param  deviceId  the UUID of the device entity associated with this device
+     * @param  notifier  the 'name' property of the notifier that will be used to send
+     *      notifications to this device 
+     * @param  gcm_api_key  the Google Cloud Messaging (GCM) API key. Should be the same as
+     *      the API key saved in the notifier entity.
+     * @param  properties  additional properties to be stored in the device entity     
+     * @param  callback  a DeviceRegistrationCallback to handle the async response
      */
+
     public void registerDeviceForPushAsync(final UUID deviceId,
                                            final String notifier,
                                            final String token,
@@ -1058,13 +1163,15 @@ public class DataClient implements LocationListener {
     }
     
     /**
-     * Creates a Entity and populates it with push notification parameters in preparation for sending to server
-     * @param payload the push notification payload
-     * @param destination the destination for the push notification
-     * @param notifier the notifier name
-     * @return populated Entity instance
-     * @see GCMPayload
-     * @see GCMDestination
+     * Creates a notification Entity and populates it with push notification parameters 
+     * in preparation for sending to notification service.
+     * @param  payload the push notification payload
+     * @param  destination the destination for the push notification. Can be a single device entity,
+     *      set of devices, or all devices. For more information, see GCMDestination.
+     * @param  notifier the 'name' property of the notifier entity to be used to send the notification
+     * @return  populated Entity instance
+     * @see  GCMPayload
+     * @see  GCMDestination
      */
     protected Entity populatePushEntity(GCMPayload payload,GCMDestination destination,String notifier) {
     	if ((payload != null) && (destination != null) && (notifier != null)) {
@@ -1088,13 +1195,14 @@ public class DataClient implements LocationListener {
     }
     
     /**
-     * Send a push notification synchronously
-     * @param payload the payload to send
-     * @param destination the destination for the notification
-     * @param notifier the notifier name
-     * @return ApiResponse instance
-     * @see GCMPayload
-     * @see GCMDestination
+     * Creates a notification entity and sends a push notification synchronously.
+     * @param  payload the push notification payload
+     * @param  destination the destination for the push notification. Can be a single device entity,
+     *      set of devices, or all devices. For more information, see GCMDestination.
+     * @param  notifier the 'name' property of the notifier entity to be used to send the notification
+     * @return  ApiResponse object from the notification entity creation
+     * @see  GCMPayload
+     * @see  GCMDestination
      */
     public ApiResponse pushNotification(GCMPayload payload,
     					GCMDestination destination,
@@ -1103,13 +1211,13 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Send a push notification asynchronously
-     * @param payload the payload to send
-     * @param destination the destination for the notification
-     * @param notifier the notifier name
-     * @param callback the callback when the request is completed
-     * @see GCMPayload
-     * @see GCMDestination
+     * Creates a notification entity and sends a push notification asynchronously.
+     * @param  payload the push notification payload
+     * @param  destination the destination for the push notification. Can be a single device entity,
+     *      set of devices, or all devices. For more information, see GCMDestination.
+     * @param  notifier the 'name' property of the notifier entity to be used to send the notification     
+     * @see  GCMPayload
+     * @see  GCMDestination
      */
     public void pushNotificationAsync(GCMPayload payload,
 			GCMDestination destination,
@@ -1118,25 +1226,9 @@ public class DataClient implements LocationListener {
     	this.createEntityAsync(populatePushEntity(payload,destination,notifier),callback);
     }
 
-	/**
-	 * Registers a device using the device's unique device ID. Executes
-	 * asynchronously in background and the callbacks are called in the UI
-	 * thread.
-	 * 
-	 * @param deviceId
-	 * @param properties
-	 * @param callback
-	 */
-	public void registerDeviceAsync(final UUID deviceId,
-			final Map<String, Object> properties,
-			final DeviceRegistrationCallback callback) {
-		(new ClientAsyncTask<Device>(callback) {
-			@Override
-			public Device doTask() {
-				return registerDevice(deviceId, properties);
-			}
-		}).execute();
-	}
+
+    /****************** GENERIC ENTITY MANAGEMENT ***********************/
+    /****************** GENERIC ENTITY MANAGEMENT ***********************/
 
     /**
      * Create a new entity on the server.
@@ -1242,6 +1334,53 @@ public class DataClient implements LocationListener {
   		}).execute();
   	}
     
+    public Entity createTypedEntity(String type) {
+        Entity entity = null;
+        
+        if( Activity.isSameType(type) ) {
+            entity = new Activity(this);
+        } else if( Device.isSameType(type) ) {
+            entity = new Device(this);
+        } else if( Group.isSameType(type) ) {
+            entity = new Group(this);
+        } else if( Message.isSameType(type) ) {
+            entity = new Message(this);
+        } else if( User.isSameType(type) ) {
+            entity = new User(this);
+        } else {
+            entity = new Entity(this);
+        }
+        
+        return entity;
+    }
+
+    public ApiResponse getEntities(String type,String queryString)
+    {
+        Map<String, Object> params = null;
+
+        if (queryString.length() > 0) {
+            params = new HashMap<String, Object>();
+            params.put("ql", queryString);
+        }
+        
+        return apiRequest(HTTP_METHOD_GET, // method
+                            params, // params
+                            null, // data
+                            organizationId,
+                            applicationId,
+                            type);
+    }
+
+    public void getEntitiesAsync(final String type,
+            final String queryString, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return getEntities(type, queryString);
+            }
+        }).execute();
+    }
+
     /**
      * Update an existing entity on the server.
      * 
@@ -1326,6 +1465,119 @@ public class DataClient implements LocationListener {
     }
     
     /**
+     * Perform a query request and return a query object. The Query object
+     * provides a simple way of dealing with result sets that need to be
+     * iterated or paged through.
+     * 
+     * @param method
+     * @param params
+     * @param data
+     * @param segments
+     * @return
+     */
+    public Query queryEntitiesRequest(String httpMethod,
+            Map<String, Object> params, Object data, String... segments) {
+        ApiResponse response = apiRequest(httpMethod, params, data, segments);
+        return new EntityQuery(response, httpMethod, params, data, segments);
+    }
+
+    /**
+     * Perform a query request and return a query object. The Query object
+     * provides a simple way of dealing with result sets that need to be
+     * iterated or paged through. Executes asynchronously in background and the
+     * callbacks are called in the UI thread.
+     * 
+     * @param callback
+     * @param method
+     * @param params
+     * @param data
+     * @param segments
+     */
+    public void queryEntitiesRequestAsync(final QueryResultsCallback callback,
+            final String httpMethod, final Map<String, Object> params,
+            final Object data, final String... segments) {
+        (new ClientAsyncTask<Query>(callback) {
+            @Override
+            public Query doTask() {
+                return queryEntitiesRequest(httpMethod, params, data, segments);
+            }
+        }).execute();
+    }
+
+    /**
+     * Query object
+     * 
+     */
+    private class EntityQuery implements Query {
+        final String httpMethod;
+        final Map<String, Object> params;
+        final Object data;
+        final String[] segments;
+        final ApiResponse response;
+
+        private EntityQuery(ApiResponse response, String httpMethod,
+                Map<String, Object> params, Object data, String[] segments) {
+            this.response = response;
+            this.httpMethod = httpMethod;
+            this.params = params;
+            this.data = data;
+            this.segments = segments;
+        }
+
+        private EntityQuery(ApiResponse response, EntityQuery q) {
+            this.response = response;
+            httpMethod = q.httpMethod;
+            params = q.params;
+            data = q.data;
+            segments = q.segments;
+        }
+
+        /**
+         * @return the api response of the last request
+         */
+        public ApiResponse getResponse() {
+            return response;
+        }
+
+        /**
+         * @return true if the server indicates more results are available
+         */
+        public boolean more() {
+            if ((response != null) && (response.getCursor() != null)
+                    && (response.getCursor().length() > 0)) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Performs a request for the next set of results
+         * 
+         * @return query that contains results and where to get more from.
+         */
+        public Query next() {
+            if (more()) {
+                Map<String, Object> nextParams = null;
+                if (params != null) {
+                    nextParams = new HashMap<String, Object>(params);
+                } else {
+                    nextParams = new HashMap<String, Object>();
+                }
+                nextParams.put("cursor", response.getCursor());
+                ApiResponse nextResponse = apiRequest(httpMethod, nextParams, data,
+                        segments);
+                return new EntityQuery(nextResponse, this);
+            }
+            return null;
+        }
+
+    }
+    
+
+    /****************** USER ENTITY MANAGEMENT ***********************/
+    /****************** USER ENTITY MANAGEMENT ***********************/
+
+    /**
      * Creates a user.
      * 
      * @param username
@@ -1376,6 +1628,164 @@ public class DataClient implements LocationListener {
 	}
 
     /**
+     * Perform a query of the users collection.
+     * 
+     * @return
+     */
+    public Query queryUsers() {
+        Query q = queryEntitiesRequest(HTTP_METHOD_GET, null, null,
+                organizationId,  applicationId, "users");
+        return q;
+    }
+    
+    /**
+     * Perform a query of the users collection. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param callback The object with methods to call with the query response.
+     */
+    public void queryUsersAsync(QueryResultsCallback callback) {
+        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
+                organizationId, applicationId, "users");
+    }
+
+
+    /**
+     * Perform a query of the users collection using the provided query command.
+     * For example: "name contains 'ed'".
+     * 
+     * @param ql
+     * @return
+     */
+    public Query queryUsers(String ql) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ql", ql);
+        Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null,organizationId,
+                applicationId, "users");
+        return q;
+    }
+
+    /**
+     * Perform a query of the users collection using the provided query command.
+     * For example: "name contains 'ed'". Executes asynchronously in background
+     * and the callbacks are called in the UI thread.
+     * 
+     * @param ql A query string.
+     * @param callback The object with methods to call with the query response.
+     */
+    public void queryUsersAsync(String ql, QueryResultsCallback callback) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ql", ql);
+        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null, 
+                organizationId, applicationId, "users");
+    }
+    
+    /**
+     * Perform a query of the users collection within the specified distance of
+     * the specified location and optionally using the provided query command.
+     * For example: "name contains 'ed'".
+     * 
+     * @param distance
+     * @param location
+     * @param ql
+     * @return
+     */
+    public Query queryUsersWithinLocation(float distance, float lattitude,
+            float longitude, String ql) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ql",
+                this.makeLocationQL(distance, lattitude, longitude, ql));
+        Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null, organizationId,
+                applicationId, "users");
+        return q;
+    }
+
+    
+    /****************** GROUP ENTITY MANAGEMENT ***********************/
+    /****************** GROUP ENTITY MANAGEMENT ***********************/
+
+    /**
+     * Creates a group with the specified group path. Group paths can be slash
+     * ("/") delimited like file paths for hierarchical group relationships.
+     * 
+     * @param groupPath The path to use for the new group.
+     * @return Results of the operation.
+     */
+    public ApiResponse createGroup(String groupPath) {
+        return createGroup(groupPath, null);
+    }
+
+    /**
+     * Creates a group with the specified group path. Group paths can be slash
+     * ("/") delimited like file paths for hierarchical group relationships.
+     * Executes asynchronously in background and the callbacks are called in the
+     * UI thread.
+     * 
+     * @param groupPath The path to use for the new group.
+     * @param callback The object with methods to call with the response.
+     */
+    public void createGroupAsync(String groupPath,
+            final ApiResponseCallback callback) {
+        createGroupAsync(groupPath, null);
+    }
+
+    /**
+     * Creates a group with the specified group path and group title. Group
+     * paths can be slash ("/") delimited like file paths for hierarchical group
+     * relationships.
+     * 
+     * @param groupPath The path to use for the new group.
+     * @param groupTitle The title to use for the new group.
+     * @return Results of the operation.
+     */
+    public ApiResponse createGroup(String groupPath, String groupTitle) {
+     return createGroup(groupPath, groupTitle, null);  
+    }
+    
+    /**
+     * Creates a group with the specified group path and group title. Group
+     * paths can be slash ("/") deliminted like file paths for hierarchical
+     * group relationships. Executes asynchronously in background and the
+     * callbacks are called in the UI thread.
+     * 
+     * @param groupPath The path to use for the new group.
+     * @param groupTitle The title to use for the new group.
+     * @param callback The object with methods to call with the response.
+     */
+    public void createGroupAsync(final String groupPath,
+            final String groupTitle, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return createGroup(groupPath, groupTitle);
+            }
+        }).execute();
+    }
+
+    /**
+     * Create a group with a path, title and name
+     * @param groupPath The path to use for the new group.
+     * @param groupTitle The title to use for the new group.
+     * @param groupName The name to use for the new group.
+     * @return
+     */
+    public ApiResponse createGroup(String groupPath, String groupTitle, String groupName){
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("type", "group");
+        data.put("path", groupPath);
+        
+        if (groupTitle != null) {
+            data.put("title", groupTitle);
+        }
+        
+        if(groupName != null){
+            data.put("name", groupName);
+        }
+        
+        return apiRequest(HTTP_METHOD_POST, null, data,  organizationId, applicationId, "groups");
+    }
+
+    /**
      * Get the groups for the user.
      * 
      * @param userId
@@ -1411,6 +1821,65 @@ public class DataClient implements LocationListener {
 			}
 		}).execute();
 	}
+
+    /**
+     * Queries the users for the specified group.
+     * 
+     * @param groupId ID of the group for which to find users.
+     * @return Results of the query.
+     */
+    public Query queryUsersForGroup(String groupId) {
+        Query q = queryEntitiesRequest(HTTP_METHOD_GET, null, null, organizationId,
+                applicationId, "groups", groupId, "users");
+        return q;
+    }
+
+    /**
+     * Queries the users for the specified group. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param groupId The ID of the group from which to find users.
+     * @param callback The object with methods to call with the query response.
+     */
+    public void queryUsersForGroupAsync(String groupId,
+            QueryResultsCallback callback) {
+        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
+                getApplicationId(), "groups", groupId, "users");
+    }
+
+    /**
+     * Adds a user to the specified groups.
+     * 
+     * @param userId ID of the user to add.
+     * @param groupId ID of the group. 
+     * @return Results of the request.
+     */
+    public ApiResponse addUserToGroup(String userId, String groupId) {
+        return apiRequest(HTTP_METHOD_POST, null, null, organizationId,  applicationId, "groups",
+                groupId, "users", userId);
+    }
+
+    /**
+     * Adds a user to the specified groups. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param userId ID of the user to add.
+     * @param groupId ID of the group.
+     * @param callback The object with methods to call with the response.
+     */
+    public void addUserToGroupAsync(final String userId, final String groupId,
+            final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return addUserToGroup(userId, groupId);
+            }
+        }).execute();
+    }
+
+
+    /****************** ACTIVITY ENTITY MANAGEMENT ***********************/
+    /****************** ACTIVITY ENTITY MANAGEMENT ***********************/
 
     /**
      * Get a user's activity feed. Returned as a query to ease paging.
@@ -1629,315 +2098,28 @@ public class DataClient implements LocationListener {
         return q;
     }
 
-	/**
-	 * Get a group's activity feed. Returned as a query to ease paging. Executes
-	 * asynchronously in background and the callbacks are called in the UI
-	 * thread.
-	 * 
-	 * 
-	 * @param userId
-	 * @param callback
-	 */
-	public void queryActivityFeedForGroupAsync(final String groupId,
-			final QueryResultsCallback callback) {
-		(new ClientAsyncTask<Query>(callback) {
-			@Override
-			public Query doTask() {
-				return queryActivityFeedForGroup(groupId);
-			}
-		}).execute();
-	}
-
     /**
-     * Perform a query request and return a query object. The Query object
-     * provides a simple way of dealing with result sets that need to be
-     * iterated or paged through.
+     * Get a group's activity feed. Returned as a query to ease paging. Executes
+     * asynchronously in background and the callbacks are called in the UI
+     * thread.
      * 
-     * @param method
-     * @param params
-     * @param data
-     * @param segments
-     * @return
-     */
-    public Query queryEntitiesRequest(String httpMethod,
-            Map<String, Object> params, Object data, String... segments) {
-        ApiResponse response = apiRequest(httpMethod, params, data, segments);
-        return new EntityQuery(response, httpMethod, params, data, segments);
-    }
-
-	/**
-	 * Perform a query request and return a query object. The Query object
-	 * provides a simple way of dealing with result sets that need to be
-	 * iterated or paged through. Executes asynchronously in background and the
-	 * callbacks are called in the UI thread.
-	 * 
-	 * @param callback
-	 * @param method
-	 * @param params
-	 * @param data
-	 * @param segments
-	 */
-	public void queryEntitiesRequestAsync(final QueryResultsCallback callback,
-			final String httpMethod, final Map<String, Object> params,
-			final Object data, final String... segments) {
-		(new ClientAsyncTask<Query>(callback) {
-			@Override
-			public Query doTask() {
-				return queryEntitiesRequest(httpMethod, params, data, segments);
-			}
-		}).execute();
-	}
-	
-    /**
-     * Perform a query of the users collection.
      * 
-     * @return
+     * @param userId
+     * @param callback
      */
-    public Query queryUsers() {
-        Query q = queryEntitiesRequest(HTTP_METHOD_GET, null, null,
-                organizationId,  applicationId, "users");
-        return q;
+    public void queryActivityFeedForGroupAsync(final String groupId,
+            final QueryResultsCallback callback) {
+        (new ClientAsyncTask<Query>(callback) {
+            @Override
+            public Query doTask() {
+                return queryActivityFeedForGroup(groupId);
+            }
+        }).execute();
     }
     
-	/**
-	 * Perform a query of the users collection. Executes asynchronously in
-	 * background and the callbacks are called in the UI thread.
-	 * 
-	 * @param callback The object with methods to call with the query response.
-	 */
-	public void queryUsersAsync(QueryResultsCallback callback) {
-		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
-				organizationId, applicationId, "users");
-	}
 
-
-    /**
-     * Perform a query of the users collection using the provided query command.
-     * For example: "name contains 'ed'".
-     * 
-     * @param ql
-     * @return
-     */
-    public Query queryUsers(String ql) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ql", ql);
-        Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null,organizationId,
-                applicationId, "users");
-        return q;
-    }
-
-	/**
-	 * Perform a query of the users collection using the provided query command.
-	 * For example: "name contains 'ed'". Executes asynchronously in background
-	 * and the callbacks are called in the UI thread.
-	 * 
-	 * @param ql A query string.
-	 * @param callback The object with methods to call with the query response.
-	 */
-	public void queryUsersAsync(String ql, QueryResultsCallback callback) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ql", ql);
-		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null, 
-				organizationId, applicationId, "users");
-	}
-	
-    /**
-     * Perform a query of the users collection within the specified distance of
-     * the specified location and optionally using the provided query command.
-     * For example: "name contains 'ed'".
-     * 
-     * @param distance
-     * @param location
-     * @param ql
-     * @return
-     */
-    public Query queryUsersWithinLocation(float distance, float lattitude,
-            float longitude, String ql) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ql",
-                this.makeLocationQL(distance, lattitude, longitude, ql));
-        Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null, organizationId,
-                applicationId, "users");
-        return q;
-    }
-
-    /**
-     * Queries the users for the specified group.
-     * 
-     * @param groupId ID of the group for which to find users.
-     * @return Results of the query.
-     */
-    public Query queryUsersForGroup(String groupId) {
-        Query q = queryEntitiesRequest(HTTP_METHOD_GET, null, null, organizationId,
-                applicationId, "groups", groupId, "users");
-        return q;
-    }
-
-	/**
-	 * Queries the users for the specified group. Executes asynchronously in
-	 * background and the callbacks are called in the UI thread.
-	 * 
-	 * @param groupId The ID of the group from which to find users.
-	 * @param callback The object with methods to call with the query response.
-	 */
-	public void queryUsersForGroupAsync(String groupId,
-			QueryResultsCallback callback) {
-		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
-				getApplicationId(), "groups", groupId, "users");
-	}
-
-    /**
-     * Adds a user to the specified groups.
-     * 
-     * @param userId ID of the user to add.
-     * @param groupId ID of the group. 
-     * @return Results of the request.
-     */
-    public ApiResponse addUserToGroup(String userId, String groupId) {
-        return apiRequest(HTTP_METHOD_POST, null, null, organizationId,  applicationId, "groups",
-                groupId, "users", userId);
-    }
-
-	/**
-	 * Adds a user to the specified groups. Executes asynchronously in
-	 * background and the callbacks are called in the UI thread.
-	 * 
-	 * @param userId ID of the user to add.
-	 * @param groupId ID of the group.
-	 * @param callback The object with methods to call with the response.
-	 */
-	public void addUserToGroupAsync(final String userId, final String groupId,
-			final ApiResponseCallback callback) {
-		(new ClientAsyncTask<ApiResponse>(callback) {
-			@Override
-			public ApiResponse doTask() {
-				return addUserToGroup(userId, groupId);
-			}
-		}).execute();
-	}
-
-    /**
-     * Creates a group with the specified group path. Group paths can be slash
-     * ("/") delimited like file paths for hierarchical group relationships.
-     * 
-     * @param groupPath The path to use for the new group.
-     * @return Results of the operation.
-     */
-    public ApiResponse createGroup(String groupPath) {
-        return createGroup(groupPath, null);
-    }
-
-	/**
-	 * Creates a group with the specified group path. Group paths can be slash
-	 * ("/") delimited like file paths for hierarchical group relationships.
-	 * Executes asynchronously in background and the callbacks are called in the
-	 * UI thread.
-	 * 
-	 * @param groupPath The path to use for the new group.
-	 * @param callback The object with methods to call with the response.
-	 */
-	public void createGroupAsync(String groupPath,
-			final ApiResponseCallback callback) {
-		createGroupAsync(groupPath, null);
-	}
-
-    /**
-     * Creates a group with the specified group path and group title. Group
-     * paths can be slash ("/") delimited like file paths for hierarchical group
-     * relationships.
-     * 
-     * @param groupPath The path to use for the new group.
-     * @param groupTitle The title to use for the new group.
-     * @return Results of the operation.
-     */
-    public ApiResponse createGroup(String groupPath, String groupTitle) {
-     return createGroup(groupPath, groupTitle, null);  
-    }
-    
-	/**
-	 * Creates a group with the specified group path and group title. Group
-	 * paths can be slash ("/") deliminted like file paths for hierarchical
-	 * group relationships. Executes asynchronously in background and the
-	 * callbacks are called in the UI thread.
-	 * 
-     * @param groupPath The path to use for the new group.
-     * @param groupTitle The title to use for the new group.
-	 * @param callback The object with methods to call with the response.
-	 */
-	public void createGroupAsync(final String groupPath,
-			final String groupTitle, final ApiResponseCallback callback) {
-		(new ClientAsyncTask<ApiResponse>(callback) {
-			@Override
-			public ApiResponse doTask() {
-				return createGroup(groupPath, groupTitle);
-			}
-		}).execute();
-	}
-
-    /**
-     * Create a group with a path, title and name
-     * @param groupPath The path to use for the new group.
-     * @param groupTitle The title to use for the new group.
-     * @param groupName The name to use for the new group.
-     * @return
-     */
-    public ApiResponse createGroup(String groupPath, String groupTitle, String groupName){
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("type", "group");
-        data.put("path", groupPath);
-        
-        if (groupTitle != null) {
-            data.put("title", groupTitle);
-        }
-        
-        if(groupName != null){
-            data.put("name", groupName);
-        }
-        
-        return apiRequest(HTTP_METHOD_POST, null, data,  organizationId, applicationId, "groups");
-    }
-    
-    /**
-     * Perform a query of the users collection using the provided query command.
-     * For example: "name contains 'ed'".
-     * 
-     * @param ql A query string.
-     * @return
-     */
-    public Query queryGroups(String ql) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ql", ql);
-        Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null, organizationId,
-                applicationId, "groups");
-        return q;
-    }
-
-	/**
-	 * Perform a query of the groups collection. Executes asynchronously in
-	 * background and the callbacks are called in the UI thread.
-	 * 
-	 * @param callback The object with methods to call with the query response.
-	 */
-	public void queryGroupsAsync(QueryResultsCallback callback) {
-		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
-				organizationId, applicationId, "groups");
-	}
-
-	/**
-	 * Perform a query of the groups collection using the provided query command.
-	 * For example: "name contains 'powerusers'". Executes asynchronously in background
-	 * and the callbacks are called in the UI thread.
-	 * 
-	 * @param ql A query string.
-	 * @param callback The object with methods to call with the query response.
-	 */
-	public void queryGroupsAsync(String ql, QueryResultsCallback callback) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ql", ql);
-		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null, 
-				organizationId, applicationId, "groups");
-	}
-    
+    /****************** ENTITY CONNECTIONS ***********************/
+    /****************** ENTITY CONNECTIONS ***********************/
 
     /**
      * Connect two entities together.
@@ -2194,107 +2376,9 @@ public class DataClient implements LocationListener {
 	    */
     }
 
-    @Override
-    public void onProviderDisabled(String provider) {
-    	
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    	
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    	
-    }
     
-    public UUID getUniqueDeviceID() {
-    	if (deviceID == null) {
-    		deviceID = new DeviceUuidFactory(context).getDeviceUuid();
-    	}
-    	
-    	return deviceID;
-    }
-	
-    public interface Query {
-
-        public ApiResponse getResponse();
-
-        public boolean more();
-
-        public Query next();
-
-    }
-
-    /**
-     * Query object
-     * 
-     */
-    private class EntityQuery implements Query {
-        final String httpMethod;
-        final Map<String, Object> params;
-        final Object data;
-        final String[] segments;
-        final ApiResponse response;
-
-        private EntityQuery(ApiResponse response, String httpMethod,
-                Map<String, Object> params, Object data, String[] segments) {
-            this.response = response;
-            this.httpMethod = httpMethod;
-            this.params = params;
-            this.data = data;
-            this.segments = segments;
-        }
-
-        private EntityQuery(ApiResponse response, EntityQuery q) {
-            this.response = response;
-            httpMethod = q.httpMethod;
-            params = q.params;
-            data = q.data;
-            segments = q.segments;
-        }
-
-        /**
-         * @return the api response of the last request
-         */
-        public ApiResponse getResponse() {
-            return response;
-        }
-
-        /**
-         * @return true if the server indicates more results are available
-         */
-        public boolean more() {
-            if ((response != null) && (response.getCursor() != null)
-                    && (response.getCursor().length() > 0)) {
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * Performs a request for the next set of results
-         * 
-         * @return query that contains results and where to get more from.
-         */
-        public Query next() {
-            if (more()) {
-                Map<String, Object> nextParams = null;
-                if (params != null) {
-                    nextParams = new HashMap<String, Object>(params);
-                } else {
-                    nextParams = new HashMap<String, Object>();
-                }
-                nextParams.put("cursor", response.getCursor());
-                ApiResponse nextResponse = apiRequest(httpMethod, nextParams, data,
-                        segments);
-                return new EntityQuery(nextResponse, this);
-            }
-            return null;
-        }
-
-    }
+    /****************** MESSAGE QUEUES ***********************/
+    /****************** MESSAGE QUEUES ***********************/
 
     private String normalizeQueuePath(String path) {
         return arrayToDelimitedString(
@@ -2393,33 +2477,81 @@ public class DataClient implements LocationListener {
                 normalizeQueuePath(subscriberQueue));
     }
     
-    public void writeLog(String logMessage) {
-    	if( log != null ) {
-    		//TODO: do we support different log levels in this class?
-    		log.d(LOGGING_TAG, logMessage);
-    	}
+    private class QueueQuery implements Query {
+        final String httpMethod;
+        final Map<String, Object> params;
+        final Object data;
+        final String queuePath;
+        final ApiResponse response;
+
+        private QueueQuery(ApiResponse response, String httpMethod,
+                Map<String, Object> params, Object data, String queuePath) {
+            this.response = response;
+            this.httpMethod = httpMethod;
+            this.params = params;
+            this.data = data;
+            this.queuePath = normalizeQueuePath(queuePath);
+        }
+
+        private QueueQuery(ApiResponse response, QueueQuery q) {
+            this.response = response;
+            httpMethod = q.httpMethod;
+            params = q.params;
+            data = q.data;
+            queuePath = q.queuePath;
+        }
+
+        /**
+         * @return the api response of the last request
+         */
+        public ApiResponse getResponse() {
+            return response;
+        }
+
+        /**
+         * @return true if the server indicates more results are available
+         */
+        public boolean more() {
+            if ((response != null) && (response.getCursor() != null)
+                    && (response.getCursor().length() > 0)) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Performs a request for the next set of results
+         * 
+         * @return query that contains results and where to get more from.
+         */
+        public Query next() {
+            if (more()) {
+                Map<String, Object> nextParams = null;
+                if (params != null) {
+                    nextParams = new HashMap<String, Object>(params);
+                } else {
+                    nextParams = new HashMap<String, Object>();
+                }
+                nextParams.put("start", response.getCursor());
+                ApiResponse nextResponse = apiRequest(httpMethod, nextParams, data,
+                        queuePath);
+                return new QueueQuery(nextResponse, this);
+            }
+            return null;
+        }
+
+    }
+
+    public Query queryQueuesRequest(String httpMethod,
+            Map<String, Object> params, Object data, String queuePath) {
+        ApiResponse response = apiRequest(httpMethod, params, data, queuePath);
+        return new QueueQuery(response, httpMethod, params, data, queuePath);
     }
     
-    public Entity createTypedEntity(String type) {
-    	Entity entity = null;
-    	
-    	if( Activity.isSameType(type) ) {
-    		entity = new Activity(this);
-    	} else if( Device.isSameType(type) ) {
-    		entity = new Device(this);
-    	} else if( Group.isSameType(type) ) {
-    		entity = new Group(this);
-    	} else if( Message.isSameType(type) ) {
-    		entity = new Message(this);
-    	} else if( User.isSameType(type) ) {
-    		entity = new User(this);
-    	} else {
-    		entity = new Entity(this);
-    	}
-    	
-    	return entity;
-    }
     
+    /****************** COLLECTION MANAGEMENT ***********************/
+    /****************** COLLECTION MANAGEMENT ***********************/
+
     public Collection getCollection(String type)
     {
         return getCollection(type,null);
@@ -2440,72 +2572,10 @@ public class DataClient implements LocationListener {
         }).execute();
     }
     
-    public ApiResponse getEntities(String type,String queryString)
-    {
-        Map<String, Object> params = null;
 
-        if (queryString.length() > 0) {
-        	params = new HashMap<String, Object>();
-        	params.put("ql", queryString);
-        }
-        
-        return apiRequest(HTTP_METHOD_GET, // method
-        					params, // params
-        					null, // data
-        					organizationId,
-        					applicationId,
-        					type);
-    }
+    /****************** EVENT ENTITY MANAGEMENT ***********************/
+    /****************** EVENT ENTITY MANAGEMENT ***********************/
 
-	public void getEntitiesAsync(final String type,
-			final String queryString, final ApiResponseCallback callback) {
-		(new ClientAsyncTask<ApiResponse>(callback) {
-			@Override
-			public ApiResponse doTask() {
-				return getEntities(type, queryString);
-			}
-		}).execute();
-	}
-	
-	protected void populateTimestamp(Date timestamp, Map<String,Object> mapEvent)
-	{
-		if (timestamp != null) {
-			mapEvent.put("timestamp", "" + timestamp.getTime());
-		} else {
-			// let the server assign the timestamp
-			mapEvent.put("timestamp", "0");
-		}
-	}
-	
-	protected void populateCounter(CounterIncrement counterIncrement, Map<String,Object> mapEvent)
-	{
-		if ((counterIncrement != null) && (mapEvent != null)) {
-			String counterName = counterIncrement.getCounterName();
-			if ((counterName != null) && (counterName.length() > 0)) {
-				Map<String, Object> mapCounters = null;
-				
-				Object existingCounters = mapEvent.get("counters");
-				
-				if (existingCounters != null) {
-					if (existingCounters instanceof Map) {
-						try {
-							mapCounters = (Map<String,Object>) existingCounters;
-						} catch (Throwable t) {
-							mapCounters = null;
-						}
-					}
-				}
-				
-				if (null == mapCounters) {
-					mapCounters = new HashMap<String,Object>();
-				}
-				
-				mapCounters.put(counterName, new Long(counterIncrement.getCounterIncrementValue()));
-				mapEvent.put("counters", mapCounters);
-			}
-		}
-	}
-	
 	public ApiResponse createEvent(Map<String,Object> mapEvent)
 	{
 		if (mapEvent != null) {
@@ -2595,75 +2665,42 @@ public class DataClient implements LocationListener {
 		return createEvent(mapEvent);
 	}
 
-    private class QueueQuery implements Query {
-        final String httpMethod;
-        final Map<String, Object> params;
-        final Object data;
-        final String queuePath;
-        final ApiResponse response;
-
-        private QueueQuery(ApiResponse response, String httpMethod,
-                Map<String, Object> params, Object data, String queuePath) {
-            this.response = response;
-            this.httpMethod = httpMethod;
-            this.params = params;
-            this.data = data;
-            this.queuePath = normalizeQueuePath(queuePath);
+    protected void populateTimestamp(Date timestamp, Map<String,Object> mapEvent)
+    {
+        if (timestamp != null) {
+            mapEvent.put("timestamp", "" + timestamp.getTime());
+        } else {
+            // let the server assign the timestamp
+            mapEvent.put("timestamp", "0");
         }
-
-        private QueueQuery(ApiResponse response, QueueQuery q) {
-            this.response = response;
-            httpMethod = q.httpMethod;
-            params = q.params;
-            data = q.data;
-            queuePath = q.queuePath;
-        }
-
-        /**
-         * @return the api response of the last request
-         */
-        public ApiResponse getResponse() {
-            return response;
-        }
-
-        /**
-         * @return true if the server indicates more results are available
-         */
-        public boolean more() {
-            if ((response != null) && (response.getCursor() != null)
-                    && (response.getCursor().length() > 0)) {
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * Performs a request for the next set of results
-         * 
-         * @return query that contains results and where to get more from.
-         */
-        public Query next() {
-            if (more()) {
-                Map<String, Object> nextParams = null;
-                if (params != null) {
-                    nextParams = new HashMap<String, Object>(params);
-                } else {
-                    nextParams = new HashMap<String, Object>();
+    }
+    
+    protected void populateCounter(CounterIncrement counterIncrement, Map<String,Object> mapEvent)
+    {
+        if ((counterIncrement != null) && (mapEvent != null)) {
+            String counterName = counterIncrement.getCounterName();
+            if ((counterName != null) && (counterName.length() > 0)) {
+                Map<String, Object> mapCounters = null;
+                
+                Object existingCounters = mapEvent.get("counters");
+                
+                if (existingCounters != null) {
+                    if (existingCounters instanceof Map) {
+                        try {
+                            mapCounters = (Map<String,Object>) existingCounters;
+                        } catch (Throwable t) {
+                            mapCounters = null;
+                        }
+                    }
                 }
-                nextParams.put("start", response.getCursor());
-                ApiResponse nextResponse = apiRequest(httpMethod, nextParams, data,
-                        queuePath);
-                return new QueueQuery(nextResponse, this);
+                
+                if (null == mapCounters) {
+                    mapCounters = new HashMap<String,Object>();
+                }
+                
+                mapCounters.put(counterName, new Long(counterIncrement.getCounterIncrementValue()));
+                mapEvent.put("counters", mapCounters);
             }
-            return null;
         }
-
     }
-
-    public Query queryQueuesRequest(String httpMethod,
-            Map<String, Object> params, Object data, String queuePath) {
-        ApiResponse response = apiRequest(httpMethod, params, data, queuePath);
-        return new QueueQuery(response, httpMethod, params, data, queuePath);
-    }
-
 }
