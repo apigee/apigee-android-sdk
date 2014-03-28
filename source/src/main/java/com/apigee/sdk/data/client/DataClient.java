@@ -500,6 +500,8 @@ public class DataClient implements LocationListener {
     }
 
     /**
+     * Gets the current organization from DataClient 
+     *
      * @return the currentOrganization
      */
     public String getCurrentOrganization() {
@@ -507,12 +509,20 @@ public class DataClient implements LocationListener {
     }
 
     /**     
+     * Sets the current organizanization from DataClient 
+     *
      * @param currentOrganization
      */
     public void setCurrentOrganization(String currentOrganization) {
         this.currentOrganization = currentOrganization;
     }
     
+    /**
+     * Gets the UUID of the device entity associated with the user's device from the device. 
+     * If no UUID is present, one is generated and saved to the device.
+     *
+     * @return the device entity UUID
+     */
     public UUID getUniqueDeviceID() {
         if (deviceID == null) {
             deviceID = new DeviceUuidFactory(context).getDeviceUuid();
@@ -1333,7 +1343,15 @@ public class DataClient implements LocationListener {
   			}
   		}).execute();
   	}
-    
+
+    /**
+     * Creates an object instance that corresponds to the provided entity type.
+     * Supported object types are Activity, Device, Group, Message, and User.
+     * All other types will return a generic Entity instance with no type assigned.
+     *
+     * @param  type  the entity type to an object instance of
+     * @return  an object instance that corresponds to the type provided
+    */
     public Entity createTypedEntity(String type) {
         Entity entity = null;
         
@@ -1354,6 +1372,13 @@ public class DataClient implements LocationListener {
         return entity;
     }
 
+    /**
+     * Requests all entities of specified type that match the provided query string.
+     *
+     * @param  type  the entity type to be retrieved
+     * @param  queryString  a query string to send with the request
+     * @return  a non-null ApiResponse object if successful
+    */
     public ApiResponse getEntities(String type,String queryString)
     {
         Map<String, Object> params = null;
@@ -1371,6 +1396,13 @@ public class DataClient implements LocationListener {
                             type);
     }
 
+    /**
+     * Asynchronously requests all entities of specified type that match the provided query string.
+     *
+     * @param  type  the entity type to be retrieved
+     * @param  queryString  a query string to send with the request
+     * @param  callback an ApiResponseCallback to handle the async response
+    */
     public void getEntitiesAsync(final String type,
             final String queryString, final ApiResponseCallback callback) {
         (new ClientAsyncTask<ApiResponse>(callback) {
@@ -1418,7 +1450,14 @@ public class DataClient implements LocationListener {
           }).execute();
     }
 
-    
+    /**
+     * Updates the password associated with a user entity
+     *
+     * @param  usernameOrEmail  the username or email address associated with the user entity
+     * @param  oldPassword  the user's old password
+     * @param  newPassword  the user's new password
+     * @return an ApiResponse with the updated entity in it.
+     */
     public ApiResponse updateUserPassword(String usernameOrEmail, String oldPassword, String newPassword) {
     	Map<String,Object> updatedProperties = new HashMap<String,Object>();
     	updatedProperties.put("oldpassword", oldPassword);
@@ -1572,7 +1611,7 @@ public class DataClient implements LocationListener {
         }
 
     }
-    
+
 
     /****************** USER ENTITY MANAGEMENT ***********************/
     /****************** USER ENTITY MANAGEMENT ***********************/
