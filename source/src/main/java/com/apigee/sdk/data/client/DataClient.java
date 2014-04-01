@@ -55,7 +55,7 @@ import com.apigee.sdk.data.client.push.GCMPayload;
 
 
 /**
- * The DataClient class for accessing the Usergrid API. Start by instantiating this
+ * The DataClient class for accessing the API BaaS API. Start by instantiating this
  * class though the appropriate constructor.
  * 
  */
@@ -121,6 +121,9 @@ public class DataClient implements LocationListener {
         
     }
 
+    /**
+    * Interface for EntityQuery and QueueQuery
+    */
     public interface Query {
 
         public ApiResponse getResponse();
@@ -187,6 +190,10 @@ public class DataClient implements LocationListener {
     	return listTokens.toArray(new String[listTokens.size()]);
     }
     
+
+    /****************** CONSTRUCTORS ***********************/
+    /****************** CONSTRUCTORS ***********************/
+
     /**
      * Default constructor for instantiating a client.
      */
@@ -198,9 +205,9 @@ public class DataClient implements LocationListener {
      * Instantiate a data client for a specific app. This is used to call most 
      * SDK methods.
      * 
-     * @param   organizationId  the API BaaS organization name
-     * @param   applicationId   the API BaaS application id or name
-     * @param   context the Android Context
+     * @param  organizationId  the API BaaS organization name
+     * @param  applicationId  the API BaaS application id or name
+     * @param  context  the Android Context
      */
     public DataClient(String organizationId, String applicationId, Context context) {
         init();
@@ -214,10 +221,10 @@ public class DataClient implements LocationListener {
      * Instantiate a data client for a specific app with a base URL other than the default
      * api.usergrid.com. This is used to call most SDK methods.
      * 
-     * @param   organizationId  the API BaaS organization name
-     * @param   applicationId   the API BaaS application id or name
-     * @param   baseURL the base URL to use for all API calls
-     * @param   context the Android Context
+     * @param  organizationId  the API BaaS organization name
+     * @param  applicationId  the API BaaS application id or name
+     * @param  baseURL  the base URL to use for all API calls
+     * @param  context  the Android Context
      */
     public DataClient(String organizationId, String applicationId, String baseURL, Context context) {
         init();
@@ -295,6 +302,11 @@ public class DataClient implements LocationListener {
     	}
     }
 
+    /**
+     * Logs a debug-level logging message with tag 'DATA_CLIENT'
+     *
+     * @param   logMessage  the message to log
+     */
     public void writeLog(String logMessage) {
         if( log != null ) {
             //TODO: do we support different log levels in this class?
@@ -1544,7 +1556,7 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Query object
+     * Query object for handling the response from certain query requests
      * 
      */
     private class EntityQuery implements Query {
@@ -1572,13 +1584,18 @@ public class DataClient implements LocationListener {
         }
 
         /**
-         * @return the api response of the last request
+         * Gets the API response from the last request
+         *
+         * @return an ApiResponse object
          */
         public ApiResponse getResponse() {
             return response;
         }
 
         /**
+         * Checks if there are more results available based on whether a 
+         * 'cursor' property was present in the last result set.
+         *
          * @return true if the server indicates more results are available
          */
         public boolean more() {
@@ -1590,7 +1607,8 @@ public class DataClient implements LocationListener {
         }
 
         /**
-         * Performs a request for the next set of results
+         * Performs a request for the next set of results based on the cursor
+         * from the last result set.
          * 
          * @return query that contains results and where to get more from.
          */
@@ -1617,14 +1635,13 @@ public class DataClient implements LocationListener {
     /****************** USER ENTITY MANAGEMENT ***********************/
 
     /**
-     * Creates a user.
+     * Creates a user entity.
      * 
-     * @param username
-     *            required
-     * @param name
-     * @param email
-     * @param password
-     * @return
+     * @param  username  required. The username to be associated with the user entity.
+     * @param  name  the user's full name. Can be null.
+     * @param  email  the user's email address.
+     * @param  password  the user's password
+     * @return  an ApiResponse object
      */
     public ApiResponse createUser(String username, String name, String email,
             String password) {
@@ -1649,11 +1666,11 @@ public class DataClient implements LocationListener {
 	 * Creates a user. Executes asynchronously in background and the callbacks
 	 * are called in the UI thread.
 	 * 
-	 * @param username
-	 * @param name
-	 * @param email
-	 * @param password
-	 * @param callback
+	 * @param  username required. The username to be associated with the user entity.
+     * @param  name  the user's full name. Can be null.
+     * @param  email  the user's email address.
+     * @param  password  the user's password.
+	 * @param  callback  an ApiResponse callback for handling the async response.
 	 */
 	public void createUserAsync(final String username, final String name,
 			final String email, final String password,
@@ -1667,9 +1684,9 @@ public class DataClient implements LocationListener {
 	}
 
     /**
-     * Perform a query of the users collection.
+     * Retrieves the /users collection.
      * 
-     * @return
+     * @return a Query object
      */
     public Query queryUsers() {
         Query q = queryEntitiesRequest(HTTP_METHOD_GET, null, null,
@@ -1678,10 +1695,10 @@ public class DataClient implements LocationListener {
     }
     
     /**
-     * Perform a query of the users collection. Executes asynchronously in
+     * Retrieves the /users collection. Executes asynchronously in
      * background and the callbacks are called in the UI thread.
      * 
-     * @param callback The object with methods to call with the query response.
+     * @param  callback  a QueryResultsCallback object to handle the async response
      */
     public void queryUsersAsync(QueryResultsCallback callback) {
         queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
@@ -1690,11 +1707,11 @@ public class DataClient implements LocationListener {
 
 
     /**
-     * Perform a query of the users collection using the provided query command.
+     * Performs a query of the users collection using the provided query command.
      * For example: "name contains 'ed'".
      * 
-     * @param ql
-     * @return
+     * @param  ql  the query to execute
+     * @return  a Query object
      */
     public Query queryUsers(String ql) {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -1709,8 +1726,8 @@ public class DataClient implements LocationListener {
      * For example: "name contains 'ed'". Executes asynchronously in background
      * and the callbacks are called in the UI thread.
      * 
-     * @param ql A query string.
-     * @param callback The object with methods to call with the query response.
+     * @param  ql  the query to execute
+     * @param  callback  a QueryResultsCallback object to handle the async response
      */
     public void queryUsersAsync(String ql, QueryResultsCallback callback) {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -1721,13 +1738,14 @@ public class DataClient implements LocationListener {
     
     /**
      * Perform a query of the users collection within the specified distance of
-     * the specified location and optionally using the provided query command.
+     * the specified location and optionally using the provided additional query.
      * For example: "name contains 'ed'".
      * 
-     * @param distance
-     * @param location
-     * @param ql
-     * @return
+     * @param  distance  distance from the location in meters
+     * @param  latitude  the latitude of the location to measure from
+     * @param  longitude  the longitude of the location to measure from
+     * @param  ql  an optional additional query to send with the request
+     * @return  a Query object
      */
     public Query queryUsersWithinLocation(float distance, float lattitude,
             float longitude, String ql) {
@@ -1747,25 +1765,11 @@ public class DataClient implements LocationListener {
      * Creates a group with the specified group path. Group paths can be slash
      * ("/") delimited like file paths for hierarchical group relationships.
      * 
-     * @param groupPath The path to use for the new group.
-     * @return Results of the operation.
+     * @param  groupPath  the path to use for the new group.
+     * @return  an ApiResponse object
      */
     public ApiResponse createGroup(String groupPath) {
         return createGroup(groupPath, null);
-    }
-
-    /**
-     * Creates a group with the specified group path. Group paths can be slash
-     * ("/") delimited like file paths for hierarchical group relationships.
-     * Executes asynchronously in background and the callbacks are called in the
-     * UI thread.
-     * 
-     * @param groupPath The path to use for the new group.
-     * @param callback The object with methods to call with the response.
-     */
-    public void createGroupAsync(String groupPath,
-            final ApiResponseCallback callback) {
-        createGroupAsync(groupPath, null);
     }
 
     /**
@@ -1773,40 +1777,23 @@ public class DataClient implements LocationListener {
      * paths can be slash ("/") delimited like file paths for hierarchical group
      * relationships.
      * 
-     * @param groupPath The path to use for the new group.
-     * @param groupTitle The title to use for the new group.
-     * @return Results of the operation.
+     * @param  groupPath  the path to use for the new group
+     * @param  groupTitle  the title to use for the new group
+     * @return  an ApiResponse object
      */
     public ApiResponse createGroup(String groupPath, String groupTitle) {
      return createGroup(groupPath, groupTitle, null);  
     }
     
     /**
-     * Creates a group with the specified group path and group title. Group
-     * paths can be slash ("/") deliminted like file paths for hierarchical
-     * group relationships. Executes asynchronously in background and the
-     * callbacks are called in the UI thread.
-     * 
-     * @param groupPath The path to use for the new group.
-     * @param groupTitle The title to use for the new group.
-     * @param callback The object with methods to call with the response.
-     */
-    public void createGroupAsync(final String groupPath,
-            final String groupTitle, final ApiResponseCallback callback) {
-        (new ClientAsyncTask<ApiResponse>(callback) {
-            @Override
-            public ApiResponse doTask() {
-                return createGroup(groupPath, groupTitle);
-            }
-        }).execute();
-    }
-
-    /**
-     * Create a group with a path, title and name
-     * @param groupPath The path to use for the new group.
-     * @param groupTitle The title to use for the new group.
-     * @param groupName The name to use for the new group.
-     * @return
+     * Create a group with a path, title and name. Group
+     * paths can be slash ("/") delimited like file paths for hierarchical group
+     * relationships.
+     *
+     * @param  groupPath  the path to use for the new group
+     * @param  groupTitle  the title to use for the new group
+     * @param  groupName  the name to use for the new group
+     * @return  an ApiResponse object
      */
     public ApiResponse createGroup(String groupPath, String groupTitle, String groupName){
         Map<String, Object> data = new HashMap<String, Object>();
@@ -1825,11 +1812,44 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Get the groups for the user.
+     * Creates a group with the specified group path. Group paths can be slash
+     * ("/") delimited like file paths for hierarchical group relationships.
+     * Executes asynchronously in background and the callbacks are called in the
+     * UI thread.
      * 
-     * @param userId
-     * @return a map with the group path as the key and the Group entity as the
-     *         value
+     * @param  groupPath  the path to use for the new group.
+     * @param  callback  an ApiResponseCallback object to handle the async response
+     */
+    public void createGroupAsync(String groupPath,
+            final ApiResponseCallback callback) {
+        createGroupAsync(groupPath, null, null);
+    }
+
+    /**
+     * Creates a group with the specified group path and group title. Group
+     * paths can be slash ("/") deliminted like file paths for hierarchical
+     * group relationships. Executes asynchronously in background and the
+     * callbacks are called in the UI thread.
+     * 
+     * @param  groupPath  the path to use for the new group.
+     * @param  groupTitle  the title to use for the new group.
+     * @param  callback  an ApiResponseCallback object to handle the async response
+     */
+    public void createGroupAsync(final String groupPath,
+            final String groupTitle, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return createGroup(groupPath, groupTitle);
+            }
+        }).execute();
+    }
+
+    /**
+     * Gets the groups associated with a user entity
+     * 
+     * @param  userId  the UUID of the user entity
+     * @return  a map with the group path as the key and a Group object as the value
      */
     public Map<String, Group> getGroupsForUser(String userId) {
         ApiResponse response = apiRequest(HTTP_METHOD_GET, null, null,
@@ -1845,11 +1865,11 @@ public class DataClient implements LocationListener {
     }
 
 	/**
-	 * Get the groups for the user. Executes asynchronously in background and
+	 * Gets the groups associated with a user entity. Executes asynchronously in background and
 	 * the callbacks are called in the UI thread.
 	 * 
-	 * @param userId
-	 * @param callback
+     * @param  userId  the UUID of the user entity
+	 * @param  callback  a GroupsRetrievedCallback object to handle the async response
 	 */
 	public void getGroupsForUserAsync(final String userId,
 			final GroupsRetrievedCallback callback) {
@@ -1862,10 +1882,10 @@ public class DataClient implements LocationListener {
 	}
 
     /**
-     * Queries the users for the specified group.
+     * Gets the user entities associated with the specified group.
      * 
-     * @param groupId ID of the group for which to find users.
-     * @return Results of the query.
+     * @param  groupId  UUID of the group entity
+     * @return  a Query object with the results of the query
      */
     public Query queryUsersForGroup(String groupId) {
         Query q = queryEntitiesRequest(HTTP_METHOD_GET, null, null, organizationId,
@@ -1874,11 +1894,11 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Queries the users for the specified group. Executes asynchronously in
-     * background and the callbacks are called in the UI thread.
+     * Gets the user entities associated with the specified group. Executes 
+     * asynchronously in background and the callbacks are called in the UI thread.
      * 
-     * @param groupId The ID of the group from which to find users.
-     * @param callback The object with methods to call with the query response.
+     * @param  groupId  UUID of the group entity
+     * @param  callback a QueryResultsCallback object to handle the async response
      */
     public void queryUsersForGroupAsync(String groupId,
             QueryResultsCallback callback) {
@@ -1887,11 +1907,11 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Adds a user to the specified groups.
+     * Connects a user entity to the specified group entity.
      * 
-     * @param userId ID of the user to add.
-     * @param groupId ID of the group. 
-     * @return Results of the request.
+     * @param  userId  UUID of the user entity
+     * @param  groupId  UUID of the group entity 
+     * @return  an ApiResponse object
      */
     public ApiResponse addUserToGroup(String userId, String groupId) {
         return apiRequest(HTTP_METHOD_POST, null, null, organizationId,  applicationId, "groups",
@@ -1899,12 +1919,12 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Adds a user to the specified groups. Executes asynchronously in
+     * Connects a user entity to the specified group entity. Executes asynchronously in
      * background and the callbacks are called in the UI thread.
      * 
-     * @param userId ID of the user to add.
-     * @param groupId ID of the group.
-     * @param callback The object with methods to call with the response.
+     * @param  userId  UUID of the user entity
+     * @param  groupId  UUID of the group entity 
+     * @param  callback  an ApiResponseCallback object to handle the async response
      */
     public void addUserToGroupAsync(final String userId, final String groupId,
             final ApiResponseCallback callback) {
@@ -1923,8 +1943,8 @@ public class DataClient implements LocationListener {
     /**
      * Get a user's activity feed. Returned as a query to ease paging.
      * 
-     * @param userId
-     * @return
+     * @param  userId  UUID of user entity
+     * @return  a Query object
      */
     public Query queryActivityFeedForUser(String userId) {
         Query q = queryEntitiesRequest(HTTP_METHOD_GET, null, null,
@@ -1938,8 +1958,8 @@ public class DataClient implements LocationListener {
 	 * thread.
 	 * 
 	 * 
-	 * @param userId
-	 * @param callback
+	 * @param  userId  UUID of user entity
+	 * @param  callback  a QueryResultsCallback object to handle the async response
 	 */
 	public void queryActivityFeedForUserAsync(final String userId, final QueryResultsCallback callback) {
 		(new ClientAsyncTask<Query>(callback) {
@@ -1952,7 +1972,7 @@ public class DataClient implements LocationListener {
 
 
     /**
-     * Posts an activity to a user. Activity must already be created.
+     * Posts an activity to a user entity's activity stream. Activity must already be created.
      * 
      * @param userId
      * @param activity
@@ -1964,7 +1984,7 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Creates and posts an activity to a user.
+     * Creates and posts an activity to a user entity's activity stream.
      * 
      * @param verb
      * @param title

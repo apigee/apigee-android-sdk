@@ -44,28 +44,63 @@ public class Entity {
         CLASS_FOR_ENTITY_TYPE.put(User.ENTITY_TYPE, User.class);
     }
 
+    /**
+     * Default constructor for instantiating an Entity object.
+     */
     public Entity() {	
     }
     
+    /**
+     * Constructor for instantiating an Entity with a DataClient.
+     * @param  dataClient  a DataClient object
+     */
     public Entity(DataClient dataClient) {
     	this.dataClient = dataClient;
     }
 
+    /**
+     * Constructor for instantiating an Entity with a DataClient
+     * and entity type. Normally this is the constructor that should
+     * be used to model an entity locally.
+     * @param  dataClient  a DataClient object
+     * @param  type  the 'type' property of the entity
+     */
     public Entity(DataClient dataClient, String type) {
     	this.dataClient = dataClient;
         setType(type);
     }
     
+    /**
+     * Gets the DataClient currently saved in the Entity object.
+     * @return the DataClient instance
+     */
     public DataClient getDataClient() {
     	return dataClient;
     }
 
+    /**
+     * Sets the DataClient in the Entity object.
+     * @return the DataClient instance
+     */
+    public void setDataClient(DataClient dataClient) {
+        this.dataClient = dataClient;
+    }
+
     @JsonIgnore
+    /**
+     * Gets the 'type' of the Entity object.
+     * @return the 'type' of the entity
+     */
     public String getNativeType() {
         return getType();
     }
 
     @JsonIgnore
+    /**
+     * Adds the type and UUID properties to the Entity object, then 
+     * returns all object properties.
+     * @return a List object with the entity UUID and type
+     */
     public List<String> getPropertyNames() {
         List<String> properties = new ArrayList<String>();
         properties.add(PROPERTY_TYPE);
@@ -73,39 +108,80 @@ public class Entity {
         return properties;
     }
 
+    /**
+     * Gets the String value of the specified Entity property.
+     * @param  name  the name of the property
+     * @return the property value. Returns null if the property has no value
+     */
     public String getStringProperty(String name) {
         JsonNode val = this.properties.get(name);
         return val != null ? val.textValue() : null;
     }
     
+    /**
+     * Gets the boolean value of the specified Entity property.
+     * @param  name  the name of the property
+     * @return the property value
+     */
     public boolean getBoolProperty(String name) {
     	return this.properties.get(name).booleanValue();
     }
     
+    /**
+     * Gets the Int value of the specified Entity property.
+     * @param  name  the name of the property
+     * @return the property value
+     */
     public int getIntProperty(String name) {
     	return this.properties.get(name).intValue();
     }
     
+    /**
+     * Gets the Double value of the specified Entity property.
+     * @param  name  the name of the property
+     * @return the property value
+     */
     public double getDoubleProperty(String name) {
     	return this.properties.get(name).doubleValue();
     }
     
+    /**
+     * Gets the long value of the specified Entity property.
+     * @param  name  the name of the property
+     * @return the property value
+     */
     public long getLongProperty(String name) {
     	return this.properties.get(name).longValue();
     }
 
+    /**
+     * Gets the 'type' property of the Entity object.     
+     * @return the Entity type
+     */
     public String getType() {
         return getStringProperty(PROPERTY_TYPE);
     }
 
+    /**
+     * Sets the 'type' property of the Entity object.          
+     * @param  type  the entity type
+     */
     public void setType(String type) {
         setStringProperty(properties, PROPERTY_TYPE, type);
     }
 
+    /**
+     * Gets the 'uuid' property of the Entity object.     
+     * @return the Entity UUID
+     */
     public UUID getUuid() {
         return getUUIDProperty(properties, PROPERTY_UUID);
     }
 
+    /**
+     * Sets the 'uuid' property of the Entity object.     
+     * @param  uuid  the entity UUID
+     */
     public void setUuid(UUID uuid) {
         setUUIDProperty(properties, PROPERTY_UUID, uuid);
     }
@@ -116,6 +192,14 @@ public class Entity {
     }
 
     @JsonAnySetter
+    /**
+     * Adds a property to the Entity object.
+     *
+     * @param  name  the name of the property to be set
+     * @param  value the value of the property as a JsonNode object.
+     *      If the value is null, the property will be removed from the object.
+     * @see  <a href="http://jackson.codehaus.org/1.0.1/javadoc/org/codehaus/jackson/JsonNode.html">JsonNode</a> 
+     */
     public void setProperty(String name, JsonNode value) {
         if (value == null) {
             properties.remove(name);
@@ -124,6 +208,15 @@ public class Entity {
         }
     }
     
+    /**
+     * Removes all properties from the Entity object, then adds multiple properties.
+     *
+     * @param  newProperties  a Map object that contains the 
+     *      property names as keys and their values as values.
+     *      Property values must be JsonNode objects. If the value 
+     *      is null, the property will be removed from the object.
+     * @see  <a href="http://jackson.codehaus.org/1.0.1/javadoc/org/codehaus/jackson/JsonNode.html">JsonNode</a> 
+     */
     public void setProperties(Map<String,JsonNode> newProperties) {
     	properties.clear();
     	Set<String> keySet = newProperties.keySet();
@@ -134,59 +227,61 @@ public class Entity {
     		setProperty(key, newProperties.get(key));
     	}
     }
-
   
     /**
-     * Set the property
+     * Adds a property to the Entity object with a String value.
      * 
-     * @param name
-     * @param value
+     * @param  name  the name of the property to be set
+     * @param  value  the String value of the property
      */
     public void setProperty(String name, String value) {
         setStringProperty(properties, name, value);
     }
 
     /**
-     * Set the property
+     * Adds a property to the Entity object with a boolean value.
      * 
-     * @param name
-     * @param value
+     * @param  name  the name of the property to be set
+     * @param  value  the boolean value of the property
      */
     public void setProperty(String name, boolean value) {
         setBooleanProperty(properties, name, value);
     }
 
     /**
-     * Set the property
+     * Adds a property to the Entity object with a long value.
      * 
-     * @param name
-     * @param value
+     * @param  name  the name of the property to be set
+     * @param  value  the long value of the property
      */
     public void setProperty(String name, long value) {
         setLongProperty(properties, name, value);
     }
 
     /**
-     * Set the property
+     * Adds a property to the Entity object with a int value.
      * 
-     * @param name
-     * @param value
+     * @param  name  the name of the property to be set
+     * @param  value  the int value of the property
      */
     public void setProperty(String name, int value) {
         setProperty(name, (long) value);
     }
 
     /**
-     * Set the property
+     * Adds a property to the Entity object with a float value.
      * 
-     * @param name
-     * @param value
+     * @param  name  the name of the property to be set
+     * @param  value  the float value of the property
      */
     public void setProperty(String name, float value) {
         setFloatProperty(properties, name, value);
     }
 
     @Override
+    /**
+     * Returns the Entity object as a JSON-formatted string
+     */
     public String toString() {
         return toJsonString(this);
     }
@@ -228,6 +323,12 @@ public class Entity {
         return l;
     }
     
+    /**
+     * Fetches the current state of the entity from the server and saves
+     * it in the Entity object
+     *      
+     * @return an ApiResponse object
+     */
     public ApiResponse fetch() {
     	ApiResponse response = new ApiResponse();
         String type = this.getType();
@@ -281,6 +382,12 @@ public class Entity {
         return response;
     }
     
+    /**
+     * Saves the Entity object as an entity on the server. Any
+     * conflicting properties on the server will be overwritten.
+     *      
+     * @return  an ApiResponse object
+     */
     public ApiResponse save() {
     	ApiResponse response = null;
         UUID uuid = this.getUuid();
@@ -326,6 +433,11 @@ public class Entity {
         return response;    	
     }
     
+    /**
+     * Deletes the entity on the server.
+     *     
+     * @return  an ApiResponse object
+     */
     public ApiResponse destroy() {
     	ApiResponse response = new ApiResponse();
         String type = getType();
@@ -352,6 +464,17 @@ public class Entity {
         return response;
     }
     
+    /**
+     * Adds multiple properties to the Entity object. Pre-existing properties will
+     * be preserved, unless there is a conflict, then the pre-existing property
+     * will be overwritten.
+     *
+     * @param  properties  a Map object that contains the 
+     *      property names as keys and their values as values.
+     *      Property values must be JsonNode objects. If the value 
+     *      is null, the property will be removed from the object.
+     * @see  <a href="http://jackson.codehaus.org/1.0.1/javadoc/org/codehaus/jackson/JsonNode.html">JsonNode</a> 
+     */
     public void addProperties(Map<String, JsonNode> properties) {
     	Set<String> keySet = properties.keySet();
     	Iterator<String> keySetIter = keySet.iterator();
@@ -362,6 +485,13 @@ public class Entity {
     	}
     }
     
+    /**
+     * Creates a conneciton between two entities.
+     *
+     * @param  connectType  the type of connection
+     * @param  targetEntity  the UUID of the entity to connect to
+     * @return an ApiResponse object
+     */
     public ApiResponse connect(String connectType, Entity targetEntity) {
     	return this.dataClient.connectEntities(this.getType(),
 				this.getUuid().toString(),
@@ -369,6 +499,13 @@ public class Entity {
 				targetEntity.getUuid().toString());
     }
     
+    /**
+     * Destroys a conneciton between two entities.
+     *
+     * @param  connectType  the type of connection
+     * @param  targetEntity  the UUID of the entity to disconnect from
+     * @return  an ApiResponse object
+     */
     public ApiResponse disconnect(String connectType, Entity targetEntity) {
     	return this.dataClient.disconnectEntities(this.getType(),
     												this.getUuid().toString(),
@@ -376,7 +513,4 @@ public class Entity {
     												targetEntity.getUuid().toString());
     }
 
-    public void setDataClient(DataClient dataClient) {
-    	this.dataClient = dataClient;
-    }
 }
