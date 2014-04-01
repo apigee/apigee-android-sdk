@@ -23,7 +23,13 @@ public class Collection
 	private String next;
 	private String cursor;
 
-	
+	/**
+	 * Default constructor for a Collection object.
+	 *
+	 * @param  dataClient  an instance of the DataClient class
+	 * @param  type  the entity 'type' associated with the colleciton
+	 * @param  qs  optional Map object of query parameters to apply to the collection retrieval
+	 */	
 	public Collection(DataClient dataClient, String type, Map<String,Object> qs) {
 	    this.dataClient = dataClient;
 	    this.type = type;
@@ -47,14 +53,30 @@ public class Collection
 	    this.fetch();
 	}
 
+	/**
+	 * Gets the entity 'type' associated with the collection.
+	 *
+	 * @return the collection type
+	 */	
 	public String getType(){
 	   return this.type;
 	}
 	
+	/**
+	 * Sets the entity 'type' associated with the collection.
+	 *
+	 * @param  type  the collection type
+	 */	
 	public void setType(String type){
 	   this.type = type;
 	}
 
+	/**
+	 * Retrieves the current state of the collection from the server, and populates
+	 * an the Collection object with the returned set of entities. Executes synchronously.
+	 *
+	 * @return  an ApiResponse object
+	 */	
 	public ApiResponse fetch() {
 	    if (this.cursor != null) {
 	    	this.qs.put("cursor", this.cursor);
@@ -95,8 +117,15 @@ public class Collection
 	    return response;
 	}
 
+	/**
+	 * Adds an entity to the Collection object.
+	 *
+	 * @param  entityData  a Map object of entity properties to be saved in the entity
+	 * @return  an Entity object that represents the newly added entity. Must include
+	 *		a 'type' property. Executes synchronously.
+	 */	
 	public Entity addEntity(Map<String,Object> entityData) {
-		Entity entity = null;
+		Entity entity = null;		
 		ApiResponse response = this.dataClient.createEntity(entityData);
 		if( (response != null) && (response.getError() == null) && (response.getEntityCount() > 0) ) {
 			entity = response.getFirstEntity();
@@ -107,6 +136,12 @@ public class Collection
 		return entity;
 	}
 
+	/**
+	 * Deletes the provided entity on the server, then updates the
+	 * Collection object by calling fetch(). Executes synchronously.
+	 *
+	 * @param entity an Entity object that contains a 'type' and 'uuid' property
+	 */	
 	public ApiResponse destroyEntity(Entity entity) {
 		ApiResponse response = entity.destroy();
 		if (response.getError() != null) {
@@ -118,6 +153,12 @@ public class Collection
 		return response;
 	}
 
+	/**
+	 * Retrieves an entity from the server.
+	 *
+	 * @param uuid the UUID of the entity to retrieve
+	 * @param an ApiResponse object
+	 */	
 	public ApiResponse getEntityByUuid(UUID uuid) {
 		Entity entity = new Entity(this.dataClient);
 	    entity.setType(this.type);
@@ -125,24 +166,50 @@ public class Collection
 	    return entity.fetch();
 	}
 
+	/**
+	 * Gets the first entity in the Collection object.
+	 *
+	 * @return  an Entity object
+	 */	
 	public Entity getFirstEntity() {
 		return ((this.list.size() > 0) ? this.list.get(0) : null);
 	}
 
+	/**
+	 * Gets the last entity in the Collection object.
+	 *
+	 * @return  an Entity object
+	 */	
 	public Entity getLastEntity() {
 		return ((this.list.size() > 0) ? this.list.get(this.list.size()-1) : null);
 	}
 
+	/**
+	 * Checks if there is another entity in the Collection after the current pointer position.
+	 *
+	 * @return  Boolean true/false
+	 */	
 	public boolean hasNextEntity() {
 		int next = this.iterator + 1;
 		return ((next >= 0) && (next < this.list.size()));
 	}
 
+	/**
+	 * Checks if there is an entity in the Collection before the current pointer position.
+	 *
+	 * @return  Boolean true/false
+	 */	
 	public boolean hasPrevEntity() {
 		int prev = this.iterator - 1;
 		return ((prev >= 0) && (prev < this.list.size()));
 	}
 
+	/**
+	 * Checks if there is an entity in the Collection after the current
+	 * pointer position, and returns it.
+	 *
+	 * @return an Entity object
+	 */	
 	public Entity getNextEntity() {
 		if (this.hasNextEntity()) {
 			this.iterator++;
@@ -151,6 +218,12 @@ public class Collection
 		return null;
 	}
 
+	/**
+	 * Checks if there is an entity in the Collection before the current
+	 * pointer position, and returns it.
+	 *
+	 * @return an Entity object
+	 */	
 	public Entity getPrevEntity() {
 		if (this.hasPrevEntity()) {
 			this.iterator--;
@@ -159,28 +232,55 @@ public class Collection
 		return null;
 	}
 
+	/**
+	 * Resets the pointer to the start of the Collection.
+	 */
 	public void resetEntityPointer() {
 		this.iterator = -1;
 	}
 
+	/**
+	 * Saves a pagination cursor.	 
+	 */
 	public void saveCursor(String cursor) {
 		this.next = cursor;
 	}
 
+	/**
+	 * Clears the currently saved pagination cursor from the Collection.
+	 */
 	public void resetPaging() {
 		this.previous.clear();
 		this.next = null;
 		this.cursor = null;
 	}
 
+	/**
+	 * Checks if a pagination cursor for the next result set is 
+	 * present in the Collection.
+	 *
+	 * @return Boolean true/false
+	 */
 	public boolean hasNextPage() {
 		return this.next != null;
 	}
 
+	/**
+	 * Checks if a pagination cursor for the previous result set is 
+	 * present in the Collection
+	 *
+	 * @return  Boolean true/false
+	 */
 	public boolean hasPrevPage() {
 		return !this.previous.isEmpty();
 	}
 
+	/**
+	 * Checks if a pagination cursor for the next result set is 
+	 * present in the Collection, then fetches it.
+	 *
+	 * @return an ApiResponse object if a cursor is present, otherwise null
+	 */
 	public ApiResponse getNextPage() {
 		if (this.hasNextPage()) {
 			this.previous.add(this.cursor);
@@ -192,6 +292,12 @@ public class Collection
 		return null;
 	}
 
+	/**
+	 * Checks if a pagination cursor for the previous result set is 
+	 * present in the Collection, then fetches it.
+	 *
+	 * @return  an ApiResponse object if a cursor is present, otherwise null
+	 */
 	public ApiResponse getPrevPage() {
 		if (this.hasPrevPage()) {
 			this.next = null;
