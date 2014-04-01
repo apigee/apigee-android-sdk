@@ -52,37 +52,37 @@ public class Device extends Entity {
 		setType(ENTITY_TYPE);
 	}
 
-	@Override
-	@JsonIgnore
 	/**
 	 * Returns the type of the Device object. Should always be 'device'.
 	 *
 	 * @return the String 'device'
 	 */
+	@Override
+	@JsonIgnore
 	public String getNativeType() {
 		return ENTITY_TYPE;
 	}
 
-	@Override
-	@JsonIgnore
 	/**
 	 * Gets the current set of property names in the Device and adds
 	 * the 'name' property.
 	 *
 	 * @return a List object of all properties in the Device
 	 */
+	@Override
+	@JsonIgnore
 	public List<String> getPropertyNames() {
 		List<String> properties = super.getPropertyNames();
 		properties.add(PROPERTY_NAME);
 		return properties;
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Gets the value of the 'name' property of the Device.
 	 *
 	 * @return the value of the 'name' property
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getName() {
 		return getStringProperty(PROPERTY_NAME);
 	}

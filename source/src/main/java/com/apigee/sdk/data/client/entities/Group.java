@@ -57,26 +57,26 @@ public class Group extends Entity {
 		setType(ENTITY_TYPE);
 	}
 
-	@Override
-	@JsonIgnore
 	/**
 	 * Returns the valye of the 'type' property of the Group object.
 	 * Should always be 'group'.
 	 *
 	 * @return  the String 'group'
 	 */
+	@Override
+	@JsonIgnore
 	public String getNativeType() {
 		return ENTITY_TYPE;
 	}
 
-	@Override
-	@JsonIgnore
 	/**
 	 * Gets all the current property names in the Group object and adds
 	 * the 'path' and 'title' properties.
 	 *
 	 * @return  a List object that contains the properties list
 	 */
+	@Override
+	@JsonIgnore
 	public List<String> getPropertyNames() {
 		List<String> properties = super.getPropertyNames();
 		properties.add(PROPERTY_PATH);
@@ -84,12 +84,12 @@ public class Group extends Entity {
 		return properties;
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Gets the value of the 'path' property of the Group object.
 	 *
 	 * @return  the value of the 'path' property
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getPath() {
 		return getStringProperty(PROPERTY_PATH);
 	}

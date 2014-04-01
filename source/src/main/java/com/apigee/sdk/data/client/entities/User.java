@@ -69,20 +69,18 @@ public class User extends Entity {
 		setType(ENTITY_TYPE);
 	}
 
-	@Override
-	@JsonIgnore
 	/**
 	 * Returns the type property of the User object. Should always
 	 * be 'user' 
 	 *
 	 * @return  the type property of the User object
 	 */
+	@Override
+	@JsonIgnore
 	public String getNativeType() {
 		return ENTITY_TYPE;
 	}
 
-	@Override
-	@JsonIgnore
 	/**
 	 * Gets the properties already set in User and adds the following 
 	 * user-specific properties: username, email. name, firstname,
@@ -90,6 +88,8 @@ public class User extends Entity {
 	 *
 	 * @return  a List object containing the properties of the User
 	 */
+	@Override
+	@JsonIgnore
 	public List<String> getPropertyNames() {
 		List<String> properties = super.getPropertyNames();
 		properties.add(PROPERTY_USERNAME);
@@ -104,13 +104,13 @@ public class User extends Entity {
 		return properties;
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'username' property currently 
 	 * set in the User object.
 	 *
 	 * @return  the value of the username property
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getUsername() {
 		return getStringProperty(PROPERTY_USERNAME);
 	}
@@ -124,13 +124,13 @@ public class User extends Entity {
 		setStringProperty(properties, PROPERTY_USERNAME, username);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'name' property currently set in 
 	 * the User object.
 	 *
 	 * @return  the value of the name property
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getName() {
 		return getStringProperty(PROPERTY_NAME);
 	}
@@ -144,12 +144,12 @@ public class User extends Entity {
 		setStringProperty(properties, PROPERTY_NAME, name);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'email' property currently set in the User object.
 	 *
 	 * @return  the value of the email property
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getEmail() {
 		return getStringProperty(PROPERTY_EMAIL);
 	}
@@ -163,12 +163,12 @@ public class User extends Entity {
 		setStringProperty(properties, PROPERTY_EMAIL, email);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'activated' property in the User object.
 	 *
 	 * @return  a Boolean true/false
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public Boolean isActivated() {
 		return getBooleanProperty(properties, PROPERTY_ACTIVATED);
 	}
@@ -182,12 +182,12 @@ public class User extends Entity {
 		setBooleanProperty(properties, PROPERTY_ACTIVATED, activated);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'disabled' property in the User object.
 	 *
 	 * @return  a Boolean true/false
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public Boolean isDisabled() {
 		return getBooleanProperty(properties, PROPERTY_DISABLED);
 	}
@@ -201,12 +201,12 @@ public class User extends Entity {
 		setBooleanProperty(properties, PROPERTY_DISABLED, disabled);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'firstname' property in the User object.
 	 *
 	 * @return  the user's first name
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getFirstname() {
 		return getStringProperty(PROPERTY_FIRSTNAME);
 	}
@@ -220,12 +220,12 @@ public class User extends Entity {
 		setStringProperty(properties, PROPERTY_FIRSTNAME, firstname);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'middlename' property in the User object.
 	 *
 	 * @return  the user's middle name
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getMiddlename() {
 		return getStringProperty(PROPERTY_MIDDLENAME);
 	}
@@ -239,12 +239,12 @@ public class User extends Entity {
 		setStringProperty(properties, PROPERTY_MIDDLENAME, middlename);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'lastname' property in the User object.
 	 *
 	 * @return  the user's last name
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getLastname() {
 		return getStringProperty(PROPERTY_LASTNAME);
 	}
@@ -258,12 +258,12 @@ public class User extends Entity {
 		setStringProperty(properties, PROPERTY_LASTNAME, lastname);
 	}
 
-	@JsonSerialize(include = NON_NULL)
 	/**
 	 * Returns the value of the 'picture' property in the User object.
 	 *
 	 * @return  the URL of the user's picture
 	 */
+	@JsonSerialize(include = NON_NULL)
 	public String getPicture() {
 		return getStringProperty(PROPERTY_PICTURE);
 	}

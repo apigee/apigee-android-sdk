@@ -86,21 +86,21 @@ public class Entity {
         this.dataClient = dataClient;
     }
 
-    @JsonIgnore
     /**
      * Gets the 'type' of the Entity object.
      * @return the 'type' of the entity
      */
+    @JsonIgnore
     public String getNativeType() {
         return getType();
     }
 
-    @JsonIgnore
     /**
      * Adds the type and UUID properties to the Entity object, then 
      * returns all object properties.
      * @return a List object with the entity UUID and type
      */
+    @JsonIgnore
     public List<String> getPropertyNames() {
         List<String> properties = new ArrayList<String>();
         properties.add(PROPERTY_TYPE);
@@ -186,17 +186,16 @@ public class Entity {
         setUUIDProperty(properties, PROPERTY_UUID, uuid);
     }
 
-    @JsonAnyGetter
     /**
      * Returns a HashMap of the Entity properties without keys.
      *
      * @return a HashMap object with no keys and the value of the Entity properties
      */
+    @JsonAnyGetter
     public Map<String, JsonNode> getProperties() {
         return newMapWithoutKeys(properties, getPropertyNames());
     }
 
-    @JsonAnySetter
     /**
      * Adds a property to the Entity object.
      *
@@ -205,6 +204,7 @@ public class Entity {
      *      If the value is null, the property will be removed from the object.
      * @see  <a href="http://jackson.codehaus.org/1.0.1/javadoc/org/codehaus/jackson/JsonNode.html">JsonNode</a> 
      */
+    @JsonAnySetter
     public void setProperty(String name, JsonNode value) {
         if (value == null) {
             properties.remove(name);
@@ -283,10 +283,10 @@ public class Entity {
         setFloatProperty(properties, name, value);
     }
 
-    @Override
     /**
      * Returns the Entity object as a JSON-formatted string
      */
+    @Override
     public String toString() {
         return toJsonString(this);
     }
