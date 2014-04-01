@@ -187,6 +187,11 @@ public class Entity {
     }
 
     @JsonAnyGetter
+    /**
+     * Returns a HashMap of the Entity properties without keys.
+     *
+     * @return a HashMap object with no keys and the value of the Entity properties
+     */
     public Map<String, JsonNode> getProperties() {
         return newMapWithoutKeys(properties, getPropertyNames());
     }
@@ -325,7 +330,7 @@ public class Entity {
     
     /**
      * Fetches the current state of the entity from the server and saves
-     * it in the Entity object
+     * it in the Entity object. Runs synchronously.
      *      
      * @return an ApiResponse object
      */
@@ -381,7 +386,7 @@ public class Entity {
     
     /**
      * Saves the Entity object as an entity on the server. Any
-     * conflicting properties on the server will be overwritten.
+     * conflicting properties on the server will be overwritten. Runs synchronously.
      *      
      * @return  an ApiResponse object
      */
@@ -483,7 +488,7 @@ public class Entity {
     }
     
     /**
-     * Creates a conneciton between two entities.
+     * Creates a connection between two entities.
      *
      * @param  connectType  the type of connection
      * @param  targetEntity  the UUID of the entity to connect to
@@ -497,7 +502,7 @@ public class Entity {
     }
     
     /**
-     * Destroys a conneciton between two entities.
+     * Destroys a connection between two entities.
      *
      * @param  connectType  the type of connection
      * @param  targetEntity  the UUID of the entity to disconnect from
