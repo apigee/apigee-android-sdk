@@ -1407,7 +1407,7 @@ public class DataClient implements LocationListener {
                             applicationId,
                             type);
     }
-
+    
     /**
      * Asynchronously requests all entities of specified type that match the provided query string.
      *

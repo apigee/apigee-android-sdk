@@ -334,17 +334,15 @@ public class Entity {
         String type = this.getType();
         UUID uuid = this.getUuid(); // may be NULL
         String entityId = null;
-        if ( uuid != null ) {
-        	type = type + "/$uuid";
+        if ( uuid != null ) {        	
         	entityId = uuid.toString();
         } else {
         	if (User.isSameType(type)) {
                 String username = this.getStringProperty(User.PROPERTY_USERNAME);
-                if ((username != null) && (username.length() > 0)) {
-            	    type = type + "/$username";
+                if ((username != null) && (username.length() > 0)) {            	    
             	    entityId = username;
                 } else {
-                    String error = "no_name_specified";
+                    String error = "no_username_specified";
                     this.dataClient.writeLog(error);
                     response.setError(error);
                     //response.setErrorCode(error);
@@ -352,8 +350,7 @@ public class Entity {
                 }
             } else {
                 String name = this.getStringProperty(PROPERTY_NAME);
-                if ((name != null) && (name.length() > 0)) {
-                    type = type + "/$name";
+                if ((name != null) && (name.length() > 0)) {                    
                     entityId = name;
                 } else {
                     String error = "no_name_specified";
