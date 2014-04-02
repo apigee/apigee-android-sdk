@@ -2614,16 +2614,42 @@ public class DataClient implements LocationListener {
     /****************** COLLECTION MANAGEMENT ***********************/
     /****************** COLLECTION MANAGEMENT ***********************/
 
+    /**
+     * Gets a collection of type <em>type</em>.
+     * 
+     * @param type The entity type to return in the collection.
+     * @return A collection of the specified type.
+     */
     public Collection getCollection(String type)
     {
         return getCollection(type,null);
     }
 
+    /**
+     * Gets a collection of type <em>type</em>, with entities 
+     * filtered using a query string created from keys and values
+     * in <em>qs</em>.
+     * 
+     * @param type The entity type to return in the collection.
+     * @param qs A query string specifying how to filter the entities 
+     * included in the collection.
+     * @return A collection of the specified type.
+     */
     public Collection getCollection(String type,Map<String,Object> qs)
     {
         return new Collection(this,type,qs);
     }
 
+    /**
+     * Asynchronously gets a collection of type <em>type</em>, with entities 
+     * filtered using a query string created from keys and values
+     * in <em>qs</em>.
+     * 
+     * @param type The entity type to return in the collection.
+     * @param qs A query string specifying how to filter the entities 
+     * included in the collection.
+     * @param callback A callback instance to use for the response.
+     */
     public void getCollectionAsync(final String type, final Map<String,Object> qs,
 		final ApiResponseCallback callback) {
         (new ClientAsyncTask<ApiResponse>(callback) {
@@ -2638,6 +2664,14 @@ public class DataClient implements LocationListener {
     /****************** EVENT ENTITY MANAGEMENT ***********************/
     /****************** EVENT ENTITY MANAGEMENT ***********************/
 
+    /**
+     * Creates an Event entity from properties specified in <em>mapEvent</em>.
+     * If no timestamp property value is provided, one is assigned by the server.
+     * 
+     * @param mapEvent A Map instance whose keys are property names and values 
+     * are property values.
+     * @return An API response from the server.
+     */
 	public ApiResponse createEvent(Map<String,Object> mapEvent)
 	{
 		if (mapEvent != null) {
@@ -2668,6 +2702,15 @@ public class DataClient implements LocationListener {
 		return createEntity(mapEvent);
 	}
 	
+	/**
+     * Creates an Event entity from properties specified in <em>mapEvent</em> and
+     * using <em>timestamp</em> as the event's timestamp property value.
+     * 
+     * @param mapEvent A Map instance whose keys are property names and values 
+     * are property values.
+     * @param timestamp An instance with the event timestamp value.
+     * @return An API response from the server.
+	 */
 	public ApiResponse createEvent(Map<String,Object> mapEvent, Date timestamp)
 	{
 		if (mapEvent == null) {
@@ -2678,6 +2721,14 @@ public class DataClient implements LocationListener {
 		return createEvent(mapEvent);
 	}
 	
+	/**
+	 * Creates an Event entity from properties specified in <em>mapEvent</em>, adding a
+	 * counters property from values specified in <em>counterIncrement</em>.
+	 * 
+	 * @param mapEvent The map containing property values for the new entity.
+	 * @param counterIncrement An instance with a counter name and increment value.
+     * @return An API response from the server.
+	 */
 	public ApiResponse createEvent(Map<String,Object> mapEvent, CounterIncrement counterIncrement)
 	{
 		if (mapEvent == null) {
@@ -2689,6 +2740,14 @@ public class DataClient implements LocationListener {
 		return createEvent(mapEvent);
 	}
 	
+	/**
+	 * Asynchronously creates an Event entity from properties specified in <em>mapEvent</em>, 
+	 * adding a counters property from values specified in <em>counterIncrement</em>.
+	 * 
+	 * @param mapEvent The map containing property values for the new entity.
+	 * @param counterIncrement An instance with a counter name and increment value.
+	 * @param callback The response callback.
+	 */
 	public void createEventAsync(final Map<String,Object> mapEvent, final CounterIncrement counterIncrement, final ApiResponseCallback callback)
 	{
 		(new ClientAsyncTask<ApiResponse>(callback) {
@@ -2699,6 +2758,17 @@ public class DataClient implements LocationListener {
 		}).execute();
 	}
 	
+	/**
+     * Creates an Event entity from properties specified in <em>mapEvent</em> and
+     * using <em>timestamp</em> as the event's timestamp property value. This adds
+     * a counters property from values specified in <em>counterIncrement</em>
+     * 
+     * @param mapEvent A Map instance whose keys are property names and values 
+     * are property values.
+     * @param timestamp An instance with the event timestamp value.
+	 * @param counterIncrement An instance with a counter name and increment value.
+     * @return An API response from the server.
+	 */
 	public ApiResponse createEvent(Map<String,Object> mapEvent, Date timestamp, CounterIncrement counterIncrement)
 	{
 		if (mapEvent == null) {
@@ -2710,6 +2780,17 @@ public class DataClient implements LocationListener {
 		return createEvent(mapEvent);
 	}
 	
+	/**
+     * Creates an Event entity from properties specified in <em>mapEvent</em> and
+     * using <em>timestamp</em> as the event's timestamp property value. This adds
+     * counters properties from values specified in <em>counterIncrements</em>
+     * 
+     * @param mapEvent A Map instance whose keys are property names and values 
+     * are property values.
+     * @param timestamp An instance with the event timestamp value.
+	 * @param counterIncrements A list of instances with a counter name and increment value.
+     * @return An API response from the server.
+	 */
 	public ApiResponse createEvent(Map<String,Object> mapEvent, Date timestamp, List<CounterIncrement> counterIncrements)
 	{
 		if (mapEvent == null) {
@@ -2727,6 +2808,13 @@ public class DataClient implements LocationListener {
 		return createEvent(mapEvent);
 	}
 
+	/**
+	 * Adds the value of <em>timestamp</em> as the value of a timestamp 
+	 * key in <em>mapEvent</em>.
+	 * 
+	 * @param timestamp The value that should be used for the timestamp key.
+	 * @param mapEvent The map to which the timestamp key should be added.
+	 */
     protected void populateTimestamp(Date timestamp, Map<String,Object> mapEvent)
     {
         if (timestamp != null) {
@@ -2736,7 +2824,15 @@ public class DataClient implements LocationListener {
             mapEvent.put("timestamp", "0");
         }
     }
-    
+
+    /**
+     * Adds the counter name and increment value from <em>counterIncrement</em> as the Map
+     * value of a "counters" key in <em>mapEvent</em>. If <em>counterIncrement</em> has no
+     * counter name, no key/value is added.
+     * 
+     * @param counterIncrement An instance containing a counter name and increment value.
+     * @param mapEvent The map to which the counters key/value should be added.
+     */
     protected void populateCounter(CounterIncrement counterIncrement, Map<String,Object> mapEvent)
     {
         if ((counterIncrement != null) && (mapEvent != null)) {
