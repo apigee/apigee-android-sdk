@@ -63,6 +63,9 @@ public class DataClient implements LocationListener {
 
     private static Logger log = null; //new DefaultAndroidLog();
     
+    /**
+     * @y.exclude
+     */
     public static final String LOGGING_TAG = "DATA_CLIENT";
     public static final String OPTION_KEY_BASE_URL = "baseURL";
 
@@ -1557,7 +1560,7 @@ public class DataClient implements LocationListener {
 
     /**
      * Query object for handling the response from certain query requests
-     * 
+     * @y.exclude
      */
     private class EntityQuery implements Query {
         final String httpMethod;
