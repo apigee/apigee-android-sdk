@@ -64,9 +64,13 @@ public class DataClient implements LocationListener {
     private static Logger log = null; //new DefaultAndroidLog();
     
     /**
-     * @y.exclude
+     * Default tag applied to all logging messages sent from an instance of DataClient
      */
     public static final String LOGGING_TAG = "DATA_CLIENT";
+
+    /**
+     * @y.exclude
+     */
     public static final String OPTION_KEY_BASE_URL = "baseURL";
 
     public static boolean FORCE_PUBLIC_API = false;
@@ -83,9 +87,29 @@ public class DataClient implements LocationListener {
     // Local API
     public static String LOCAL_API_URL = LOCAL_STANDALONE_API_URL;
 
+    /**
+     * Standard HTTP methods use in generic request methods
+     * @see apiRequest 
+     * @see doHttpRequest
+     */
     protected static final String HTTP_METHOD_DELETE = "DELETE";
+    /**
+     * Standard HTTP methods use in generic request methods
+     * @see apiRequest 
+     * @see doHttpRequest
+     */
     protected static final String HTTP_METHOD_GET    = "GET";
+    /**
+     * Standard HTTP methods use in generic request methods
+     * @see apiRequest 
+     * @see doHttpRequest
+     */
     protected static final String HTTP_METHOD_POST   = "POST";
+    /**
+     * Standard HTTP methods use in generic request methods
+     * @see apiRequest 
+     * @see doHttpRequest
+     */
     protected static final String HTTP_METHOD_PUT    = "PUT";
     
     private String apiUrl = PUBLIC_API_URL;
@@ -109,16 +133,25 @@ public class DataClient implements LocationListener {
 
     //static RestTemplate restTemplate = new RestTemplate(true);  // include default converters
 
+    /**
+     * @y.exclude
+     */
     @Override
     public void onProviderDisabled(String provider) {
         
     }
 
+    /**
+     * @y.exclude
+     */
     @Override
     public void onProviderEnabled(String provider) {
         
     }
 
+    /**
+     * @y.exclude
+     */
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         
@@ -137,11 +170,20 @@ public class DataClient implements LocationListener {
 
     }
 
+    /**
+     * @y.exclude
+     */
     public static boolean isUuidValid(UUID uuid) {
     	return( uuid != null );
     }
 
-    
+    /**
+     * Sets where log messages will be sent. Called from ApigeeClient.
+     * Rather than setting this directly, use the monitoringOptions param
+     * when you instantiate ApigeeClient.
+     *
+     * @param  logger  an instance of a Logger object
+     */
     public static void setLogger(Logger logger) {
     	log = logger;
     }
@@ -198,7 +240,7 @@ public class DataClient implements LocationListener {
     /****************** CONSTRUCTORS ***********************/
 
     /**
-     * Default constructor for instantiating a client.
+     * @y.exclude
      */
     public DataClient() {
         init();
@@ -325,6 +367,7 @@ public class DataClient implements LocationListener {
      * Sets a new URLConnectionFactory object in the DataClient
      *
      * @param  urlConnectionFactory  a new URLConnectionFactory object
+     * @y.exclude
      */
     public void setUrlConnectionFactory(URLConnectionFactory urlConnectionFactory) {
     	this.urlConnectionFactory = urlConnectionFactory;
@@ -692,7 +735,7 @@ public class DataClient implements LocationListener {
     /**
      * High-level synchronous API request. Implements the http request
      * for most SDK methods by calling 
-     * {@link #doHttpRequest(String,Map<String,Object>,Object,String...)}
+     * {@link doHttpRequest(String,Map<String,Object>,Object,String...)}
      * 
      *  @param  httpMethod the http method in the format: 
      *      HTTP_METHOD_<method_name> (e.g. HTTP_METHOD_POST)
@@ -2375,6 +2418,9 @@ public class DataClient implements LocationListener {
 				connectionType);
 	}
 	
+    /**
+     * @y.exclude
+     */
 	public void captureDeviceLocation() {
 		/*
 		if (this.context != null) {
@@ -2400,6 +2446,9 @@ public class DataClient implements LocationListener {
 		*/
 	}
 	
+    /**
+     * @y.exclude
+     */
 	@Override
     public void onLocationChanged(Location location) {
 		/*
