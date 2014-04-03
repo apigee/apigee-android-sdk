@@ -569,7 +569,7 @@ public class DataClient implements LocationListener {
     /**     
      * Sets the current organizanization from DataClient 
      *
-     * @param currentOrganization
+     * @param currentOrganization The organization this data client should use.
      */
     public void setCurrentOrganization(String currentOrganization) {
         this.currentOrganization = currentOrganization;
@@ -596,7 +596,7 @@ public class DataClient implements LocationListener {
     /**
      *  Forms and initiates a raw synchronous http request and processes the response.
      *
-     *  @param  httpMethod the http method in the format: 
+     *  @param  httpMethod the HTTP method in the format: 
      *      HTTP_METHOD_<method_name> (e.g. HTTP_METHOD_POST)
      *  @param  params the URL parameters to append to the request URL
      *  @param  data the body of the request
@@ -737,7 +737,7 @@ public class DataClient implements LocationListener {
      * for most SDK methods by calling 
      * {@link doHttpRequest(String,Map<String,Object>,Object,String...)}
      * 
-     *  @param  httpMethod the http method in the format: 
+     *  @param  httpMethod the HTTP method in the format: 
      *      HTTP_METHOD_<method_name> (e.g. HTTP_METHOD_POST)
      *  @param  params the URL parameters to append to the request URL
      *  @param  data the body of the request
@@ -771,7 +771,7 @@ public class DataClient implements LocationListener {
      * Logs the user in and get a valid access token.
      * 
      * @param usernameOrEmail the username or email associated with the user entity in API BaaS
-     * @param password the users API BaaS password
+     * @param password the user's API BaaS password
      * @return non-null ApiResponse if request succeeds, check getError() for
      *         "invalid_grant" to see if access is denied.
      */
@@ -883,6 +883,7 @@ public class DataClient implements LocationListener {
 	 * 
 	 * @param  email  the email address associated with the user entity in API BaaS
      * @param  pin  the pin associated with the user entity in API BaaS     
+     * @param callback A callback for the async response.
 	 */
 	public void authorizeAppUserViaPinAsync(final String email,
 			final String pin, final ApiResponseCallback callback) {
@@ -1018,7 +1019,8 @@ public class DataClient implements LocationListener {
      * Executes asynchronously in background and the callbacks are called in the UI thread.
      * 
      * @param  username  The username to be logged out
-     * @param  token  The access token to be destroyed on the server     
+     * @param  token  The access token to be destroyed on the server   
+     * @param callback A callback for the async response  
      */
     public void logOutAppUserForTokenAsync(final String username, final String token, final ApiResponseCallback callback) {
         (new ClientAsyncTask<ApiResponse>(callback) {
@@ -1054,7 +1056,7 @@ public class DataClient implements LocationListener {
      * Executes asynchronously in background and the callbacks are called in the UI thread.
      * 
      * @param  username  The username to be logged out
-     * @return  non-null ApiResponse if request succeeds
+     * @param callback A callback for the response
      */
     public void logOutAppUserForAllTokensAsync(final String username, final ApiResponseCallback callback) {
         (new ClientAsyncTask<ApiResponse>(callback) {
@@ -1284,6 +1286,7 @@ public class DataClient implements LocationListener {
      * @param  destination the destination for the push notification. Can be a single device entity,
      *      set of devices, or all devices. For more information, see GCMDestination.
      * @param  notifier the 'name' property of the notifier entity to be used to send the notification     
+     * @param callback A callback for the async response
      * @see  GCMPayload
      * @see  GCMDestination
      */
@@ -1335,8 +1338,8 @@ public class DataClient implements LocationListener {
   	 * Create a new entity on the server. Executes asynchronously in background
   	 * and the callbacks are called in the UI thread.
   	 * 
-  	 * @param entity
-  	 * @param callback
+  	 * @param entity An instance with data to use to create the entity
+  	 * @param callback A callback for the async response
   	 */
   	public void createEntityAsync(final Entity entity,
   			final ApiResponseCallback callback) {
@@ -1354,8 +1357,9 @@ public class DataClient implements LocationListener {
   	 * must include a "type" property. Executes asynchronously in background and
   	 * the callbacks are called in the UI thread.
   	 * 
-  	 * @param properties
-  	 * @param callback
+  	 * @param properties The values to use, with keys as property names and values 
+  	 * as property values
+  	 * @param callback A callback for the async response
   	 */
   	public void createEntityAsync(final Map<String, Object> properties,
   			final ApiResponseCallback callback) {
@@ -1371,8 +1375,10 @@ public class DataClient implements LocationListener {
   	 * Create a set of entities on the server from an ArrayList. Each item in the array
   	 * contains a set of properties that define a entity.
   	 * 
-  	 * @param type
-  	 * @param entities
+  	 * @param type The type of entities to create.
+  	 * @param entities A list of maps where keys are entity property names and values
+  	 * are property values.
+  	 * @return An instance with response data from the server.
   	 */
   	public ApiResponse createEntities(String type, ArrayList<Map<String, Object>> entities) {
         assertValidApplicationId();                
@@ -1389,8 +1395,10 @@ public class DataClient implements LocationListener {
   	 * contains a set of properties that define a entity. Executes asynchronously in 
   	 * background and the callbacks are called in the UI thread.
   	 * 
-  	 * @param type
-  	 * @param entities
+  	 * @param type The type of entities to create.
+  	 * @param entities A list of maps where keys are entity property names and values
+  	 * are property values.
+  	 * @param callback A callback for the async response
   	 */
     public void createEntitiesAsync(final String type, final ArrayList<Map<String, Object>> entities,
   			final ApiResponseCallback callback) {
@@ -1407,7 +1415,7 @@ public class DataClient implements LocationListener {
      * Supported object types are Activity, Device, Group, Message, and User.
      * All other types will return a generic Entity instance with no type assigned.
      *
-     * @param  type  the entity type to an object instance of
+     * @param  type  the entity type of which to create an object instance
      * @return  an object instance that corresponds to the type provided
     */
     public Entity createTypedEntity(String type) {
@@ -1494,9 +1502,9 @@ public class DataClient implements LocationListener {
      * must include a "type" property. Executes asynchronously in background and
      * the callbacks are called in the UI thread.
      *
-     * @param entityID
-     * @param updatedProperties
-     * @param callback
+     * @param entityID the entity to update
+     * @param updatedProperties the new properties
+     * @param callback A callback for the async response
      */
     public void updateEntityAsync(final String entityID, final Map<String, Object> updatedProperties,
                                       final ApiResponseCallback callback) {
@@ -1547,9 +1555,9 @@ public class DataClient implements LocationListener {
      * Executes asynchronously in background and
      * the callbacks are called in the UI thread.
      *
-     * @param entityType
-     * @param entityID
-     * @param callback
+     * @param entityType the collection of the entity
+     * @param entityID the specific entity to delete
+     * @param callback A callback with the async response
      */
     public void removeEntityAsync(final String entityType, final String entityID,
     								final ApiResponseCallback callback) {
@@ -1566,11 +1574,14 @@ public class DataClient implements LocationListener {
      * provides a simple way of dealing with result sets that need to be
      * iterated or paged through.
      * 
-     * @param method
-     * @param params
-     * @param data
-     * @param segments
-     * @return
+     * See {@link #doHttpRequest(String,Map<String,Object>,Object,String...)} for
+     * more on the parameters.
+     * 
+     * @param httpMethod The HTTP method to use in the query
+     * @param params Query parameters.
+     * @param data The request body.
+     * @param segments Additional URL path segments to append to the request URL
+     * @return An instance representing query results
      */
     public Query queryEntitiesRequest(String httpMethod,
             Map<String, Object> params, Object data, String... segments) {
@@ -1584,11 +1595,14 @@ public class DataClient implements LocationListener {
      * iterated or paged through. Executes asynchronously in background and the
      * callbacks are called in the UI thread.
      * 
-     * @param callback
-     * @param method
-     * @param params
-     * @param data
-     * @param segments
+     * See {@link #doHttpRequest(String,Map<String,Object>,Object,String...)} for
+     * more on the parameters.
+     * 
+     * @param callback A callback for the async response
+     * @param httpMethod The HTTP method to use in the query
+     * @param params Query parameters.
+     * @param data The request body.
+     * @param segments Additional URL path segments to append to the request URL
      */
     public void queryEntitiesRequestAsync(final QueryResultsCallback callback,
             final String httpMethod, final Map<String, Object> params,
@@ -1656,7 +1670,7 @@ public class DataClient implements LocationListener {
          * Performs a request for the next set of results based on the cursor
          * from the last result set.
          * 
-         * @return query that contains results and where to get more from.
+         * @return query that contains results and where to get more.
          */
         public Query next() {
             if (more()) {
@@ -2020,9 +2034,9 @@ public class DataClient implements LocationListener {
     /**
      * Posts an activity to a user entity's activity stream. Activity must already be created.
      * 
-     * @param userId
-     * @param activity
-     * @return
+     * @param userId 
+     * @param activity 
+     * @return An instance with the server response
      */
     public ApiResponse postUserActivity(String userId, Activity activity) {
         return apiRequest(HTTP_METHOD_POST, null, activity,  organizationId, applicationId, "users",
@@ -2229,11 +2243,11 @@ public class DataClient implements LocationListener {
     /**
      * Connect two entities together.
      * 
-     * @param connectingEntityType
-     * @param connectingEntityId
-     * @param connectionType
-     * @param connectedEntityId
-     * @return
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param connectedEntityId The ID of the second entity.
+     * @return An instance with the server's response.
      */
     public ApiResponse connectEntities(String connectingEntityType,
             String connectingEntityId, String connectionType,
@@ -2245,12 +2259,13 @@ public class DataClient implements LocationListener {
     
     /**
      * Connect two entities together
-     * @param connectorType
-     * @param connectorID
-     * @param connectionType
-     * @param connecteeType
-     * @param connecteeID
-     * @return
+     * 
+     * @param connectorType The type of the first entity in the connection.
+     * @param connectorID The first entity's ID.
+     * @param connectionType The type of connection to make.
+     * @param connecteeType The type of the second entity.
+     * @param connecteeID The second entity's ID
+     * @return An instance with the server's response.
      */
     public ApiResponse connectEntities(String connectorType,
     		String connectorID,
@@ -2266,11 +2281,11 @@ public class DataClient implements LocationListener {
 	 * Connect two entities together. Executes asynchronously in background and
 	 * the callbacks are called in the UI thread.
 	 * 
-	 * @param connectingEntityType
-	 * @param connectingEntityId
-	 * @param connectionType
-	 * @param connectedEntityId
-	 * @param callback
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param connectedEntityId The ID of the second entity.
+	 * @param callback A callback with the async response.
 	 */
 	public void connectEntitiesAsync(final String connectingEntityType,
 			final String connectingEntityId, final String connectionType,
@@ -2287,11 +2302,11 @@ public class DataClient implements LocationListener {
     /**
      * Disconnect two entities.
      * 
-     * @param connectingEntityType
-     * @param connectingEntityId
-     * @param connectionType
-     * @param connectedEntityId
-     * @return
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param connectedEntityId The ID of the second entity.
+     * @return An instance with the server's response.
      */
     public ApiResponse disconnectEntities(String connectingEntityType,
             String connectingEntityId, String connectionType,
@@ -2305,11 +2320,11 @@ public class DataClient implements LocationListener {
 	 * Disconnect two entities. Executes asynchronously in background and the
 	 * callbacks are called in the UI thread.
 	 * 
-	 * @param connectingEntityType
-	 * @param connectingEntityId
-	 * @param connectionType
-	 * @param connectedEntityId
-	 * @param callback
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param connectedEntityId The ID of the second entity.
+	 * @param callback A callback with the async response.
 	 */
 	public void disconnectEntitiesAsync(final String connectingEntityType,
 			final String connectingEntityId, final String connectionType,
@@ -2324,12 +2339,16 @@ public class DataClient implements LocationListener {
 	}
 	
     /**
-     * Query the connected entities.
+     * Queries for entities connected with <em>connectionType</em>
+     * to the entity whose ID is <em>connectingEntityId</em>. Use the 
+     * <em>ql</em> parameter to specify a query string for further 
+     * filtering.
      * 
-     * @param connectingEntityType
-     * @param connectingEntityId
-     * @param connectionType
-     * @param ql
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param ql The string (if any) that should follow the "ql"
+     * in the request URL
      * @return
      */
     public Query queryEntityConnections(String connectingEntityType,
@@ -2343,14 +2362,18 @@ public class DataClient implements LocationListener {
     }
 
 	/**
-	 * Query the connected entities. Executes asynchronously in background and
+     * Queries for entities connected with <em>connectionType</em>
+     * to the entity whose ID is <em>connectingEntityId</em>. Use the 
+     * <em>ql</em> parameter to specify a query string for further 
+     * filtering. Executes asynchronously in background and
 	 * the callbacks are called in the UI thread.
 	 * 
-	 * @param connectingEntityType
-	 * @param connectingEntityId
-	 * @param connectionType
-	 * @param ql
-	 * @param callback
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param ql The string (if any) that should follow the "ql"
+     * in the request URL
+	 * @param callback A callback for the async response.
 	 */
 	public void queryEntityConnectionsAsync(String connectingEntityType,
 			String connectingEntityId, String connectionType, String ql,
@@ -2371,15 +2394,20 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Query the connected entities within distance of a specific point.
+     * Queries for entities connected with <em>connectionType</em>
+     * to the entity whose ID is <em>connectingEntityId</em> and
+     * within distance of a specific point.
      * 
-     * @param connectingEntityType
-     * @param connectingEntityId
-     * @param connectionType
-     * @param distance
-     * @param latitude
-     * @param longitude
-     * @return
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param distance The distance in meters from the specified latitude and 
+     * longitude.
+     * @param latitude The latitude of the point from which to 
+     * measure distance.
+     * @param longitude The longitude of the ponit from which to
+     * measure distance.
+     * @return An instance with the query results.
      */
     public Query queryEntityConnectionsWithinLocation(
             String connectingEntityType, String connectingEntityId,
@@ -2394,17 +2422,21 @@ public class DataClient implements LocationListener {
     }
 
 	/**
-	 * Query the connected entities within distance of a specific point. .
-	 * Executes asynchronously in background and the callbacks are called in the
-	 * UI thread.
+     * Queries for entities connected with <em>connectionType</em>
+     * to the entity whose ID is <em>connectingEntityId</em> and
+     * within distance of a specific point. Executes asynchronously in 
+     * background and the callbacks are called in the UI thread.
 	 * 
-	 * @param connectingEntityType
-	 * @param connectingEntityId
-	 * @param connectionType
-	 * @param distance
-	 * @param latitude
-	 * @param longitude
-	 * @param callback
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The ID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param distance The distance in meters from the specified latitude and 
+     * longitude.
+     * @param latitude The latitude of the point from which to 
+     * measure distance.
+     * @param longitude The longitude of the ponit from which to
+     * measure distance.
+	 * @param callback A callback for the async response.
 	 */
 	public void queryEntityConnectionsWithinLocationAsync(
 			String connectingEntityType, String connectingEntityId,
