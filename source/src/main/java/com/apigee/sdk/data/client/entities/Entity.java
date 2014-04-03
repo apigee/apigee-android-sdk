@@ -291,10 +291,16 @@ public class Entity {
         return toJsonString(this);
     }
 
+    /**
+     * @y.exclude
+     */
     public <T extends Entity> T toType(Class<T> t) {
         return toType(this, t);
     }
 
+    /**
+     * @y.exclude
+     */
     public static <T extends Entity> T toType(Entity entity, Class<T> t) {
         if (entity == null) {
             return null;
@@ -314,6 +320,9 @@ public class Entity {
         return newEntity;
     }
 
+    /**
+     * @y.exclude
+     */
     public static <T extends Entity> List<T> toType(List<Entity> entities,
             Class<T> t) {
         List<T> l = new ArrayList<T>(entities != null ? entities.size() : 0);
