@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 
-
+/**
+ * @y.exclude
+ */
 public interface MetricsUploadService {
 
 	/**

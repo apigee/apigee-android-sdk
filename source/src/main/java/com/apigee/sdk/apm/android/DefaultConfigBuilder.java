@@ -9,7 +9,9 @@ import com.apigee.sdk.apm.android.model.AppConfigURLRegex;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 
-
+/**
+ * @y.exclude
+ */
 public class DefaultConfigBuilder {
 	
 	public ApplicationConfigurationModel getDefaultConfigModel()

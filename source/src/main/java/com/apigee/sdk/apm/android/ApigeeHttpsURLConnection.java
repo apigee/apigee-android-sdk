@@ -16,7 +16,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocketFactory;
 
-
+/**
+ * @y.exclude
+ */
 public class ApigeeHttpsURLConnection extends HttpsURLConnection
 {
 	private HttpsURLConnection realConnection;

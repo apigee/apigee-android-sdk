@@ -24,6 +24,9 @@ import android.net.http.AndroidHttpClient;
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.http.impl.client.cache.CachingHttpClient;
 
+/**
+ * @y.exclude
+ */
 public class HttpClientWrapper implements HttpClient {
 
 	public static final String ATTR_DELEGATE_EXCEPTION          = "delegate_exception";

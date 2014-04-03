@@ -2,6 +2,9 @@ package com.apigee.sdk.apm.android;
 
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 
+/**
+ * @y.exclude
+ */
 public class MockWebManagerClientConfigLoader extends
 		BaseWebManagerClientConfigLoader {
 

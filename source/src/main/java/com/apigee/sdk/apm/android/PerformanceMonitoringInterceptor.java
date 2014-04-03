@@ -30,6 +30,7 @@ import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
  * method instead.
  * 
  * @author vadmin
+ * @y.exclude
  * 
  */
 public class PerformanceMonitoringInterceptor implements

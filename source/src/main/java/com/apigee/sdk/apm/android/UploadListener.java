@@ -2,6 +2,7 @@ package com.apigee.sdk.apm.android;
 
 /**
  * Listener interface to be called when data is uploaded to server
+ * @y.exclude
  */
 public interface UploadListener {
 	

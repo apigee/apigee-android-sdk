@@ -5,7 +5,9 @@ import java.net.Proxy;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-
+/**
+ * @y.exclude
+ */
 public class DefaultURLWrapper extends AbstractURLWrapper implements URLWrapper {
 
 	public DefaultURLWrapper(String spec) throws MalformedURLException

@@ -8,7 +8,9 @@ import java.util.Map;
 
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
-
+/**
+ * @y.exclude
+ */
 public class NetworkMetricsCollector implements NetworkMetricsCollectorService {
 
 	public final static int MAX_NUM_METRICS = 100;

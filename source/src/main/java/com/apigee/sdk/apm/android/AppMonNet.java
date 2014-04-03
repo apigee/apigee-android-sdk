@@ -8,6 +8,7 @@ import com.apigee.sdk.apm.android.model.ClientLog;
 
 /**
  * Convenience methods for networking functionality in Apigee App Monitoring.
+ * @y.exclude
  */
 public class AppMonNet {
 

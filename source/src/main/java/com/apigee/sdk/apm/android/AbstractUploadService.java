@@ -29,7 +29,9 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+/**
+ * @y.exclude
+ */
 public abstract class AbstractUploadService implements MetricsUploadService {
 
 	public static final String VALUE_UNKNOWN = "UNKNOWN";

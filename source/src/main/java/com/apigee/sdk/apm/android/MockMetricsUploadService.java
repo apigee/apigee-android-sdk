@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 
-
+/**
+ * @y.exclude
+ */
 public class MockMetricsUploadService implements MetricsUploadService {
 
 	private List<UploadListener> listListeners;

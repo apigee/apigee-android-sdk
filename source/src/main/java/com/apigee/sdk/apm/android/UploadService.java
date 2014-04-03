@@ -10,7 +10,9 @@ import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 
-
+/**
+ * @y.exclude
+ */
 public class UploadService extends AbstractUploadService implements MetricsUploadService {
 
 	private MonitoringClient monitoringClient;

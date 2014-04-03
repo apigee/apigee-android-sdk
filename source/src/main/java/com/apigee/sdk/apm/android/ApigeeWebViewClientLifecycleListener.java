@@ -3,7 +3,9 @@ package com.apigee.sdk.apm.android;
 import android.graphics.Bitmap;
 import android.webkit.WebView;
 
-
+/**
+ * @y.exclude
+ */
 public interface ApigeeWebViewClientLifecycleListener {
 	public void onPageStarted(WebView webView, String url, Bitmap favicon);
 	public void onPageFinished(WebView view, String url);
