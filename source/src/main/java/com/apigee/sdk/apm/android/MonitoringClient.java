@@ -93,10 +93,24 @@ public class MonitoringClient implements SessionTimeoutListener {
     private static ThreadPoolExecutor sExecutor =
             new ThreadPoolExecutor(0, 1, SUBMIT_THREAD_TTL_MILLIS, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new LowPriorityThreadFactory());
 
-
+  /**
+   * Metrics upload interval. Every 300000 milliseconds by default.
+   */
 	public static final int UPLOAD_INTERVAL = 300000; // 5 Minutes
 
-	
+	/**
+	 * Default constructor for starting App Monitoring. Generally, should not be called directly.
+	 * Initializing the SDK with ApigeeClient will call this via AppMon. 
+	 *
+	 * @param  appIdentification  an AppIdentification object that identifies the API BaaS organization
+	 *		and application to start App Monitoring for
+	 * @param  dataClient  the instance of DataClient created when ApigeeClient was instantiated
+	 * @param  appActivity  an application Context object
+	 * @param  monitoringOptions  a MonitoringOptions object for specifying App Monitoring options
+	 * @return  the initialized MonitoringClient
+	 * @throws InitializationException
+	 * @see  AppMon
+	 */
 	public static synchronized MonitoringClient initialize(AppIdentification appIdentification,
 			DataClient dataClient,
 			Context appActivity,
@@ -106,6 +120,19 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return initialize(appIdentification, dataClient, appActivity, new DefaultHttpClient(), monitoringOptions);
 	}
 
+	/**
+	 * Constructor for starting App Monitoring with a specified HttpClient. Generally, should not be called directly.
+	 * Initializing the SDK with ApigeeClient will call this. 
+	 *
+	 * @param  appIdentification  an AppIdentification object that identifies the API BaaS organization
+	 *		and application to start App Monitoring for
+	 * @param  dataClient  the instance of DataClient created when ApigeeClient was instantiated
+	 * @param  appActivity  an application Context object
+	 * @param  monitoringOptions  a MonitoringOptions object for specifying App Monitoring options
+	 * @return  the initialized MonitoringClient
+	 * @throws InitializationException
+	 * @see  AppMon
+	 */
 	public static synchronized MonitoringClient initialize(AppIdentification appIdentification,
 			DataClient dataClient,
 			Context appActivity, HttpClient client,
@@ -138,6 +165,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 
+	/**
+	 * Returns the MonitoringClient instance
+	 *
+	 * @return the MonitoringClient, or null if the client has not been initialized
+	 */
 	public static MonitoringClient getInstance() {
 		if (singleton != null) {
 			return singleton;
@@ -232,6 +264,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return log;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	synchronized protected void initializeSubServices()
 	{
 		log = new AndroidLog(loader);
@@ -266,6 +301,10 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 	
+	/**
+	 * Retrieves boolean indicating whether App Monitoring is enabled and sending data
+	 * @return boolean indicator
+	 */
 	private boolean allowedToSendData()
 	{
 		boolean willSendData = false;
@@ -317,6 +356,12 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return willSendData;
 	}
 	
+	/**
+	 * Retrieves the base URL for App Monitoring requests, including the
+	 * API BaaS organization and application
+	 *
+	 * @return the base URL
+	 */
 	public String getBaseServerURL() {
 		String baseServerURL = null;
 		String baseURL = appIdentification.getBaseURL();
@@ -337,14 +382,29 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return baseServerURL;
 	}
 	
+	/**
+	 * Retrieves the URL that App Monitoring config is being download from.
+	 *
+	 * @return the config download URL
+	 */
 	public String getConfigDownloadURL() {
 		return getBaseServerURL() + "/apm/apigeeMobileConfig";
 	}
 	
+	/**
+	 * Retrieves the URL that App Monitoring crash reports are being uploaded to.
+	 *
+	 * @return the crash report upload URL
+	 */
 	public String getCrashReportUploadURL(String crashFileName) {
 		return getBaseServerURL() + "/apm/crashLogs/" + crashFileName;
 	}
 	
+	/**
+	 * Retrieves the URL that App Monitoring tracked metrics are being uploaded to.
+	 *
+	 * @return the metrics upload URL
+	 */
 	public String getMetricsUploadURL() {
 		return getBaseServerURL() + "/apm/apmMetrics";
 	}
@@ -427,6 +487,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		pause();
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public String putOrPostString(String httpMethod, String body, String urlAsString, String contentType) {
 		String response = null;
 		OutputStream out = null;
@@ -501,22 +564,37 @@ public class MonitoringClient implements SessionTimeoutListener {
 	    return response;		
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public String postString(String postBody, String urlAsString, String contentType) {
 		return putOrPostString("POST", postBody, urlAsString, contentType);
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public String postString(String postBody, String urlAsString) {
 		return postString(postBody, urlAsString, "application/json; charset=utf-8");
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public String putString(String body, String urlAsString, String contentType) {
 		return putOrPostString("PUT", body, urlAsString, contentType);
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public String putString(String body, String urlAsString) {
 		return putString(body, urlAsString, "application/json; charset=utf-8");
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public boolean readUpdateAndApplyConfiguration(HttpClient client,
 								final boolean enableAutoUpload,
 								final ConfigurationReloadedListener reloadListener) {
@@ -633,6 +711,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 		Log.v(ClientLog.TAG_MONITORING_CLIENT, "Initiating data to be sent on a regular interval");
 	}
 	
+	/**
+	 * Retrieves boolean indicator of whether the device is connected to a network
+	 *
+	 * @return boolean indicator
+	 */
 	public boolean isDeviceNetworkConnected()
 	{
 		boolean networkConnected = true;  // assume so
@@ -653,6 +736,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return networkConnected;
 	}
 	
+	/**
+	 * Uploads metrics report.
+	 *
+	 * @return boolean indicator of wehter upload was successful
+	 */
 	public boolean uploadMetrics()
 	{
 		boolean metricsUploaded = false;
@@ -676,6 +764,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return metricsUploaded;
 	}
 	
+	/**
+	 * Refreshes the App Monitoring configuration from the server.
+	 *
+	 * @return boolean indicator of whether the refresh was successful
+	 */
 	public boolean refreshConfiguration(ConfigurationReloadedListener reloadListener)
 	{
 	    boolean configurationUpdated = false;
@@ -698,6 +791,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 	    return configurationUpdated;
 	}
 	
+	/**
+	 * Retrieves the unique device ID
+	 *
+	 * @return device ID
+	 */
 	public String getApigeeDeviceId()
 	{
 		String android_id = Secure.getString(
@@ -706,6 +804,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return android_id;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public boolean isAbleToSendDataToServer() {
 		ApplicationConfigurationService configService = getApplicationConfigurationService();
 		
@@ -727,6 +828,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return false;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public void onCrashReportUpload(String crashReport) {
 		if (listListeners != null) {
 			Iterator<UploadListener> iterator = listListeners.iterator();
@@ -737,6 +841,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	private class LoadRemoteConfigTask implements Runnable {
 
 		private ConfigurationReloadedListener reloadListener;
@@ -776,8 +883,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 	
-	/*
+	/**
 	 * Task to be executed in the background
+	 * @y.exclude
 	 */
 	private class UploadDataTask implements Runnable {
 
@@ -813,8 +921,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		
 	}
 	
-	/*
+	/**
 	 * Task to be executed in the background
+	 * @y.exclude
 	 */
 	private class ForcedUploadDataTask implements Runnable {
 		private MonitoringClient client;
@@ -837,6 +946,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	
 	/*
 	 * Task to be executed in the background
+	 * @y.exclude
 	 */
 	private class CrashManagerTask implements Runnable {
 		private MonitoringClient client;
@@ -883,6 +993,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 			return client;
 	}
 
+	/**
+	 * Gets the default Android Logger
+	 *
+	 * @return  Android Logger
+	 */
 	public Logger getAndroidLogger() {
 		if ((log != null) && isInitialized && isActive) {
 			return log;
@@ -891,26 +1006,46 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public void setUploadService(MetricsUploadService uploadService) {
 		this.uploadService = uploadService;
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public MetricsUploadService getUploadService() {
 		return uploadService;
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public ApplicationConfigurationService getApplicationConfigurationService() {
 		return loader;
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public NetworkMetricsCollectorService getMetricsCollectorService() {
 		return collector;
 	}
 	
+	/**
+	 * Checks if the AppMonitoring client has been initialized
+	 *
+	 * @return boolean indicator
+	 */
 	public boolean isInitialized() {
 		return isInitialized;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public void onUserInteraction() {
 		if( isInitialized ) {
 			if( !isActive ) {
@@ -932,6 +1067,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public void onSessionTimeout(String sessionUUID,Date sessionStartTime,Date sessionLastActivityTime) {
 		log.flush();
 		collector.flush();
@@ -944,6 +1082,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public synchronized boolean addMetricsUploadListener(UploadListener metricsUploadListener) {
 		boolean listenerAdded = false;
 		if( this.listListeners != null ) {
@@ -954,6 +1095,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return listenerAdded;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public synchronized boolean removeMetricsUploadListener(UploadListener metricsUploadListener) {
 		boolean listenerRemoved = false;
 		if( this.listListeners != null ) {
@@ -963,30 +1107,51 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return listenerRemoved;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public ArrayList<UploadListener> getMetricsUploadListeners() {
 		return this.listListeners;
 	}
 
+	/**
+	 * @y.exclude
+	 */
 	public static String getDeviceModel() {
 		return Build.MODEL;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public static String getDeviceType() {
 		return Build.TYPE;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public static String getDeviceOSVersion() {
 		return Build.VERSION.RELEASE;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public static String getDevicePlatform() {
 		return ApigeeClient.SDK_TYPE;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public static String getSDKVersion() {
 		return ApigeeClient.SDK_VERSION;
 	}
 	
+	/**
+	 * @y.exclude
+	 */
 	public String getUniqueIdentifierForApp() {
 		return appIdentification.getUniqueIdentifier();
 	}
