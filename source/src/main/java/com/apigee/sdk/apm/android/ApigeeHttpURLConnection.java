@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @y.exclude
+ */
 public class ApigeeHttpURLConnection extends HttpURLConnection
 {
 	private HttpURLConnection realConnection;

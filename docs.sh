@@ -74,7 +74,7 @@ fi
 
 CLASSPATH="./source/target/test-classes:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-core/2.2.3/jackson-core-2.2.3.jar:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-annotations/2.2.3/jackson-annotations-2.2.3.jar:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-databind/2.2.3/jackson-databind-2.2.3.jar:${MAVEN_REPO}/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:${MAVEN_REPO}/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:${MAVEN_REPO}/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar:${MAVEN_REPO}/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar:${ANDROID_SDK_PATH}/android.jar"
 SOURCEPATH="./source/src/main/java"
-PACKAGE_LIST="com.apigee.sdk.data.client.exception com.apigee.sdk.data.client.push com.apigee.sdk.data.client.response com.apigee.sdk.apm.android com.apigee.sdk com.apigee.sdk.data.client com.apigee.sdk.data.client.entities com.apigee.sdk.data.client.callbacks"
+PACKAGE_LIST="com.apigee.sdk.data.client.push com.apigee.sdk.data.client.response com.apigee.sdk.apm.android com.apigee.sdk com.apigee.sdk.data.client com.apigee.sdk.data.client.entities com.apigee.sdk.data.client.callbacks"
 YDOC_DIR="${DOCS_DIR}/yworks-uml-doclet-3.0_02-jdk1.5"
 YDOC_OPTIONS="${YDOC_DIR}/lib/ydoc.jar:${YDOC_DIR}/resources"
 # DOCTITLE="Apigee Android API Reference"

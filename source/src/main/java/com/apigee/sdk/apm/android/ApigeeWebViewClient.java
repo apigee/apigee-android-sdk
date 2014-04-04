@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-
+/**
+ * @y.exclude
+ */
 public class ApigeeWebViewClient extends WebViewClient
 {
 	private long startTimeMillis;
