@@ -12,6 +12,9 @@ import com.apigee.sdk.data.client.response.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * Models the 'user' entity as a local object.
+ */
 public class User extends Entity {
 
 	public final static String ENTITY_TYPE = "user";

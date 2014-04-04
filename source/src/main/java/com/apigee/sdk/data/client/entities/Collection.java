@@ -10,7 +10,9 @@ import com.apigee.sdk.data.client.DataClient;
 import com.apigee.sdk.data.client.DataClient.Query;
 import com.apigee.sdk.data.client.response.ApiResponse;
 
-
+/**
+ * Models a collection of entities as a local object.
+ */
 public class Collection
 {
 	private DataClient dataClient;

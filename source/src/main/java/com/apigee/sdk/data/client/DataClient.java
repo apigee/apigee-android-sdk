@@ -56,7 +56,8 @@ import com.apigee.sdk.data.client.push.GCMPayload;
 
 /**
  * The DataClient class for accessing the API BaaS API. Start by instantiating this
- * class though the appropriate constructor.
+ * class though the appropriate constructor. Most calls to the API will be handled
+ * by the methods in this class.
  * 
  */
 public class DataClient implements LocationListener {
@@ -896,6 +897,32 @@ public class DataClient implements LocationListener {
 	}
 
     /**
+     * Log the app in with it's application (not organization) client id and 
+     * client secret key. Not recommended for production apps. Executes asynchronously 
+     * in background and the callbacks are called in the UI thread.
+     * 
+     * @param  clientId  the API BaaS application's client ID 
+     * @param  clientSecret  the API BaaS application's client secret
+     * @param  callback  an ApiResponseCallback to handle the async response
+     */
+    public void authorizeAppClientAsync(final String clientId,
+            final String clientSecret, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+
+            @Override
+            public ApiResponse doTask() {
+                return authorizeAppClient(clientId, clientSecret);
+            }
+        }).execute();
+    }
+
+    private void validateNonEmptyParam(Object param, String paramName) {
+        if ( isEmpty(param) ) {
+            throw new IllegalArgumentException(paramName + " cannot be null or empty");
+        }
+    }
+
+    /**
      * Log the user in with their Facebook access token retrieved via Facebook
      * OAuth. Sets the user's identifier and API BaaS OAuth2 access token in DataClient 
      * if successfully authorized.
@@ -1105,79 +1132,6 @@ public class DataClient implements LocationListener {
 
     /****************** PUSH NOTIFICATIONS ***********************/
     /****************** PUSH NOTIFICATIONS ***********************/
-
-	/**
-	 * Log the app in with it's application (not organization) client id and 
-	 * client secret key. Not recommended for production apps. Executes asynchronously 
-	 * in background and the callbacks are called in the UI thread.
-	 * 
-	 * @param  clientId  the API BaaS application's client ID 
-     * @param  clientSecret  the API BaaS application's client secret
-	 * @param  callback  an ApiResponseCallback to handle the async response
-	 */
-	public void authorizeAppClientAsync(final String clientId,
-			final String clientSecret, final ApiResponseCallback callback) {
-		(new ClientAsyncTask<ApiResponse>(callback) {
-
-			@Override
-			public ApiResponse doTask() {
-				return authorizeAppClient(clientId, clientSecret);
-			}
-		}).execute();
-	}
-
-    private void validateNonEmptyParam(Object param, String paramName) {
-        if ( isEmpty(param) ) {
-            throw new IllegalArgumentException(paramName + " cannot be null or empty");
-        }
-    }
-
-    /**
-     * Creates or updates a device entity using the provided deviceId, and saves the device model, 
-     * device platform, and OS version in the entity. 
-     * If an entity does not exist for the device, it is created with a UUID equal to deviceId.
-     * 
-     * @param  deviceId  the device entity's UUID
-     * @param  properties  additional properties to save in the device entity.      
-     * @return  a Device object if success. Models the API BaaS device entity.
-     */
-    public Device registerDevice(UUID deviceId, Map<String, Object> properties) {
-        assertValidApplicationId();
-        if (properties == null) {
-            properties = new HashMap<String, Object>();
-        }
-        properties.put("refreshed", System.currentTimeMillis());
-        
-        // add device meta-data
-        properties.put("deviceModel", Build.MODEL);
-        properties.put("devicePlatform", "android");
-        properties.put("deviceOSVersion", Build.VERSION.RELEASE);
-        
-        ApiResponse response = apiRequest(HTTP_METHOD_PUT, null, properties,
-                organizationId, applicationId, "devices", deviceId.toString());
-        return response.getFirstEntity(Device.class);
-    }
-
-    /**
-     * Creates or updates a device entity using the provided deviceId, and saves the device model, 
-     * device platform, and OS version in the entity. 
-     * If an entity does not exist for the device, it is created with a UUID equal to deviceId.
-     * Executes asynchronously in background and the callbacks are called in the UI thread.
-     * 
-     * @param  deviceId  the device entity's UUID
-     * @param  properties  additional properties to save in the device entity     
-     * @param  callback  a DeviceRegistrationCallback to handle the async response
-     */
-    public void registerDeviceAsync(final UUID deviceId,
-            final Map<String, Object> properties,
-            final DeviceRegistrationCallback callback) {
-        (new ClientAsyncTask<Device>(callback) {
-            @Override
-            public Device doTask() {
-                return registerDevice(deviceId, properties);
-            }
-        }).execute();
-    }
 
     /**
      * Registers a device for push notifications using the device entity UUID. If
@@ -2741,6 +2695,57 @@ public class DataClient implements LocationListener {
         }).execute();
     }
     
+
+    /****************** DEVICE ENTITY MANAGEMENT ***********************/
+    /****************** DEVICE ENTITY MANAGEMENT ***********************/
+    
+    /**
+     * Creates or updates a device entity using the provided deviceId, and saves the device model, 
+     * device platform, and OS version in the entity. 
+     * If an entity does not exist for the device, it is created with a UUID equal to deviceId.
+     * 
+     * @param  deviceId  the device entity's UUID
+     * @param  properties  additional properties to save in the device entity.      
+     * @return  a Device object if success. Models the API BaaS device entity.
+     */
+    public Device registerDevice(UUID deviceId, Map<String, Object> properties) {
+        assertValidApplicationId();
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
+        properties.put("refreshed", System.currentTimeMillis());
+        
+        // add device meta-data
+        properties.put("deviceModel", Build.MODEL);
+        properties.put("devicePlatform", "android");
+        properties.put("deviceOSVersion", Build.VERSION.RELEASE);
+        
+        ApiResponse response = apiRequest(HTTP_METHOD_PUT, null, properties,
+                organizationId, applicationId, "devices", deviceId.toString());
+        return response.getFirstEntity(Device.class);
+    }
+
+    /**
+     * Creates or updates a device entity using the provided deviceId, and saves the device model, 
+     * device platform, and OS version in the entity. 
+     * If an entity does not exist for the device, it is created with a UUID equal to deviceId.
+     * Executes asynchronously in background and the callbacks are called in the UI thread.
+     * 
+     * @param  deviceId  the device entity's UUID
+     * @param  properties  additional properties to save in the device entity     
+     * @param  callback  a DeviceRegistrationCallback to handle the async response
+     */
+    public void registerDeviceAsync(final UUID deviceId,
+            final Map<String, Object> properties,
+            final DeviceRegistrationCallback callback) {
+        (new ClientAsyncTask<Device>(callback) {
+            @Override
+            public Device doTask() {
+                return registerDevice(deviceId, properties);
+            }
+        }).execute();
+    }
+
 
     /****************** EVENT ENTITY MANAGEMENT ***********************/
     /****************** EVENT ENTITY MANAGEMENT ***********************/

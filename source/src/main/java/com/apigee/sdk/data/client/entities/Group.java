@@ -9,6 +9,9 @@ import com.apigee.sdk.data.client.DataClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * Models the 'group' entity as a local object.
+ */
 public class Group extends Entity {
 
 	public final static String ENTITY_TYPE = "group";

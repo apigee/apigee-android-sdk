@@ -25,6 +25,10 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Models an entity of any type as a local object. Type-specific 
+ * classes are extended from this class.
+ */
 public class Entity {
 
     public final static String PROPERTY_UUID      = "uuid";
