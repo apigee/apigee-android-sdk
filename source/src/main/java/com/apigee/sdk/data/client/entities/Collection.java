@@ -159,7 +159,7 @@ public class Collection
 	 * Retrieves an entity from the server.
 	 *
 	 * @param uuid the UUID of the entity to retrieve
-	 * @param an ApiResponse object
+	 * @return an ApiResponse object
 	 */	
 	public ApiResponse getEntityByUuid(UUID uuid) {
 		Entity entity = new Entity(this.dataClient);

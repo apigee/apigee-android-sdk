@@ -93,10 +93,10 @@ public class GCMDestination {
 	 * Creates a new GCMDestination object that targets a single user. The push
 	 * notification will be sent to the device associated with that user.
 	 *
-	 * @param  username  the username or UUID of the user entity to target
+	 * @param  userName  the username or UUID of the user entity to target
 	 * @return  a GCMDestination object
 	 */
-	public static GCMDestination destinationSingleUser(String username) {
+	public static GCMDestination destinationSingleUser(String userName) {
 		if (userName != null) {
 			return new GCMDestination("users/" + userName);
 		} else {

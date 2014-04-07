@@ -54,10 +54,24 @@ import com.apigee.sdk.data.client.DataClient;
  */
 public class MonitoringClient implements SessionTimeoutListener {
 
+	/**
+   * @y.exclude
+   */
 	public static final boolean DEFAULT_AUTO_UPLOAD_ENABLED = true;
+	
+	/**
+   * @y.exclude
+   */
 	public static final boolean DEFAULT_CRASH_REPORTING_ENABLED = true;
 	
-    public static final int SUBMIT_THREAD_TTL_MILLIS = 180 * 1000;
+	/**
+   * @y.exclude
+   */
+  public static final int SUBMIT_THREAD_TTL_MILLIS = 180 * 1000;
+	
+	/**
+   * @y.exclude
+   */
 	public static final int SESSION_EXPIRATION_MILLIS = 1000 * 60 * 30;
 	
 	private static MonitoringClient singleton = null;
@@ -260,6 +274,12 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 	
+	/**
+   * Gets the logger being used by Monitoring Client
+   *
+   * @return an instance of the default Android logger or
+   *		the Apigee logger
+   */
 	public Logger getLogger() {
 		return log;
 	}
@@ -968,6 +988,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 	
 
 	/**
+	 * Returns an instance of the HttpClient class being used
+	 * by the Monitoring Client
+	 *
 	 * @return the httpClient
 	 */
 	public HttpClient getHttpClient() {

@@ -179,7 +179,7 @@ public class User extends Entity {
 	/**
 	 * Sets the value of the 'activated' property in the User object.	 
 	 *
-	 * @param  email  the user's email address
+	 * @param  activated  boolean whether the user is activated
 	 */
 	public void setActivated(Boolean activated) {
 		setBooleanProperty(properties, PROPERTY_ACTIVATED, activated);

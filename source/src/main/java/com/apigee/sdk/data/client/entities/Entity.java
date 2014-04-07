@@ -84,7 +84,7 @@ public class Entity {
 
     /**
      * Sets the DataClient in the Entity object.
-     * @return the DataClient instance
+     * @param  dataClient  the DataClient instance
      */
     public void setDataClient(DataClient dataClient) {
         this.dataClient = dataClient;

@@ -18,8 +18,17 @@ import com.apigee.sdk.data.client.DataClient;
  */
 public class ApigeeClient {
 	
+    /**
+     * Default tag used for logging
+     */
 	public static final String LOGGING_TAG  = "APIGEE_CLIENT";
-	public static final String SDK_VERSION  = "2.0.10";
+	/**
+     * Most current version of the Apigee Android SDK
+     */
+    public static final String SDK_VERSION  = "2.0.10";
+    /**
+     * Platform type of this SDK
+     */
 	public static final String SDK_TYPE     = "Android";
 
 	private DataClient dataClient;

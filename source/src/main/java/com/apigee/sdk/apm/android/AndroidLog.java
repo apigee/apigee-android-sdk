@@ -23,6 +23,9 @@ import com.apigee.sdk.apm.android.model.ClientLog;
  */
 public class AndroidLog implements Logger {
 
+	/**
+   * Maximum length for log messages. Longer messages are truncated.
+   */
 	public static final int LOG_RECORD_MAX_LENGTH = 200;
 	
 	Queue<ClientLog> log;

@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
  * the more generic message entity type except provide the necessary properties
  * for supporting activity stream implementations.
  * 
- * @see http://activitystrea.ms/specs/json/1.0/
+ * @see <a href="http://activitystrea.ms/specs/json/1.0/">JSON activity stream spec</a>
  */
 public class Activity extends Entity {
 

@@ -74,18 +74,29 @@ public class DataClient implements LocationListener {
      */
     public static final String OPTION_KEY_BASE_URL = "baseURL";
 
+    /**
+     * @y.exclude
+     */
     public static boolean FORCE_PUBLIC_API = false;
 
-    // Public API
+    /** 
+     * Public API
+     */
     public static String PUBLIC_API_URL = "https://api.usergrid.com";
 
-    // Local API of standalone server
+    /** 
+     * Local API of standalone server
+     */
     public static String LOCAL_STANDALONE_API_URL = "http://localhost:8080";
 
-    // Local API of Tomcat server in Eclipse
+    /**
+     * Local API of Tomcat server in Eclipse
+     */
     public static String LOCAL_TOMCAT_API_URL = "http://localhost:8080/ROOT";
 
-    // Local API
+    /**
+     * Local API
+     */
     public static String LOCAL_API_URL = LOCAL_STANDALONE_API_URL;
 
     /**
@@ -736,7 +747,7 @@ public class DataClient implements LocationListener {
     /**
      * High-level synchronous API request. Implements the http request
      * for most SDK methods by calling 
-     * {@link doHttpRequest(String,Map<String,Object>,Object,String...)}
+     * {@link #doHttpRequest(String,Map,Object,String...)}
      * 
      *  @param  httpMethod the HTTP method in the format: 
      *      HTTP_METHOD_<method_name> (e.g. HTTP_METHOD_POST)
@@ -1167,7 +1178,7 @@ public class DataClient implements LocationListener {
      * @param  deviceId  the UUID of the device entity associated with this device
      * @param  notifier  the 'name' property of the notifier that will be used to send
      *      notifications to this device 
-     * @param  gcm_api_key  the Google Cloud Messaging (GCM) API key. Should be the same as
+     * @param  token  the Google Cloud Messaging (GCM) API key. Should be the same as
      *      the API key saved in the notifier entity.
      * @param  properties  additional properties to be stored in the device entity     
      * @param  callback  a DeviceRegistrationCallback to handle the async response
@@ -1528,7 +1539,7 @@ public class DataClient implements LocationListener {
      * provides a simple way of dealing with result sets that need to be
      * iterated or paged through.
      * 
-     * See {@link #doHttpRequest(String,Map<String,Object>,Object,String...)} for
+     * See {@link #doHttpRequest(String,Map,Object,String...)} for
      * more on the parameters.
      * 
      * @param httpMethod The HTTP method to use in the query
@@ -1549,7 +1560,7 @@ public class DataClient implements LocationListener {
      * iterated or paged through. Executes asynchronously in background and the
      * callbacks are called in the UI thread.
      * 
-     * See {@link #doHttpRequest(String,Map<String,Object>,Object,String...)} for
+     * See {@link #doHttpRequest(String,Map,Object,String...)} for
      * more on the parameters.
      * 
      * @param callback A callback for the async response
@@ -1761,7 +1772,7 @@ public class DataClient implements LocationListener {
      * @param  ql  an optional additional query to send with the request
      * @return  a Query object
      */
-    public Query queryUsersWithinLocation(float distance, float lattitude,
+    public Query queryUsersWithinLocation(float distance, float latitude,
             float longitude, String ql) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ql",
@@ -2051,7 +2062,7 @@ public class DataClient implements LocationListener {
     /**
      * Posts an activity to a group. Activity must already be created.
      * 
-     * @param userId
+     * @param groupId
      * @param activity
      * @return
      */
@@ -2147,8 +2158,7 @@ public class DataClient implements LocationListener {
     
     /**
      * Get a group's activity feed. Returned as a query to ease paging.
-     * 
-     * @param userId
+     *      
      * @return
      */
     public Query queryActivity() {
@@ -2162,7 +2172,7 @@ public class DataClient implements LocationListener {
     /**
      * Get a group's activity feed. Returned as a query to ease paging.
      * 
-     * @param userId
+     * @param groupId
      * @return
      */
     public Query queryActivityFeedForGroup(String groupId) {
@@ -2177,7 +2187,7 @@ public class DataClient implements LocationListener {
      * thread.
      * 
      * 
-     * @param userId
+     * @param groupId
      * @param callback
      */
     public void queryActivityFeedForGroupAsync(final String groupId,
@@ -2365,7 +2375,7 @@ public class DataClient implements LocationListener {
      */
     public Query queryEntityConnectionsWithinLocation(
             String connectingEntityType, String connectingEntityId,
-            String connectionType, float distance, float lattitude,
+            String connectionType, float distance, float latitude,
             float longitude, String ql) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ql", makeLocationQL(distance, lattitude, longitude, ql));
@@ -2381,16 +2391,14 @@ public class DataClient implements LocationListener {
      * within distance of a specific point. Executes asynchronously in 
      * background and the callbacks are called in the UI thread.
 	 * 
-     * @param connectingEntityType The type of the first entity.
-     * @param connectingEntityId The ID of the first entity.
-     * @param connectionType The type of connection between the entities.
+     * @param connectingEntityType The type of the first entity
+     * @param connectingEntityId The ID of the first entity
+     * @param connectionType The type of connection between the entities
      * @param distance The distance in meters from the specified latitude and 
-     * longitude.
-     * @param latitude The latitude of the point from which to 
-     * measure distance.
-     * @param longitude The longitude of the ponit from which to
-     * measure distance.
-	 * @param callback A callback for the async response.
+     * longitude
+     * @param location a Location object
+     * @param ql an optional query to add to the request
+	 * @param callback A callback for the async response
 	 */
 	public void queryEntityConnectionsWithinLocationAsync(
 			String connectingEntityType, String connectingEntityId,

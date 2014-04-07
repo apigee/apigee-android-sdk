@@ -93,7 +93,7 @@ public class Device extends Entity {
 	/**
 	 * Sets the value of the 'name' property of the Device.
 	 *
-	 * @param the value of the 'name' property
+	 * @param  name  the value of the 'name' property
 	 */
 	public void setName(String name) {
 		setStringProperty(properties, PROPERTY_NAME, name);

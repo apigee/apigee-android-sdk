@@ -2,10 +2,16 @@ package com.apigee.sdk.data.client.callbacks;
 
 import android.os.AsyncTask;
 
+/**
+ * Default async request handler
+ */
 public abstract class ClientAsyncTask<T> extends AsyncTask<Void, Exception, T> {
 
 	ClientCallback<T> callback;
 
+	/**
+	 * Default constructor for starting an async request
+	 */
 	public ClientAsyncTask(ClientCallback<T> callback) {
 		this.callback = callback;
 	}
@@ -20,6 +26,9 @@ public abstract class ClientAsyncTask<T> extends AsyncTask<Void, Exception, T> {
 		return null;
 	}
 
+	/**
+	 * Starts the async request
+	 */
 	public abstract T doTask();
 
 	@Override

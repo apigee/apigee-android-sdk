@@ -34,7 +34,9 @@ import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.data.client.DataClient;
 
-
+/**
+ * @y.exclude
+ */
 public class CompositeConfigurationServiceImpl implements ApplicationConfigurationService {
 
 	public static final String PROP_CACHE_LAST_MODIFIED_DATE = "WebConfigLastModifiedDate";

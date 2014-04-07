@@ -12,6 +12,9 @@ import com.apigee.sdk.data.client.DataClient;
  */
 public class AppMon {
 
+	/**
+   * Default error message if App Monitoring can't be initialized.
+   */
 	public static final String ERR_INIT_FAILURE_MSG = "Apigee App Monitoring was unable to initialize ";
 	
 	/**

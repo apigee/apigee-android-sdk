@@ -3,7 +3,7 @@ package com.apigee.sdk.data.client.push;
 /**
  * Creates the payload to be sent via a push notification.
  *
- * @see DataClient.populatePushEntity
+ * @see com.apigee.sdk.data.client.DataClient#populatePushEntity(GCMPayload,GCMDestination,String)
  */
 public class GCMPayload {
 	

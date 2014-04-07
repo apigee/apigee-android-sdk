@@ -57,7 +57,7 @@ public class MonitoringOptions {
 	/**
 	 * Sets a listener that will be called when data is uploaded to server
 	 * @param uploadListener the listener to be called on uploads
-	 * @see UPloadListener
+	 * @see UploadListener
 	 */
 	public void setUploadListener(UploadListener uploadListener) {
 		this.uploadListener = uploadListener;

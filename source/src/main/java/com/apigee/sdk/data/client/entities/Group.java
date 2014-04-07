@@ -100,7 +100,7 @@ public class Group extends Entity {
 	/**
 	 * Sets the value of the 'path' property of the Group object.
 	 *
-	 * @param  the value of the 'path' property
+	 * @param  path  the value of the 'path' property
 	 */
 	public void setPath(String path) {
 		setStringProperty(properties, PROPERTY_PATH, path);
@@ -119,7 +119,7 @@ public class Group extends Entity {
 	/**
 	 * Sets the value of the 'title' property of the Group object.
 	 *
-	 * @return  the value of the 'title' property
+	 * @param  title  the value of the 'title' property
 	 */
 	public void setTitle(String title) {
 		setStringProperty(properties, PROPERTY_TITLE, title);

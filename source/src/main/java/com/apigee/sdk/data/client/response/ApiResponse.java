@@ -112,7 +112,7 @@ public class ApiResponse {
 	/**
     * Sets the 'error' property of the response.
     *
-    * @param the error
+    * @param  error  the error
     */
 	public void setError(String error) {
 		this.error = error;
@@ -132,7 +132,7 @@ public class ApiResponse {
 	/**
     * Sets the 'error_description' property of the response.
     *
-    * @param the error description
+    * @param  errorDescription  the error description
     */
 	@JsonProperty("error_description")
 	public void setErrorDescription(String errorDescription) {
@@ -153,7 +153,7 @@ public class ApiResponse {
 	/**
     * Sets the 'error_uri' property of the response.
     *
-    * @param the error URI
+    * @param  errorUri  the error URI
     */
 	@JsonProperty("error_uri")
 	public void setErrorUri(String errorUri) {
@@ -173,7 +173,7 @@ public class ApiResponse {
 	/**
     * Sets the 'exception' property of the response.
     *
-    * @param the exception
+    * @param  exception  the exception
     */
 	public void setException(String exception) {
 		this.exception = exception;
@@ -301,7 +301,7 @@ public class ApiResponse {
 	 * if there were no entities.
 	 *
 	 * @return  an Entity object
-	 * @see  com.apigee.sdk.data.Client.Entities.Entity 
+	 * @see  com.apigee.sdk.data.client.entities.Entity 
 	 */	
 	public Entity getFirstEntity() {
 		if ((entities != null) && (entities.size() > 0)) {
@@ -314,7 +314,7 @@ public class ApiResponse {
 	 * Returns the first entity in the result set.
 	 *
 	 * @return  an Entity object
-	 * @see  com.apigee.sdk.data.Client.Entities.Entity 
+	 * @see  com.apigee.sdk.data.client.entities.Entity 
 	 */
 	public <T extends Entity> T getFirstEntity(Class<T> t) {
 		return Entity.toType(getFirstEntity(), t);
@@ -324,7 +324,7 @@ public class ApiResponse {
 	 * Returns the last entity in the result set.
 	 *
 	 * @return  an Entity object
-	 * @see  com.apigee.sdk.data.Client.Entities.Entity 
+	 * @see  com.apigee.sdk.data.client.entities.Entity 
 	 */
 	public Entity getLastEntity() {
 		if ((entities != null) && (entities.size() > 0)) {
@@ -337,7 +337,7 @@ public class ApiResponse {
 	 * Returns the last entity in the result set.
 	 *
 	 * @return  an Entity object
-	 * @see  com.apigee.sdk.data.Client.Entities.Entity 
+	 * @see  com.apigee.sdk.data.client.entities.Entity 
 	 */
 	public <T extends Entity> T getLastEntity(Class<T> t) {
 		return Entity.toType(getLastEntity(), t);
@@ -347,7 +347,7 @@ public class ApiResponse {
 	 * Returns the a List of all entitie from the response.
 	 *
 	 * @return  a List object
-	 * @see  com.apigee.sdk.data.Client.Entities.Entity 
+	 * @see  com.apigee.sdk.data.client.entities.Entity 
 	 */
 	public <T extends Entity> List<T> getEntities(Class<T> t) {
 		return Entity.toType(entities, t);
@@ -741,7 +741,7 @@ public class ApiResponse {
 	/**
 	 * Sets the DataClient instance for all Entity objects in the response.
 	 *
-	 * @param  an instance of DataClient
+	 * @param  dataClient  an instance of DataClient
 	 */
 	public void setDataClient(DataClient dataClient) {
 		if( (entities != null) && !entities.isEmpty() ) {
