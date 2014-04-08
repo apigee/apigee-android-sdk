@@ -1776,7 +1776,7 @@ public class DataClient implements LocationListener {
             float longitude, String ql) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ql",
-                this.makeLocationQL(distance, lattitude, longitude, ql));
+                this.makeLocationQL(distance, latitude, longitude, ql));
         Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null, organizationId,
                 applicationId, "users");
         return q;
@@ -2349,10 +2349,10 @@ public class DataClient implements LocationListener {
 				connectionType);
 	}
 	
-    protected String makeLocationQL(float distance, double lattitude,
+    protected String makeLocationQL(float distance, double latitude,
             double longitude, String ql) {
         String within = String.format("within %d of %d , %d", distance,
-                lattitude, longitude);
+                latitude, longitude);
         ql = ql == null ? within : within + " and " + ql;
         return ql;
     }
@@ -2378,7 +2378,7 @@ public class DataClient implements LocationListener {
             String connectionType, float distance, float latitude,
             float longitude, String ql) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ql", makeLocationQL(distance, lattitude, longitude, ql));
+        params.put("ql", makeLocationQL(distance, latitude, longitude, ql));
         Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null, organizationId,
                 applicationId, connectingEntityType, connectingEntityId,
                 connectionType);

@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
 /**
- * An entity type for representing activity stream actions. These are similar to
+ * An entity type for representing posts to an activity stream. These are similar to
  * the more generic message entity type except provide the necessary properties
  * for supporting activity stream implementations.
  * 
@@ -124,24 +124,62 @@ public class Activity extends Entity {
 
     protected Set<String> connections;
 
+    /**
+     * Checks if the provided type equals 'activity'.
+     *
+     * @return boolean true/false
+     */
 	public static boolean isSameType(String type) {
 		return type.equals(ENTITY_TYPE);
 	}
 	
+    /**
+     * Default constructor. Sets entity type to 'activity'.
+     */
 	public Activity() {
 		setType("activity");
 	}
 
+    /**
+     * Constructs the Activity with an instance of DataClient.
+     *
+     * @param  dataClient  an instance of DataClient
+     */
     public Activity(DataClient dataClient) {
     	super(dataClient);
         setType("activity");
     }
 
+    /**
+     * Constructs the Activity with an instance of DataClient and
+     * an entity UUID.
+     *
+     * @param  dataClient  an instance of DataClient
+     * @param  id  the UUID of the activity entity
+     */
     public Activity(DataClient dataClient, UUID id) {
         this(dataClient);
         setUuid(id);
     }
 
+    /**
+     * Creates a new Activity object.
+     *
+     * @param  dataClient  an instance of DataClient
+     * @param  verb  the 'verb' to associate with the activity, e.g. 'uploaded', 'posted', etc
+     * @param  title  the title of the activity to display
+     * @param  content  the content of the posted activity
+     * @param  category  the category of the activity
+     * @param  user  an Entity object that represents the user performing the activity.
+     *      The following properties must be set for the User object: uuid, username, type.
+     *      If the name property is set, it will be used for the display name of the actor,
+     *      otherwise the username will be used.
+     * @param  object  the object of the activity
+     * @param  objectType  the type of activity object, e.g. article, group, review, etc.
+     * @param  objectName  the name of the activity object
+     * @param  objectContent  the content of the object, e.g. a link to a posted photo
+     * @return an Activity object
+     */
     public static Activity newActivity(DataClient dataClient, String verb, String title,
             String content, String category, Entity user, Entity object,
             String objectType, String objectName, String objectContent){
@@ -155,8 +193,12 @@ public class Activity extends Entity {
         ActivityObject actor = new ActivityObject();
         actor.setObjectType("person");
         
-        if (user != null) {
-        	actor.setDisplayName(user.properties.get("name").textValue());
+        if (user != null) {            
+            if(user.getStringProperty("name") != null) {
+        	   actor.setDisplayName(user.getStringProperty("name"));
+            } else {
+               actor.setDisplayName(user.getStringProperty("username"));
+            }
             actor.setEntityType(user.getType());
             actor.setUuid(user.getUuid());
         }
@@ -180,20 +222,42 @@ public class Activity extends Entity {
         return activity;
     }
 
+    /**
+     * Gets the 'actor' of the activity
+     *
+     * @return  an ActivityObject that represents the actor
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public ActivityObject getActor() {
         return actor;
     }
 
+    /**
+     * Sets the 'actor' of the activity
+     *
+     * @param  actor  an ActivityObject that represents the actor
+     */
     public void setActor(ActivityObject actor) {
         this.actor = actor;
     }
 
+    /**
+     * Gets the activity generator, i.e. a link to the application that
+     * generated the activity object.
+     *
+     * @return  the generator
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public ActivityObject getGenerator() {
         return generator;
     }
 
+    /**
+     * Sets the activity generator, i.e. a link to the application that
+     * generated the activity object.
+     *
+     * @param  generator  the generator
+     */
     public void setGenerator(ActivityObject generator) {
         this.generator = generator;
     }
@@ -214,29 +278,59 @@ public class Activity extends Entity {
         this.category = category;
     }
 
+    /**
+     * Gets the verb of the Activity.
+     *
+     * @return  the activity verb
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public String getVerb() {
         return verb;
     }
 
+    /**
+     * Sets the verb of the Activity.
+     *
+     * @param  verb  the verb
+     */
     public void setVerb(String verb) {
         this.verb = verb;
     }
 
+    /**
+     * Retrieves the UNIX timestamp of when the activity was published.
+     *
+     * @return a UNIX timestamp
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public Long getPublished() {
         return published;
     }
 
+    /**
+     * Sets the UNIX timestamp of when the activity was published.
+     *
+     * @param  published  a UNIX timestamp
+     */
     public void setPublished(Long published) {
         this.published = published;
     }
 
+    /**
+     * Retrieves the object of the activity.
+     *
+     * @return  an ActivityObject representing the object
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public ActivityObject getObject() {
         return object;
     }
 
+    /**
+     * Sets the object of the activity.
+     *
+     * @param  object  an ActivityObject representing the object
+     */
     public void setObject(ActivityObject object) {
         this.object = object;
     }
@@ -260,42 +354,86 @@ public class Activity extends Entity {
      * public void setObjectName(String objectName) { this.objectName =
      * objectName; }
      */
+
+    /**
+     * Retrieves the title of the activity
+     *
+     * @return the title
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Sets the title of the Activity
+     *
+     * @param  title  the title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Gets the icon to display with the Activity.
+     *
+     * @return  a MediaLink object that represents the icon
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public MediaLink getIcon() {
         return icon;
     }
 
+    /**
+     * Sets the icon to display with the Activity.
+     *
+     * @param  icon  a MediaLink object that represents the icon
+     */
     public void setIcon(MediaLink icon) {
         this.icon = icon;
     }
 
+    /**
+     * Retrieves the content of the Activity.
+     *
+     * @return  the activity content
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public String getContent() {
         return content;
     }
 
+    /**
+     * Sets the content of the Activity.
+     *
+     * @param  content  the activity content
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * Gets the entity connections for the activity.
+     *
+     * @return  the connections as a Set object
+     */
     @JsonSerialize(include = Inclusion.NON_NULL)
     public Set<String> getConnections() {
         return connections;
     }
 
+    /**
+     * Stores the entity connections for the activity.
+     *
+     * @return  connections  the connections as a Set object
+     */
     public void setConnections(Set<String> connections) {
         this.connections = connections;
     }
 
+    /**
+     * Models a media object, such as an image.
+     */
     //@XmlRootElement
     static public class MediaLink {
 
@@ -310,41 +448,84 @@ public class Activity extends Entity {
         protected Map<String, Object> dynamic_properties = new TreeMap<String, Object>(
                 String.CASE_INSENSITIVE_ORDER);
 
+        /**
+         * Default constructor.
+         */
         public MediaLink() {
         }
 
+        /**
+         * Retrieves the duration of the media, e.g. the length of a video.
+         *
+         * @return the duration
+         */
         @JsonSerialize(include = Inclusion.NON_NULL)
         public int getDuration() {
             return duration;
         }
 
+        /**
+         * Sets the duration of the media, e.g. the length of a video.
+         *
+         * @param  duration  the duration
+         */
         public void setDuration(int duration) {
             this.duration = duration;
         }
 
+        /**
+         * Retrieves the height of the media, e.g. height of the image.
+         *
+         * @return the height
+         */
         @JsonSerialize(include = Inclusion.NON_NULL)
         public int getHeight() {
             return height;
         }
 
+        /**
+         * Sets the height of the media, e.g. height of the image.
+         *
+         * @param  height  the height
+         */
         public void setHeight(int height) {
             this.height = height;
         }
 
+        /**
+         * Retrieves the url of the media, e.g. url a video can be streamed from.
+         *
+         * @return the url
+         */
         @JsonSerialize(include = Inclusion.NON_NULL)
         public String getUrl() {
             return url;
         }
 
+        /**
+         * Sets the url of the media, e.g. url a video can be streamed from.
+         *
+         * @param  url  the url
+         */
         public void setUrl(String url) {
             this.url = url;
         }
 
+        /**
+         * Retrieves the width of the media, e.g. image width.
+         *
+         * @return the width
+         */
         @JsonSerialize(include = Inclusion.NON_NULL)
         public int getWidth() {
             return width;
         }
 
+        /**
+         * Sets the width of the media, e.g. image width.
+         *
+         * @param  width  the width
+         */
         public void setWidth(int width) {
             this.width = width;
         }
@@ -359,6 +540,11 @@ public class Activity extends Entity {
             return dynamic_properties;
         }
 
+        /**
+         * Returns the properties of the MediaLink object as a string.
+         *
+         * @return the object properties
+         */
         @Override
         public String toString() {
             return "MediaLink [duration=" + duration + ", height=" + height
@@ -368,6 +554,10 @@ public class Activity extends Entity {
 
     }
 
+    /**
+     * Models the object of an activity. For example, for the activity
+     * 'John posted a new article', the article is the activity object.
+     */
     //@XmlRootElement
     static public class ActivityObject {
 
@@ -552,6 +742,11 @@ public class Activity extends Entity {
             return dynamic_properties;
         }
 
+        /**
+         * Returns the properties of the ActivityObject as a string.
+         *
+         * @return the object properties
+         */        
         @Override
         public String toString() {
             return "ActivityObject [attachments="
@@ -569,6 +764,10 @@ public class Activity extends Entity {
 
     }
 
+    /**
+     * Models the feed from an activity stream as a collection
+     * of individual Activity objects.
+     */
     //@XmlRootElement
     static public class ActivityCollection {
 
@@ -621,6 +820,11 @@ public class Activity extends Entity {
             return dynamic_properties;
         }
 
+        /**
+         * Returns the properties of the ActivityCollection as a string.
+         *
+         * @return the object properties
+         */
         @Override
         public String toString() {
             return "ActivityCollection [totalItems=" + totalItems + ", items="
