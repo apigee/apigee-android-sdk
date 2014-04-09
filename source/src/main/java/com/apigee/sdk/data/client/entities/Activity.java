@@ -424,7 +424,7 @@ public class Activity extends Entity {
     /**
      * Stores the entity connections for the activity.
      *
-     * @return  connections  the connections as a Set object
+     * @param  connections  the connections as a Set object
      */
     public void setConnections(Set<String> connections) {
         this.connections = connections;
@@ -699,7 +699,7 @@ public class Activity extends Entity {
         /**
          * Gets the id of this object. Should be universally unique.
          *
-         * @result  the id
+         * @return  the id
          */
         @JsonSerialize(include = Inclusion.NON_NULL)
         public String getId() {
