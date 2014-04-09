@@ -11,7 +11,10 @@ import com.apigee.sdk.data.client.DataClient.Query;
 import com.apigee.sdk.data.client.response.ApiResponse;
 
 /**
- * Models a collection of entities as a local object.
+ * Models a collection of entities as a local object. Collections
+ * are the primary way that entities are organized in API BaaS.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/collections">Collections documentation</a>
  */
 public class Collection
 {

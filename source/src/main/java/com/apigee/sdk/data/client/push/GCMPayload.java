@@ -4,6 +4,7 @@ package com.apigee.sdk.data.client.push;
  * Creates the payload to be sent via a push notification.
  *
  * @see com.apigee.sdk.data.client.DataClient#populatePushEntity(GCMPayload,GCMDestination,String)
+ * @see <a href="http://apigee.com/docs/app-services/content/push-notifications-overview">Push notifications documentation</a>
  */
 public class GCMPayload {
 	

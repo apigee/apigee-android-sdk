@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Models the 'user' entity as a local object.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/user-management">User entity documentation</a>
  */
 public class User extends Entity {
 

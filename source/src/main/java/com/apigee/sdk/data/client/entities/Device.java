@@ -10,7 +10,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * Models a 'device' entity as a local object.
+ * Models a 'device' entity as a local object. The device entity
+ * is primarily used for targeting push notifications.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/push-notifications-overview">Push notifications documentation</a>
  */
 public class Device extends Entity {
 

@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
  * for supporting activity stream implementations.
  * 
  * @see <a href="http://activitystrea.ms/specs/json/1.0/">JSON activity stream spec</a>
+ * @see <a href="http://apigee.com/docs/app-services/content/activity">Activity entity documentation</a>
  */
 public class Activity extends Entity {
 

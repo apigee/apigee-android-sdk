@@ -9,6 +9,8 @@ import com.apigee.sdk.data.client.DataClient;
 
 /**
  * High-level convenience methods for interacting with Apigee App Monitoring
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/app-monitoring">App Monitoring documentation</a>
  */
 public class AppMon {
 

@@ -10,7 +10,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * Models the 'group' entity as a local object.
+ * Models the 'group' entity as a local object. The group entity is
+ * primarily used as a way of grouping users, but can be used to group
+ * any entity.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/group">Group entity documentation</a>
  */
 public class Group extends Entity {
 

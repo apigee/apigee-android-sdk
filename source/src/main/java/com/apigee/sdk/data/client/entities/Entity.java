@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * Models an entity of any type as a local object. Type-specific 
  * classes are extended from this class.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/app-services-data-model-1">API BaaS data model documentation</a>
  */
 public class Entity {
 

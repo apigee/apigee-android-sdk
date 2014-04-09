@@ -52,6 +52,14 @@ import com.apigee.sdk.data.client.DataClient;
  * 		CompositeConfigurationServiceImpl.java (retrieveConfigFromServer)
  * 
  */
+
+/**
+ * Initializes API BaaS App Monitoring, including crash, usage metrics and log interception.
+ * Generally, this should be instantiated via ApigeeClient, rather than directly.
+ *
+ * @see com.apigee.sdk.ApigeeClient
+ * @see <a href="http://apigee.com/docs/app-services/content/app-monitoring">App Monitoring documentation</a>
+ */
 public class MonitoringClient implements SessionTimeoutListener {
 
 	/**

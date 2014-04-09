@@ -5,6 +5,8 @@ package com.apigee.sdk.apm.android;
  * Logging wrapper class that sends logging records to standard Android Log facility and
  * Apigee's App Monitoring. In the event that Apigee's App Monitoring is not available
  * (or has not been initialized), the fallback behavior is the standard Android Log facility.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/app-monitoring">App Monitoring documentation</a>
  */
 public class Log {
 	

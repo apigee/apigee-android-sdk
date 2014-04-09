@@ -6,6 +6,8 @@ import java.util.UUID;
 	/**
 	 * Creates the target destination for a push notification, i.e. a single
 	 * device, multiple devices, a group, etc.
+	 *
+	 * @see <a href="http://apigee.com/docs/app-services/content/push-notifications-overview">Push notifications documentation</a>
 	 */
 public class GCMDestination {
 

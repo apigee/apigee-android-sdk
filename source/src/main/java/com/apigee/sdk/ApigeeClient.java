@@ -14,7 +14,7 @@ import com.apigee.sdk.data.client.DataClient;
  * See our SDK install guide for more information.
  *
  * @author  ApigeeCorporation
- * @see  <a href="http://apigee.com/docs/app-services/content/installing-apigee-sdk-android">SDK install guide</a>
+ * @see  <a href="http://apigee.com/docs/app-services/content/installing-apigee-sdk-android">Apigee SDK install guide</a>
  */
 public class ApigeeClient {
 	

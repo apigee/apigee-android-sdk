@@ -59,6 +59,8 @@ import com.apigee.sdk.data.client.push.GCMPayload;
  * class though the appropriate constructor. Most calls to the API will be handled
  * by the methods in this class.
  * 
+ * @see com.apigee.sdk.ApigeeClient
+ * @see <a href="http://apigee.com/docs/app-services/content/installing-apigee-sdk-android">Apigee SDK install guide</a>
  */
 public class DataClient implements LocationListener {
 
