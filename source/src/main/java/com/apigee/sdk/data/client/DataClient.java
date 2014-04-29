@@ -2248,9 +2248,9 @@ public class DataClient implements LocationListener {
 	 * the callbacks are called in the UI thread.
 	 * 
      * @param connectingEntityType The type of the first entity.
-     * @param connectingEntityId The ID of the first entity.
+     * @param connectingEntityId The UUID or 'name' property of the first entity.
      * @param connectionType The type of connection between the entities.
-     * @param connectedEntityId The ID of the second entity.
+     * @param connectedEntityId The UUID of the second entity.
 	 * @param callback A callback with the async response.
 	 */
 	public void connectEntitiesAsync(final String connectingEntityType,
@@ -2264,6 +2264,31 @@ public class DataClient implements LocationListener {
 			}
 		}).execute();
 	}
+
+    /**
+     * Connect two entities together. Allows the 'name' of the connected entity
+     * to be specified but requires the type also be specified. Executes asynchronously 
+     * in background and the callbacks are called in the UI thread.
+     * 
+     * @param connectingEntityType The type of the first entity.
+     * @param connectingEntityId The UUID or 'name' property of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param connectedEntityType The type of connection between the entities.
+     * @param connectedEntityId The UUID or 'name' property of the second entity.
+     * @param callback A callback with the async response.
+     */
+    public void connectEntitiesAsync(final String connectingEntityType,
+            final String connectingEntityId, final String connectionType,
+            final String connectedEntityType, final String connectedEntityId, 
+            final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return connectEntities(connectingEntityType,
+                        connectingEntityId, connectionType, connectedEntityType, connectedEntityId);
+            }
+        }).execute();
+    }
 	
     /**
      * Disconnect two entities.
