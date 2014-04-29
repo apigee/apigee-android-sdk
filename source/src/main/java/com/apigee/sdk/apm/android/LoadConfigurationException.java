@@ -1,5 +1,8 @@
 package com.apigee.sdk.apm.android;
 
+/**
+ * @y.exclude
+ */
 public class LoadConfigurationException extends Exception {
 
 	public LoadConfigurationException() {

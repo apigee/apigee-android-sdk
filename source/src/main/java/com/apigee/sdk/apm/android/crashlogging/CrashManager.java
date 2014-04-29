@@ -56,6 +56,7 @@ import com.apigee.sdk.apm.android.util.StringUtils;
  * </pre>
  *
  * @author Thomas Dohmke
+ * @y.exclude
  **/
 public class CrashManager {
 	

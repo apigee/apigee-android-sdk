@@ -86,7 +86,7 @@
       <artifactId>android-platform</artifactId>
       <version>14</version>
       <scope>system</scope>
-      <systemPath>/Applications/adt-bundle-mac/sdk/platforms/android-4.2/android.jar</systemPath>
+      <systemPath>/Users/ApigeeCorporation/Desktop/adt-bundle-mac/sdk/platforms/android-17/android.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -103,7 +103,7 @@
     <maven-shade-plugin-version>2.0</maven-shade-plugin-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit-version>3.8.1</junit-version>
-    <android.libs>/Applications/adt-bundle-mac/sdk/platforms/android-4.2</android.libs>
+    <android.libs>/Users/ApigeeCorporation/Desktop/adt-bundle-mac/sdk/platforms/android-17</android.libs>
   </properties>
 </project>
 

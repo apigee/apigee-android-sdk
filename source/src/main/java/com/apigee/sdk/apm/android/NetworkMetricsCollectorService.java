@@ -6,6 +6,9 @@ import java.util.Map;
 
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
+/**
+ * @y.exclude
+ */
 public interface NetworkMetricsCollectorService {
 
 	public void analyze(String url, long start, long end, boolean error, Map<String,Object> httpHeaders);

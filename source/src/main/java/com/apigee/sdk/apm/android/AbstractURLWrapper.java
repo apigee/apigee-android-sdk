@@ -3,7 +3,9 @@ package com.apigee.sdk.apm.android;
 import java.net.Proxy;
 import java.net.URLConnection;
 
-
+/**
+ * @y.exclude
+ */
 public abstract class AbstractURLWrapper implements URLWrapper {
 	private java.net.URL realURL;
 	

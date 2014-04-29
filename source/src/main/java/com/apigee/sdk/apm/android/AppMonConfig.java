@@ -2,6 +2,8 @@ package com.apigee.sdk.apm.android;
 
 /**
  * Convenience methods for configuration functionality in Apigee App Monitoring.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/app-monitoring">App Monitoring documentation</a>
  */
 public class AppMonConfig {
 

@@ -7,7 +7,9 @@ import java.util.Map;
 
 import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
-
+/**
+ * @y.exclude
+ */
 public class HttpUrlConnectionUtils {
 	
 	public static Map<String,Object> captureHttpHeaders(HttpURLConnection connection) {

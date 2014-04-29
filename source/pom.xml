@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
 	    <!--Please replace this with location of folder where android jar is located-->
-        <android.libs>/Applications/adt-bundle-mac/sdk/platforms/android-4.2</android.libs>
+        <android.libs>/Users/ApigeeCorporation/Desktop/adt-bundle-mac/sdk/platforms/android-17</android.libs>
         <!--<android.libs>/Users/ApigeeCorporation/tools/android-sdk-macosx/platforms/android-16</android.libs>-->
          
         <android-api-version>14</android-api-version>

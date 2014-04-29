@@ -1,7 +1,9 @@
 package com.apigee.sdk.apm.android;
 
 /**
- * Options that can be customized for App Monitoring functionality
+ * Options that can be customized for App Monitoring functionality.
+ *
+ * @see <a href="http://apigee.com/docs/app-services/content/app-monitoring">App Monitoring documentation</a>
  */
 public class MonitoringOptions {
 	private boolean monitoringEnabled;
@@ -57,7 +59,7 @@ public class MonitoringOptions {
 	/**
 	 * Sets a listener that will be called when data is uploaded to server
 	 * @param uploadListener the listener to be called on uploads
-	 * @see UPloadListener
+	 * @see UploadListener
 	 */
 	public void setUploadListener(UploadListener uploadListener) {
 		this.uploadListener = uploadListener;

@@ -4,6 +4,9 @@ import static com.apigee.sdk.data.client.utils.JsonUtils.toJsonString;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * @y.exclude
+ */
 public class ClientCredentialsInfo {
 
 	private String id;

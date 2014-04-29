@@ -6,7 +6,9 @@ import java.util.UUID;
 import android.os.Handler;
 import android.os.Message;
 
-
+/**
+ * @y.exclude
+ */
 public class SessionManager {
 	private String sessionUUID;
 	private Date sessionStartTime;

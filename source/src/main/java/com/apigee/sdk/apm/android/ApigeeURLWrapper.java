@@ -8,7 +8,9 @@ import java.net.URLStreamHandler;
 
 import javax.net.ssl.HttpsURLConnection;
 
-
+/**
+ * @y.exclude
+ */
 public class ApigeeURLWrapper extends AbstractURLWrapper implements URLWrapper
 {
 	

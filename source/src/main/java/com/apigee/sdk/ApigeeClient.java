@@ -10,14 +10,25 @@ import com.apigee.sdk.data.client.DataClient;
 
 
 /**
- * The ApigeeClient serves as the entry point for initializing the Apigee client SDK
- * @author ApigeeCorporation
+ * The ApigeeClient serves as the entry point for initializing the Apigee client SDK.
+ * See our SDK install guide for more information.
  *
+ * @author  ApigeeCorporation
+ * @see  <a href="http://apigee.com/docs/app-services/content/installing-apigee-sdk-android">Apigee SDK install guide</a>
  */
 public class ApigeeClient {
 	
+    /**
+     * Default tag used for logging
+     */
 	public static final String LOGGING_TAG  = "APIGEE_CLIENT";
-	public static final String SDK_VERSION  = "2.0.10";
+	/**
+     * Most current version of the Apigee Android SDK
+     */
+    public static final String SDK_VERSION  = "2.0.10";
+    /**
+     * Platform type of this SDK
+     */
 	public static final String SDK_TYPE     = "Android";
 
 	private DataClient dataClient;
@@ -26,7 +37,7 @@ public class ApigeeClient {
 
 	
     /**
-     * Instantiate client for a specific app
+     * Instantiate client for a specific app.
      * 
      * @param organizationId the organization id or name
      * @param applicationId  the application id or name
@@ -37,7 +48,7 @@ public class ApigeeClient {
     }
 
     /**
-     * Instantiate client for a specific app
+     * Instantiate client for a specific app, and specify options for App Monitoring.
      * 
      * @param organizationId the organization id or name
      * @param applicationId  the application id or name
@@ -49,7 +60,7 @@ public class ApigeeClient {
     }
 
     /**
-     * Instantiate client for a specific app
+     * Instantiate client for a specific app, and specify an alternative baseURL for requests.
      * 
      * @param organizationId the organization id or name
      * @param applicationId  the application id or name
@@ -61,7 +72,8 @@ public class ApigeeClient {
     }
 
     /**
-     * Instantiate client for a specific app
+     * Instantiate client for a specific app, with an alternative baseURL for requests and options for
+     * App Monitoring.
      * 
      * @param organizationId the organization id or name
      * @param applicationId  the application id or name
@@ -110,7 +122,7 @@ public class ApigeeClient {
     }
 
     /**
-     * Retrieve the client object to use for data operations
+     * Retrieve the instance of DataClient to use for data operations.
      * 
      * @return DataClient object
      */
@@ -119,7 +131,7 @@ public class ApigeeClient {
     }
     
     /**
-     * Retrieve the client object to use for application monitoring operations
+     * Retrieve the instance of MonitoringClient to use for App Monitoring operations.
      * 
      * @return MonitoringClient object
      */
@@ -128,7 +140,7 @@ public class ApigeeClient {
     }
     
     /**
-     * Retrieve the attributes that collectively identify the current application
+     * Retrieve the attributes that collectively identify the current application.
      * 
      * @return AppIdentification object
      */

@@ -5,6 +5,9 @@ import java.beans.PropertyChangeSupport;
 import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 
+/**
+ * @y.exclude
+ */
 public abstract class BaseWebManagerClientConfigLoader implements ApplicationConfigurationService {
 
 	PropertyChangeSupport configChangeSupport;

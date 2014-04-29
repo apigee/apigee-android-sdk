@@ -6,7 +6,9 @@ import java.net.URLConnection;
 
 import com.apigee.sdk.URLConnectionFactory;
 
-
+/**
+ * @y.exclude
+ */
 public class InstrumentedURLConnectionFactory implements URLConnectionFactory {
 	public URLConnection openConnection(String urlAsString) throws MalformedURLException, IOException {
 		URLWrapper urlWrapper = AppMonNet.urlForUri(urlAsString);

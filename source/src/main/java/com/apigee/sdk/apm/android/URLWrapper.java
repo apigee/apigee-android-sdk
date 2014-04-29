@@ -4,7 +4,9 @@ import java.net.Proxy;
 import java.net.URLConnection;
 
 // this comment added to test commit with GitLab
-
+/**
+ * @y.exclude
+ */
 public interface URLWrapper {
 	
 	public java.net.URL getRealURL();

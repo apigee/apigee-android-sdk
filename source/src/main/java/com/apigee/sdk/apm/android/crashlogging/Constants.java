@@ -45,6 +45,7 @@ import com.apigee.sdk.apm.android.model.ClientLog;
  * @author Evan Charlton
  * @author Peter Hewitt
  * @author Thomas Dohmke
+ * @y.exclude
  **/
 public class Constants {
   /**

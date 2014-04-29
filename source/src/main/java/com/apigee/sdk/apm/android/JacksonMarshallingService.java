@@ -15,6 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /*
  * Note : This class isn't being used yet. 
  */
+/**
+ * @y.exclude
+ */
 public class JacksonMarshallingService {
 
 	ObjectMapper objectMapper = new ObjectMapper();

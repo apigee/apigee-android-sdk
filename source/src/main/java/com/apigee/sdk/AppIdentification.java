@@ -2,7 +2,12 @@ package com.apigee.sdk;
 
 import java.util.UUID;
 
-
+/**
+ * Used by ApigeeClient to set the API BaaS application and organization
+ * details when initializing the SDK.
+ *
+ * @y.exclude
+ */
 public class AppIdentification {
 	
 	private String organizationId;

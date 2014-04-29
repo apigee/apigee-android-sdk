@@ -2,6 +2,11 @@ package com.apigee.sdk.data.client.callbacks;
 
 import com.apigee.sdk.data.client.DataClient.Query;
 
+/**
+ * Callback for async requests using the Query interface
+ * @see com.apigee.sdk.data.client.DataClient.Query
+ * @see com.apigee.sdk.data.client.DataClient#queryActivityFeedForUserAsync(String, QueryResultsCallback)
+ */
 public interface QueryResultsCallback extends ClientCallback<Query> {
 
 	public void onQueryResults(Query query);

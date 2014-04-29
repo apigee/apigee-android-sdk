@@ -2,6 +2,9 @@ package com.apigee.sdk.apm.android;
 
 import java.util.Map;
 
+/**
+ * @y.exclude
+ */
 public class ConfigurationLoaderService {
 
 	public ConfigurationLoaderService() {
