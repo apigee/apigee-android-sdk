@@ -2345,7 +2345,7 @@ public class DataClient implements LocationListener {
     public Query queryEntityConnections(String connectingEntityType,
             String connectingEntityId, String connectionType, String ql) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ql", ql);
+        params.put("ql", ql);        
         Query q = queryEntitiesRequest(HTTP_METHOD_GET, params, null,
                 organizationId, applicationId, connectingEntityType, connectingEntityId,
                 connectionType);
@@ -2370,9 +2370,9 @@ public class DataClient implements LocationListener {
 			String connectingEntityId, String connectionType, String ql,
 			QueryResultsCallback callback) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ql", ql);
+        params.put("ql", ql);        
 		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null,
-				getApplicationId(), connectingEntityType, connectingEntityId,
+				getOrganizationId(), getApplicationId(), connectingEntityType, connectingEntityId,
 				connectionType);
 	}
 	
@@ -2435,7 +2435,7 @@ public class DataClient implements LocationListener {
 		params.put("ql", makeLocationQL(distance, location.getLatitude(), location.getLongitude(), ql));
 		params.put("ql", ql);
 		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null,
-				getApplicationId(), connectingEntityType, connectingEntityId,
+				getOrganizationId(), getApplicationId(), connectingEntityType, connectingEntityId,
 				connectionType);
 	}
 	
