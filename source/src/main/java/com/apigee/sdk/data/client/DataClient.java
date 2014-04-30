@@ -2435,7 +2435,7 @@ public class DataClient implements LocationListener {
 		params.put("ql", makeLocationQL(distance, location.getLatitude(), location.getLongitude(), ql));
 		params.put("ql", ql);
 		queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, params, null,
-				getApplicationId(), getApplicationId(), connectingEntityType, connectingEntityId,
+				getOrganizationId(), getApplicationId(), connectingEntityType, connectingEntityId,
 				connectionType);
 	}
 	
