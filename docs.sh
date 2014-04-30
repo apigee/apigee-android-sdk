@@ -72,17 +72,19 @@ else
   mdir "${JAVADOC_OUTPUT_DIR}"
 fi
 
+JAVADOC_OPTIONS="-splitindex -use -version -public -author"
 CLASSPATH="./source/target/test-classes:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-core/2.2.3/jackson-core-2.2.3.jar:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-annotations/2.2.3/jackson-annotations-2.2.3.jar:${MAVEN_REPO}/com/fasterxml/jackson/core/jackson-databind/2.2.3/jackson-databind-2.2.3.jar:${MAVEN_REPO}/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:${MAVEN_REPO}/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:${MAVEN_REPO}/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar:${MAVEN_REPO}/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar:${ANDROID_SDK_PATH}/android.jar"
 SOURCEPATH="./source/src/main/java"
-PACKAGE_LIST="com.apigee.sdk.data.client.push com.apigee.sdk.data.client.response com.apigee.sdk.apm.android com.apigee.sdk com.apigee.sdk.data.client com.apigee.sdk.data.client.entities com.apigee.sdk.data.client.callbacks"
+PACKAGE_LIST=@source/docs/packages
 YDOC_DIR="${DOCS_DIR}/yworks-uml-doclet-3.0_02-jdk1.5"
 YDOC_OPTIONS="${YDOC_DIR}/lib/ydoc.jar:${YDOC_DIR}/resources"
-# DOCTITLE="Apigee Android API Reference"
-# HEADER="Apigee Android API Reference"
-# BOTTOM="Copyright 2012-2014 Apigee and/or its affiliates. All rights reserved."
-JAVADOC_OPTIONS="-splitindex -use -version -public -author -header ${HEADER} -bottom ${BOTTOM} -stylesheetfile ${DOCS_DIR}/stylesheet.css -docletpath ${YDOC_OPTIONS} -doclet ydoc.doclets.YStandard -filterpath ${YDOC_DIR}/lib/ydoc.jar -filter ydoc.filters.ExcludeFilter"
+DOCTITLE="Apigee API BaaS Android SDK Reference"
+HEADER=@source/docs/header
+BOTTOM="<p>&copy;&#32;2014&#32;Apigee&#32;Corp.&#32;All&#32;rights&#32;reserved</p>"
+FOOTER="<p></p>"
+STYLESHEET=./source/docs/stylesheet.css
 
-JDOC_CMD="${JAVADOC_EXE_PATH}/javadoc ${JAVADOC_OPTIONS} -classpath ${CLASSPATH} -d ${JAVADOC_OUTPUT_DIR} -source ${JAVA_VERSION} -sourcepath ${SOURCEPATH} ${PACKAGE_LIST}"
+JDOC_CMD="${JAVADOC_EXE_PATH}/javadoc ${JAVADOC_OPTIONS} -classpath ${CLASSPATH} -d ${JAVADOC_OUTPUT_DIR} -source ${JAVA_VERSION} -sourcepath ${SOURCEPATH} -footer ${FOOTER} -bottom ${BOTTOM} -header ${HEADER} -stylesheetfile ${STYLESHEET} -docletpath ${YDOC_OPTIONS} -doclet ydoc.doclets.YStandard -filterpath ${YDOC_DIR}/lib/ydoc.jar -filter ydoc.filters.ExcludeFilter ${PACKAGE_LIST}"
 echo ${JDOC_CMD}
 ${JDOC_CMD} 
 
