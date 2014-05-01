@@ -618,7 +618,8 @@ public class DataClient implements LocationListener {
      *  @return  ApiResponse object
      */
 	public ApiResponse doHttpRequest(String httpMethod, Map<String, Object> params, Object data, String... segments) {
-		ApiResponse response = null;
+		
+        ApiResponse response = null;
 		OutputStream out = null;
 		InputStream in = null;
 		HttpURLConnection conn = null;
@@ -638,7 +639,7 @@ public class DataClient implements LocationListener {
 
 			URL url = new URL(urlAsString);
 			conn = (HttpURLConnection) url.openConnection();
-
+            
 			conn.setRequestMethod(httpMethod);
 			conn.setRequestProperty("Content-Type", contentType);
 			conn.setUseCaches(false);
@@ -2293,10 +2294,10 @@ public class DataClient implements LocationListener {
     /**
      * Disconnect two entities.
      * 
-     * @param connectingEntityType The type of the first entity.
-     * @param connectingEntityId The ID of the first entity.
-     * @param connectionType The type of connection between the entities.
-     * @param connectedEntityId The ID of the second entity.
+     * @param connectingEntityType The collection name or UUID of the first entity.
+     * @param connectingEntityId The name or UUID of the first entity.
+     * @param connectionType The type of connection between the entities.     
+     * @param connectedEntityId The name or UUID of the second entity.
      * @return An instance with the server's response.
      */
     public ApiResponse disconnectEntities(String connectingEntityType,
@@ -2311,11 +2312,10 @@ public class DataClient implements LocationListener {
 	 * Disconnect two entities. Executes asynchronously in background and the
 	 * callbacks are called in the UI thread.
 	 * 
-     * @param connectingEntityType The type of the first entity.
-     * @param connectingEntityId The ID of the first entity.
-     * @param connectionType The type of connection between the entities.
-     * @param connectedEntityId The ID of the second entity.
-	 * @param callback A callback with the async response.
+     * @param connectingEntityType The collection name or UUID of the first entity.
+     * @param connectingEntityId The name or UUID of the first entity.
+     * @param connectionType The type of connection between the entities.     
+     * @param connectedEntityId The name or UUID of the second entity.
 	 */
 	public void disconnectEntitiesAsync(final String connectingEntityType,
 			final String connectingEntityId, final String connectionType,
@@ -2323,11 +2323,53 @@ public class DataClient implements LocationListener {
 		(new ClientAsyncTask<ApiResponse>(callback) {
 			@Override
 			public ApiResponse doTask() {
-				return connectEntities(connectingEntityType,
+				return disconnectEntities(connectingEntityType,
 						connectingEntityId, connectionType, connectedEntityId);
 			}
 		}).execute();
 	}
+
+    /**
+     * Disconnect two entities.
+     * 
+     * @param connectingEntityType The collection name or UUID of the first entity.
+     * @param connectingEntityId The name or UUID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param connectedEntityType The collection name or UUID of the second entity.
+     * @param connectedEntityId The name or UUID of the second entity.
+     * @return An instance with the server's response.
+     */
+    public ApiResponse disconnectEntities(String connectingEntityType,
+            String connectingEntityId, String connectionType,
+            String connectedEntityType, String connectedEntityId) {
+        return apiRequest(HTTP_METHOD_DELETE, null, null,  organizationId, applicationId,
+                connectingEntityType, connectingEntityId, connectionType,
+                connectedEntityType, connectedEntityId);
+    }
+
+    /**
+     * Disconnect two entities. Executes asynchronously in background and the
+     * callbacks are called in the UI thread.
+     * 
+     * @param connectingEntityType The collection name or UUID of the first entity.
+     * @param connectingEntityId The name or UUID of the first entity.
+     * @param connectionType The type of connection between the entities.
+     * @param connectedEntityType The collection name or UUID of the second entity.
+     * @param connectedEntityId The name or UUID of the second entity.
+     * @param callback A callback with the async response.
+     */
+    public void disconnectEntitiesAsync(final String connectingEntityType,
+            final String connectingEntityId, final String connectionType,
+            final String connectedEntityType, final String connectedEntityId, 
+            final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return disconnectEntities(connectingEntityType,
+                        connectingEntityId, connectionType, connectedEntityType, connectedEntityId);
+            }
+        }).execute();
+    }
 	
     /**
      * Queries for entities connected with <em>connectionType</em>
