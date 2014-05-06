@@ -2,6 +2,7 @@ package com.apigee.sdk.apm.android;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -162,11 +163,23 @@ public class PerformanceMonitoringInterceptor implements
 	}
 
 	@Override
-	public void process(HttpRequest arg0, HttpContext arg1)
+	public void process(HttpRequest request, HttpContext context)
 			throws HttpException, IOException {
 
-		arg1.setAttribute(ATTR_REQ_START_TIME, System.currentTimeMillis());
-		arg1.setAttribute(ATTR_URI, arg0.getRequestLine().getUri());
-	}
+        context.setAttribute(ATTR_REQ_START_TIME, System.currentTimeMillis());
+        context.setAttribute(ATTR_URI, request.getRequestLine().getUri());
+
+        MonitoringClient monitoringClient = MonitoringClient.getInstance();
+        if (monitoringClient != null ) {
+            if (monitoringClient.getAppIdentification() != null) {
+                request.addHeader("X-Apigee-Client-Org-Name", monitoringClient.getAppIdentification().getOrganizationId());
+                request.addHeader("X-Apigee-Client-App-Name", monitoringClient.getAppIdentification().getApplicationId());
+            }
+            request.addHeader("X-Apigee-Device-Id", monitoringClient.getApigeeDeviceId());
+            if (monitoringClient.getSessionManager() != null)
+                request.addHeader("X-Apigee-Session-Id", monitoringClient.getSessionManager().getSessionUUID());
+            request.addHeader("X-Apigee-Client-Request-Id", UUID.randomUUID().toString());
+        }
+    }
 
 }
