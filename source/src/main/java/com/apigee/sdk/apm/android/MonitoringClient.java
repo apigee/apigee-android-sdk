@@ -1187,4 +1187,11 @@ public class MonitoringClient implements SessionTimeoutListener {
 		return appIdentification.getUniqueIdentifier();
 	}
 
+    public AppIdentification getAppIdentification() {
+        return appIdentification;
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
 }
