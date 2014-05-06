@@ -172,13 +172,14 @@ public class PerformanceMonitoringInterceptor implements
         MonitoringClient monitoringClient = MonitoringClient.getInstance();
         if (monitoringClient != null ) {
             if (monitoringClient.getAppIdentification() != null) {
-                request.addHeader("X-Apigee-Client-Org-Name", monitoringClient.getAppIdentification().getOrganizationId());
-                request.addHeader("X-Apigee-Client-App-Name", monitoringClient.getAppIdentification().getApplicationId());
+                request.setHeader("X-Apigee-Client-Org-Name", monitoringClient.getAppIdentification().getOrganizationId());
+                request.setHeader("X-Apigee-Client-App-Name", monitoringClient.getAppIdentification().getApplicationId());
             }
-            request.addHeader("X-Apigee-Device-Id", monitoringClient.getApigeeDeviceId());
+            request.setHeader("X-Apigee-Device-Id", monitoringClient.getApigeeDeviceId());
             if (monitoringClient.getSessionManager() != null)
-                request.addHeader("X-Apigee-Session-Id", monitoringClient.getSessionManager().getSessionUUID());
-            request.addHeader("X-Apigee-Client-Request-Id", UUID.randomUUID().toString());
+                request.setHeader("X-Apigee-Session-Id", monitoringClient.getSessionManager().getSessionUUID());
+            request.setHeader("X-Apigee-Client-Request-Id", UUID.randomUUID().toString());
+
         }
     }
 
