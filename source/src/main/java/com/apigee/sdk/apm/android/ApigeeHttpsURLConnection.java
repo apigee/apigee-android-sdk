@@ -10,6 +10,7 @@ import java.security.Principal;
 import java.security.cert.Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -190,6 +191,19 @@ public class ApigeeHttpsURLConnection extends HttpsURLConnection
 	public void connect() throws java.io.IOException
 	{
 		startTimeMillis = System.currentTimeMillis();
+        MonitoringClient monitoringClient = MonitoringClient.getInstance();
+        if (monitoringClient != null ) {
+            if (monitoringClient.getAppIdentification() != null) {
+                realConnection.setRequestProperty("X-Apigee-Client-Org-Name", monitoringClient.getAppIdentification().getOrganizationId());
+                realConnection.setRequestProperty("X-Apigee-Client-App-Name", monitoringClient.getAppIdentification().getApplicationId());
+            }
+            realConnection.setRequestProperty("X-Apigee-Device-Id", monitoringClient.getApigeeDeviceId());
+            if (monitoringClient.getSessionManager() != null)
+                realConnection.setRequestProperty("X-Apigee-Session-Id", monitoringClient.getSessionManager().getSessionUUID());
+            realConnection.setRequestProperty("X-Apigee-Client-Request-Id", UUID.randomUUID().toString());
+
+        }
+
 		realConnection.connect();
 	}
 	
