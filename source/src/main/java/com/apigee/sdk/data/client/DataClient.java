@@ -3086,9 +3086,9 @@ public class DataClient implements LocationListener {
         }    
 
         counters += "&start_time=";
-        counters += Long.toString(startTime.getTime());
+        counters += startTime.getTime();
         counters += "&end_time=";
-        counters += Long.toString(endTime.getTime());
+        counters += endTime.getTime();
         counters += "&resolution=";
         counters += resolution;
 
