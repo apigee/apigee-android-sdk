@@ -3032,13 +3032,17 @@ public class DataClient implements LocationListener {
      * @return  an ApiResponse object
     */
     public ApiResponse getCounters(ArrayList<String> counterArray)
-    {                
-        String counters = "?counter=" + counterArray.get(0);
-        for (int i = 1; i < counterArray.size(); i++) {
-            counters += "&counter=";
-            counters += counterArray.get(i);
+    {   
+        String counters = null;
+
+        if (counterArray != null) {                      
+            counters = "?counter=" + counterArray.get(0);
+            for (int i = 1; i < counterArray.size(); i++) {
+                counters += "&counter=";
+                counters += counterArray.get(i);
+            }
         }
-        
+
         return apiRequest(HTTP_METHOD_GET, // method
                             null, // params
                             null, // data
@@ -3078,19 +3082,29 @@ public class DataClient implements LocationListener {
     */
     public ApiResponse getCountersForInterval(ArrayList<String> counterArray, 
             Date startTime, Date endTime, String resolution)
-    {                
-        String counters = "?counter=" + counterArray.get(0);
-        for (int i = 1; i < counterArray.size(); i++) {
-            counters += "&counter=";
-            counters += counterArray.get(i);
-        }    
+    {       
+        String counters = null;
 
-        counters += "&start_time=";
-        counters += startTime.getTime();
-        counters += "&end_time=";
-        counters += endTime.getTime();
-        counters += "&resolution=";
-        counters += resolution;
+        if (counterArray != null) {         
+            counters = "?counter=" + counterArray.get(0);
+            for (int i = 1; i < counterArray.size(); i++) {
+                counters += "&counter=";
+                counters += counterArray.get(i);
+            }    
+
+            if (startTime != null) {
+                counters += "&start_time=";
+                counters += startTime.getTime();                               
+            }
+
+            if (endTime != null) {
+                counters += "&end_time=";
+                counters += endTime.getTime();
+            }
+
+            counters += "&resolution=";
+            counters += resolution;
+        }
 
         return apiRequest(HTTP_METHOD_GET, // method
                             null, // params
