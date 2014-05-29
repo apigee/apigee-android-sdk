@@ -7,6 +7,9 @@ public class AggregateCounter {
 	private long timestamp;
 	private long value;
 
+	public AggregateCounter() {
+	}
+
 	public AggregateCounter(long timestamp, long value) {
 		this.timestamp = timestamp;
 		this.value = value;
