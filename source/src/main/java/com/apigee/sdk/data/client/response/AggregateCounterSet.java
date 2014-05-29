@@ -16,6 +16,9 @@ public class AggregateCounterSet {
 	private String category;
 	private List<AggregateCounter> values;
 
+	public AggregateCounterSet() {		
+	}
+
 	public AggregateCounterSet(String name, UUID user, UUID group,
 			String category, List<AggregateCounter> values) {
 		this.name = name;

@@ -3024,4 +3024,100 @@ public class DataClient implements LocationListener {
             }
         }
     }
+
+    /**
+     * Requests one or more counters
+     *
+     * @param  counterArray  an ArrayList of counter names to be retrieved
+     * @return  an ApiResponse object
+    */
+    public ApiResponse getCounters(ArrayList<String> counterArray)
+    {                
+        String counters = "?counter=" + counterArray.get(0);
+        for (int i = 1; i < counterArray.size(); i++) {
+            counters += "&counter=";
+            counters += counterArray.get(i);
+        }
+        
+        return apiRequest(HTTP_METHOD_GET, // method
+                            null, // params
+                            null, // data
+                            organizationId,
+                            applicationId,
+                            "counters",
+                            counters);
+    }
+
+    /**
+     * Asynchronously requests one or more counters
+     *
+     * @param  type  the entity type to be retrieved
+     * @param  counterArray  an ArrayList of counter names to be retrieved
+     * @param  callback an ApiResponseCallback to handle the async response
+    */
+    public void getCountersAsync(final ArrayList<String> counterArray,
+            final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return getCounters(counterArray);
+            }
+        }).execute();
+    }
+
+    /**
+     * Requests one or more counters for a given time inteval and resolution, e.g. day, hour, etc.
+     *
+     * @param  counterArray  an ArrayList of counter names to be retrieved
+     * @param  startTime  a Date object specifying the start time to retrieve counter data for
+     * @param  endTime  a Date object specifying the end time to retrieve counter data for
+     * @param  resolution  the resolution of the result set. Results can be returned for the following:
+     *      all, minute, five_minutes, half_hour, hour, day, six_day, week, month
+     * @param  callback an ApiResponseCallback to handle the async response
+     * @return an ApiResponse object
+    */
+    public ApiResponse getCountersForInterval(ArrayList<String> counterArray, 
+            Date startTime, Date endTime, String resolution)
+    {                
+        String counters = "?counter=" + counterArray.get(0);
+        for (int i = 1; i < counterArray.size(); i++) {
+            counters += "&counter=";
+            counters += counterArray.get(i);
+        }    
+
+        counters += "&start_time=";
+        counters += Long.toString(startTime.getTime());
+        counters += "&end_time=";
+        counters += Long.toString(endTime.getTime());
+        counters += "&resolution=";
+        counters += resolution;
+
+        return apiRequest(HTTP_METHOD_GET, // method
+                            null, // params
+                            null, // data
+                            organizationId,
+                            applicationId,
+                            "counters",
+                            counters);
+    }
+
+    /**
+     * Asynchronously requests one or more counters for a given time inteval and resolution, e.g. day, hour, etc.
+     *
+     * @param  counterArray  an ArrayList of counter names to be retrieved
+     * @param  startTime  a Date object specifying the start time to retrieve counter data for
+     * @param  endTime  a Date object specifying the end time to retrieve counter data for
+     * @param  resolution  the resolution of the result set. Results can be returned for the following:
+     *      all, minute, five_minutes, half_hour, hour, day, six_day, week, month
+     * @param  callback an ApiResponseCallback to handle the async response
+    */
+    public void getCountersForIntervalAsync(final ArrayList<String> counterArray, final Date startTime, 
+            final Date endTime, final String resolution, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return getCountersForInterval(counterArray, startTime, endTime, resolution);
+            }
+        }).execute();
+    }
 }
