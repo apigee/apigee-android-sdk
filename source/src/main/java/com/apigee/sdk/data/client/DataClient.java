@@ -856,6 +856,16 @@ public class DataClient implements LocationListener {
 
     }
 
+    public void changePasswordAsync(final String username, final String oldPassword,
+            final String newPassword, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return changePassword(username, oldPassword, newPassword);
+            }
+        }).execute();
+    }
+
     /**
      * Log the user in with their numeric pin-code and get a valid access token.
      * 
@@ -1964,6 +1974,35 @@ public class DataClient implements LocationListener {
         }).execute();
     }
 
+    /**
+     * Disconnects a user entity from the specified group entity.
+     * 
+     * @param  userId  UUID of the user entity
+     * @param  groupId  UUID of the group entity 
+     * @return  an ApiResponse object
+     */
+    public ApiResponse removeUserFromGroup(String userId, String groupId) {
+        return apiRequest(HTTP_METHOD_DELETE, null, null, organizationId,  applicationId, "groups",
+                groupId, "users", userId);
+    }
+
+    /**
+     * Disconnects a user entity from the specified group entity. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param  userId  UUID of the user entity
+     * @param  groupId  UUID of the group entity 
+     * @param  callback  an ApiResponseCallback object to handle the async response
+     */
+    public void removeUserFromGroupAsync(final String userId, final String groupId,
+            final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return removeUserFromGroup(userId, groupId);
+            }
+        }).execute();
+    }
 
     /****************** ACTIVITY ENTITY MANAGEMENT ***********************/
     /****************** ACTIVITY ENTITY MANAGEMENT ***********************/
