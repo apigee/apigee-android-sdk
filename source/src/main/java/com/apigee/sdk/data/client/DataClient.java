@@ -778,6 +778,104 @@ public class DataClient implements LocationListener {
         }
     }
 
+    /****************** ROLES/PERMISSIONS ***********************/
+    /****************** ROLES/PERMISSIONS ***********************/
+
+    /**
+     * Assigns permissions to the specified user or group entity.
+     * 
+     * @param entityType the entity type of the entity the permissions are being assigned to. 'user' and 'group' are valid.
+     * @param entityID the UUID of 'name' property of the entity the permissions are being assigned to.
+     * @param permissions a comma-separated list of the permissions to be assigned in the format: <operations>:<path>, e.g. get, put, post, delete: /users
+     * @throws IllegalArgumentException thrown if an entityType other than 'group' or 'user' is passed to the method
+     * @return ApiResponse object
+     */
+    public ApiResponse assignPermissions(String entityType, String entityID, String permissions) {
+
+        ArrayList<String> validTypes = new ArrayList<String>();
+        validTypes.add("group");
+        validTypes.add("groups");
+        validTypes.add("user");
+        validTypes.add("users");
+        if (!validTypes.contains(entityType)) {
+            throw new IllegalArgumentException("Permissions can only be assigned to group or user entities");
+        }
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        if (permissions != null){
+            data.put("permission", permissions);
+        }
+
+        return apiRequest(HTTP_METHOD_POST, null, data, organizationId,  applicationId, entityType,
+                entityID, "permissions");
+
+    }
+
+    /**
+     * Assigns permissions to the specified user or group entity. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param entityType the entity type of the entity the permissions are being assigned to. 'user' and 'group' are valid.
+     * @param entityID the UUID of 'name' property of the entity the permissions are being assigned to.
+     * @param permissions a comma-separated list of the permissions to be assigned in the format: <operations>:<path>, e.g. get, put, post, delete: /users     
+     */
+    public void assignPermissionsAsync(final String entityType,
+            final String entityID, final String permissions, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return assignPermissions(entityType, entityID, permissions);
+            }
+        }).execute();
+    }
+
+    /**
+     * Removes permissions from the specified user or group entity.
+     * 
+     * @param entityType the entity type of the entity the permissions are being removed from. 'user' and 'group' are valid.
+     * @param entityID the UUID of 'name' property of the entity the permissions are being removed from.
+     * @param permissions a comma-separated list of the permissions to be removed in the format: <operations>:<path>, e.g. get, put, post, delete: /users
+     * @throws IllegalArgumentException thrown if an entityType other than 'group' or 'user' is passed to the method
+     * @return ApiResponse object
+     */
+    public ApiResponse removePermissions(String entityType, String entityID, String permissions) {
+
+        ArrayList<String> validTypes = new ArrayList<String>();
+        validTypes.add("group");
+        validTypes.add("groups");
+        validTypes.add("user");
+        validTypes.add("users");
+        if (!validTypes.contains(entityType)) {
+            throw new IllegalArgumentException("Permissions can only be assigned to group or user entities");
+        }
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (permissions != null){
+            params.put("permission", permissions);
+        }
+        
+        return apiRequest(HTTP_METHOD_DELETE, params, null, organizationId,  applicationId, entityType,
+                entityID, "permissions");
+
+    }
+
+    /**
+     * Removes permissions from the specified user or group entity. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param entityType the entity type of the entity the permissions are being removed from. 'user' and 'group' are valid.
+     * @param entityID the UUID of 'name' property of the entity the permissions are being removed from.
+     * @param permissions a comma-separated list of the permissions to be removed in the format: <operations>:<path>, e.g. get, put, post, delete: /users     
+     */
+    public void removePermissionsAsync(final String entityType,
+            final String entityID, final String permissions, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return removePermissions(entityType, entityID, permissions);
+            }
+        }).execute();
+    }
 
     /****************** LOG IN/LOG OUT/OAUTH ***********************/
     /****************** LOG IN/LOG OUT/OAUTH ***********************/
