@@ -797,8 +797,10 @@ public class DataClient implements LocationListener {
         validTypes.add("groups");
         validTypes.add("user");
         validTypes.add("users");
+        validTypes.add("role");
+        validTypes.add("roles");
         if (!validTypes.contains(entityType)) {
-            throw new IllegalArgumentException("Permissions can only be assigned to group or user entities");
+            throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
         Map<String, Object> data = new HashMap<String, Object>();
@@ -818,6 +820,7 @@ public class DataClient implements LocationListener {
      * @param entityType the entity type of the entity the permissions are being assigned to. 'user' and 'group' are valid.
      * @param entityID the UUID of 'name' property of the entity the permissions are being assigned to.
      * @param permissions a comma-separated list of the permissions to be assigned in the format: <operations>:<path>, e.g. get, put, post, delete: /users     
+     * @param  callback  an ApiResponseCallback to handle the async response
      */
     public void assignPermissionsAsync(final String entityType,
             final String entityID, final String permissions, final ApiResponseCallback callback) {
@@ -845,8 +848,10 @@ public class DataClient implements LocationListener {
         validTypes.add("groups");
         validTypes.add("user");
         validTypes.add("users");
+        validTypes.add("role");
+        validTypes.add("roles");
         if (!validTypes.contains(entityType)) {
-            throw new IllegalArgumentException("Permissions can only be assigned to group or user entities");
+            throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -866,6 +871,7 @@ public class DataClient implements LocationListener {
      * @param entityType the entity type of the entity the permissions are being removed from. 'user' and 'group' are valid.
      * @param entityID the UUID of 'name' property of the entity the permissions are being removed from.
      * @param permissions a comma-separated list of the permissions to be removed in the format: <operations>:<path>, e.g. get, put, post, delete: /users     
+     * @param  callback  an ApiResponseCallback to handle the async response
      */
     public void removePermissionsAsync(final String entityType,
             final String entityID, final String permissions, final ApiResponseCallback callback) {
@@ -873,6 +879,48 @@ public class DataClient implements LocationListener {
             @Override
             public ApiResponse doTask() {
                 return removePermissions(entityType, entityID, permissions);
+            }
+        }).execute();
+    }
+
+    /**
+     * Creates a new role and assigns permissions to it.
+     * 
+     * @param roleName the name of the new role
+     * @param permissions a comma-separated list of the permissions to be assigned in the format: <operations>:<path>, e.g. get, put, post, delete: /users
+     * @return ApiResponse object
+     */
+    public ApiResponse createRole(String roleName, String permissions) {
+
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("type", "role");
+        properties.put("name", roleName);
+
+        ApiResponse response = this.createEntity(properties);
+
+        String uuid = null;
+
+        if (response.getEntityCount() == 1){
+            uuid = response.getFirstEntity().getUuid().toString();
+        }
+
+        return assignPermissions("role", uuid, permissions);
+
+    }
+
+    /**
+     * Creates a new role and assigns permissions to it.
+     * 
+     * @param roleName the name of the new role
+     * @param permissions a comma-separated list of the permissions to be assigned in the format: <operations>:<path>, e.g. get, put, post, delete: /users
+     * @param  callback  an ApiResponseCallback to handle the async response     
+     */
+    public void createRoleAsync(final String roleName, final String permissions, 
+                  final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return createRole(roleName, permissions);
             }
         }).execute();
     }
