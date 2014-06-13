@@ -792,14 +792,7 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse assignPermissions(String entityType, String entityID, String permissions) {
 
-        ArrayList<String> validTypes = new ArrayList<String>();
-        validTypes.add("group");
-        validTypes.add("groups");
-        validTypes.add("user");
-        validTypes.add("users");
-        validTypes.add("role");
-        validTypes.add("roles");
-        if (!validTypes.contains(entityType)) {
+        if (!validateTypeForPermissions(entityType)) {
             throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
@@ -843,14 +836,7 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse removePermissions(String entityType, String entityID, String permissions) {
 
-        ArrayList<String> validTypes = new ArrayList<String>();
-        validTypes.add("group");
-        validTypes.add("groups");
-        validTypes.add("user");
-        validTypes.add("users");
-        validTypes.add("role");
-        validTypes.add("roles");
-        if (!validTypes.contains(entityType)) {
+        if (!validateTypeForPermissions(entityType)) {
             throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
@@ -936,19 +922,14 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse assignRole(String roleName, String entityType, String entityID) {
 
-        ArrayList<String> validTypes = new ArrayList<String>();
-        validTypes.add("group");
-        validTypes.add("groups");
-        validTypes.add("user");
-        validTypes.add("users");
-        if (!validTypes.contains(entityType)) {
-            throw new IllegalArgumentException("Permissions can only be removed from a group or user");
-        }
-
         if (!entityType.substring(entityType.length() - 1 ).equals("s")) {
             entityType += "s";
         }
-        
+
+        if (!validateTypeForRoles(entityType)) {
+            throw new IllegalArgumentException("Permissions can only be assigned to a group or user");
+        }
+
         return apiRequest(HTTP_METHOD_POST, null, null, organizationId,  applicationId, "roles", roleName, 
                       entityType, entityID);
 
@@ -984,17 +965,12 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse removeRole(String roleName, String entityType, String entityID) {
 
-        ArrayList<String> validTypes = new ArrayList<String>();
-        validTypes.add("group");
-        validTypes.add("groups");
-        validTypes.add("user");
-        validTypes.add("users");
-        if (!validTypes.contains(entityType)) {
-            throw new IllegalArgumentException("Permissions can only be removed from a group or user");
-        }
-
         if (!entityType.substring(entityType.length() - 1 ).equals("s")) {
             entityType += "s";
+        }
+
+        if (!validateTypeForRoles(entityType)) {
+            throw new IllegalArgumentException("Permissions can only be removed from a group or user");
         }
 
         return apiRequest(HTTP_METHOD_DELETE, null, null, organizationId,  applicationId, "roles", roleName, 
@@ -1019,6 +995,22 @@ public class DataClient implements LocationListener {
                 return removeRole(roleName, entityType, entityID);
             }
         }).execute();
+    }
+
+    private Boolean validateTypeForRoles(String type){
+        ArrayList<String> validTypes = new ArrayList<String>();        
+        validTypes.add("groups");
+        validTypes.add("users");
+        return validTypes.contains(type);
+    }
+
+    private Boolean validateTypeForPermissions(String type){
+        ArrayList<String> validTypes = new ArrayList<String>();        
+        validTypes.add("groups");        
+        validTypes.add("users");
+        validTypes.add("roles");
+
+        return validTypes.contains(type);
     }
 
     /****************** LOG IN/LOG OUT/OAUTH ***********************/
