@@ -792,7 +792,7 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse assignPermissions(String entityType, String entityID, String permissions) {
 
-        if (!validateTypeForPermissions(entityType)) {
+        if (!validateTypeForPermissionsAndRoles(entityType, "role")) {
             throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
@@ -836,7 +836,7 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse removePermissions(String entityType, String entityID, String permissions) {
 
-        if (!validateTypeForPermissions(entityType)) {
+        if (!validateTypeForPermissionsAndRoles(entityType, "permission")) {
             throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
@@ -926,7 +926,7 @@ public class DataClient implements LocationListener {
             entityType += "s";
         }
 
-        if (!validateTypeForRoles(entityType)) {
+        if (!validateTypeForPermissionsAndRoles(entityType, "role")) {
             throw new IllegalArgumentException("Permissions can only be assigned to a group or user");
         }
 
@@ -969,7 +969,7 @@ public class DataClient implements LocationListener {
             entityType += "s";
         }
 
-        if (!validateTypeForRoles(entityType)) {
+        if (!validateTypeForPermissionsAndRoles(entityType, "role")) {
             throw new IllegalArgumentException("Permissions can only be removed from a group or user");
         }
 
@@ -997,18 +997,14 @@ public class DataClient implements LocationListener {
         }).execute();
     }
 
-    private Boolean validateTypeForRoles(String type){
-        ArrayList<String> validTypes = new ArrayList<String>();        
-        validTypes.add("groups");
-        validTypes.add("users");
-        return validTypes.contains(type);
-    }
-
-    private Boolean validateTypeForPermissions(String type){
+    private Boolean validateTypeForPermissionsAndRoles(String type, String permissionOrRole){
         ArrayList<String> validTypes = new ArrayList<String>();        
         validTypes.add("groups");        
         validTypes.add("users");
-        validTypes.add("roles");
+        
+        if (permissionOrRole.equals("permission")){
+            validTypes.add("roles");
+        }
 
         return validTypes.contains(type);
     }
