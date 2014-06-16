@@ -792,7 +792,11 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse assignPermissions(String entityType, String entityID, String permissions) {
 
-        if (!validateTypeForPermissionsAndRoles(entityType, "role")) {
+        if (!entityType.substring(entityType.length() - 1 ).equals("s")) {
+            entityType += "s";
+        }
+        
+        if (!validateTypeForPermissionsAndRoles(entityType, "permission")) {
             throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
@@ -997,6 +1001,10 @@ public class DataClient implements LocationListener {
         }).execute();
     }
 
+    /**
+     * Checks if a permission or role can be assigned to an entity
+     * @y.exclude
+     */
     private Boolean validateTypeForPermissionsAndRoles(String type, String permissionOrRole){
         ArrayList<String> validTypes = new ArrayList<String>();        
         validTypes.add("groups");        
