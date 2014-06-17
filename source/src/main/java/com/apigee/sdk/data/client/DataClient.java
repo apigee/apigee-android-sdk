@@ -782,9 +782,9 @@ public class DataClient implements LocationListener {
     /****************** ROLES/PERMISSIONS ***********************/
 
     /**
-     * Assigns permissions to the specified user or group entity.
+     * Assigns permissions to the specified user, group, or role.
      * 
-     * @param entityType the entity type of the entity the permissions are being assigned to. 'user' and 'group' are valid.
+     * @param entityType the entity type of the entity the permissions are being assigned to. 'user', 'group' and 'role' are valid.
      * @param entityID the UUID of 'name' property of the entity the permissions are being assigned to.
      * @param permissions a comma-separated list of the permissions to be assigned in the format: <operations>:<path>, e.g. get, put, post, delete: /users
      * @throws IllegalArgumentException thrown if an entityType other than 'group' or 'user' is passed to the method
@@ -792,14 +792,11 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse assignPermissions(String entityType, String entityID, String permissions) {
 
-        ArrayList<String> validTypes = new ArrayList<String>();
-        validTypes.add("group");
-        validTypes.add("groups");
-        validTypes.add("user");
-        validTypes.add("users");
-        validTypes.add("role");
-        validTypes.add("roles");
-        if (!validTypes.contains(entityType)) {
+        if (!entityType.substring(entityType.length() - 1 ).equals("s")) {
+            entityType += "s";
+        }
+        
+        if (!validateTypeForPermissionsAndRoles(entityType, "permission")) {
             throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
@@ -814,10 +811,10 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Assigns permissions to the specified user or group entity. Executes asynchronously in
+     * Assigns permissions to the specified user, group, or role. Executes asynchronously in
      * background and the callbacks are called in the UI thread.
      * 
-     * @param entityType the entity type of the entity the permissions are being assigned to. 'user' and 'group' are valid.
+     * @param entityType the entity type of the entity the permissions are being assigned to. 'user', 'group' and 'role' are valid.
      * @param entityID the UUID of 'name' property of the entity the permissions are being assigned to.
      * @param permissions a comma-separated list of the permissions to be assigned in the format: <operations>:<path>, e.g. get, put, post, delete: /users     
      * @param  callback  an ApiResponseCallback to handle the async response
@@ -833,9 +830,9 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Removes permissions from the specified user or group entity.
+     * Removes permissions from the specified user, group or role.
      * 
-     * @param entityType the entity type of the entity the permissions are being removed from. 'user' and 'group' are valid.
+     * @param entityType the entity type of the entity the permissions are being removed from. 'user', 'group' and 'role' are valid.
      * @param entityID the UUID of 'name' property of the entity the permissions are being removed from.
      * @param permissions a comma-separated list of the permissions to be removed in the format: <operations>:<path>, e.g. get, put, post, delete: /users
      * @throws IllegalArgumentException thrown if an entityType other than 'group' or 'user' is passed to the method
@@ -843,14 +840,7 @@ public class DataClient implements LocationListener {
      */
     public ApiResponse removePermissions(String entityType, String entityID, String permissions) {
 
-        ArrayList<String> validTypes = new ArrayList<String>();
-        validTypes.add("group");
-        validTypes.add("groups");
-        validTypes.add("user");
-        validTypes.add("users");
-        validTypes.add("role");
-        validTypes.add("roles");
-        if (!validTypes.contains(entityType)) {
+        if (!validateTypeForPermissionsAndRoles(entityType, "permission")) {
             throw new IllegalArgumentException("Permissions can only be assigned to group, user, or role entities");
         }
 
@@ -865,10 +855,10 @@ public class DataClient implements LocationListener {
     }
 
     /**
-     * Removes permissions from the specified user or group entity. Executes asynchronously in
+     * Removes permissions from the specified user, group or role. Executes asynchronously in
      * background and the callbacks are called in the UI thread.
      * 
-     * @param entityType the entity type of the entity the permissions are being removed from. 'user' and 'group' are valid.
+     * @param entityType the entity type of the entity the permissions are being removed from. 'user', 'group', and 'role' are valid.
      * @param entityID the UUID of 'name' property of the entity the permissions are being removed from.
      * @param permissions a comma-separated list of the permissions to be removed in the format: <operations>:<path>, e.g. get, put, post, delete: /users     
      * @param  callback  an ApiResponseCallback to handle the async response
@@ -923,6 +913,108 @@ public class DataClient implements LocationListener {
                 return createRole(roleName, permissions);
             }
         }).execute();
+    }
+
+    /**
+     * Assigns a role to a user or group entity.
+     * 
+     * @param roleName the name of the role to be assigned to the entity
+     * @param entityType the entity type of the entity the role is being assigned to. 'user' and 'group' are valid.
+     * @param entityID the UUID or 'name' property of the entity the role is being assigned to.     
+     * @throws IllegalArgumentException thrown if an entityType other than 'group' or 'user' is passed to the method
+     * @return ApiResponse object
+     */
+    public ApiResponse assignRole(String roleName, String entityType, String entityID) {
+
+        if (!entityType.substring(entityType.length() - 1 ).equals("s")) {
+            entityType += "s";
+        }
+
+        if (!validateTypeForPermissionsAndRoles(entityType, "role")) {
+            throw new IllegalArgumentException("Permissions can only be assigned to a group or user");
+        }
+
+        return apiRequest(HTTP_METHOD_POST, null, null, organizationId,  applicationId, "roles", roleName, 
+                      entityType, entityID);
+
+    }
+
+    /**
+     * Assigns a role to a user or group entity. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param roleName the name of the role to be assigned to the entity
+     * @param entityType the entity type of the entity the role is being assigned to. 'user' and 'group' are valid.
+     * @param entityID the UUID or 'name' property of the entity the role is being removed from.     
+     * @param callback  an ApiResponseCallback to handle the async response
+     */
+    public void assignRoleAsync(final String roleName, final String entityType,
+            final String entityID, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return assignRole(roleName, entityType, entityID);
+            }
+        }).execute();
+    }
+
+    /**
+     * Removes a role from a user or group entity.
+     * 
+     * @param roleName the name of the role to be removed from the entity
+     * @param entityType the entity type of the entity the role is being removed from. 'user' and 'group' are valid.
+     * @param entityID the UUID or 'name' property of the entity the role is being removed from.     
+     * @throws IllegalArgumentException thrown if an entityType other than 'group' or 'user' is passed to the method
+     * @return ApiResponse object
+     */
+    public ApiResponse removeRole(String roleName, String entityType, String entityID) {
+
+        if (!entityType.substring(entityType.length() - 1 ).equals("s")) {
+            entityType += "s";
+        }
+
+        if (!validateTypeForPermissionsAndRoles(entityType, "role")) {
+            throw new IllegalArgumentException("Permissions can only be removed from a group or user");
+        }
+
+        return apiRequest(HTTP_METHOD_DELETE, null, null, organizationId,  applicationId, "roles", roleName, 
+                      entityType, entityID);
+
+    }
+
+    /**
+     * Removes a role from a user or group entity. Executes asynchronously in
+     * background and the callbacks are called in the UI thread.
+     * 
+     * @param roleName the name of the role to be removed from the entity
+     * @param entityType the entity type of the entity the role is being removed from. 'user' and 'group' are valid.
+     * @param entityID the UUID or 'name' property of the entity the role is being removed from.     
+     * @param callback  an ApiResponseCallback to handle the async response
+     */
+    public void removeRoleAsync(final String roleName, final String entityType,
+            final String entityID, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return removeRole(roleName, entityType, entityID);
+            }
+        }).execute();
+    }
+
+    /**
+     * Checks if a permission or role can be assigned to an entity
+     * @y.exclude
+     */
+    private Boolean validateTypeForPermissionsAndRoles(String type, String permissionOrRole){
+        ArrayList<String> validTypes = new ArrayList<String>();        
+        validTypes.add("groups");        
+        validTypes.add("users");
+        
+        if (permissionOrRole.equals("permission")){
+            validTypes.add("roles");
+        }
+
+        return validTypes.contains(type);
     }
 
     /****************** LOG IN/LOG OUT/OAUTH ***********************/
