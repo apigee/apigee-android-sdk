@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="apigee-android-2.0.10-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/apigee-android-2.0.10-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
