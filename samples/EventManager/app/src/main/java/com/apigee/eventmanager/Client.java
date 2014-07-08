@@ -64,7 +64,6 @@ public class Client {
                 @Override
                 public void onResponse(ApiResponse response) {
                 }
-
                 @Override
                 public void onException(Exception e) {
                 }
@@ -181,7 +180,6 @@ public class Client {
             @Override
             public void onResponse(ApiResponse response) {
                 if (clientEventCallback != null) {
-                    ArrayList<Entity> entityList = new ArrayList<Entity>();
                     if (response != null) {
                         clientEventCallback.onEventsGathered(response.getEntities());
                     } else {
@@ -200,8 +198,7 @@ public class Client {
     }
 
     public void getPrivateEvents(String queryString, final ClientEventCallback clientEventCallback) {
-        String currentUsersUUID = this.currentUser().getUuid().toString();
-        this.dataClient().queryEntityConnectionsAsync("users", currentUsersUUID, "connections", "", new QueryResultsCallback() {
+        this.dataClient().queryEntityConnectionsAsync("users", "me", "private", queryString, new QueryResultsCallback() {
             @Override
             public void onQueryResults(DataClient.Query query) {
 

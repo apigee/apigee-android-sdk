@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -38,6 +39,10 @@ public class EventsActivity extends Activity {
     private Button cancelButton;
     private Switch locationBasedSearchSwitch;
 
+    private LinearLayout progressLayout;
+    private Boolean isGettingPrivateEvents = false;
+    private Boolean isGettingPublicEvents = false;
+
     private EventListViewAdapter eventListViewAdapter = new EventListViewAdapter();
 
     @Override
@@ -53,6 +58,7 @@ public class EventsActivity extends Activity {
         searchEditText = (EditText) this.findViewById(R.id.searchEditText);
         cancelButton = (Button) this.findViewById(R.id.cancelButton);
         locationBasedSearchSwitch = (Switch) this.findViewById(R.id.locationBasedSearchSwitch);
+        progressLayout = (LinearLayout) this.findViewById(R.id.progressLayout);
 
         logoutButton.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -99,7 +105,7 @@ public class EventsActivity extends Activity {
                     }
 
                     EventsActivity.this.getPublicEvents(queryString);
-                    EventsActivity.this.getPrivateEvents();
+                    EventsActivity.this.getPrivateEvents(queryString);
 
                     return true;
                 }
@@ -116,7 +122,7 @@ public class EventsActivity extends Activity {
                 in.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
                 searchEditText.setText("");
                 EventsActivity.this.getPublicEvents(null);
-                EventsActivity.this.getPrivateEvents();
+                EventsActivity.this.getPrivateEvents(null);
             }
         });
     }
@@ -127,11 +133,14 @@ public class EventsActivity extends Activity {
         InputMethodManager in = (InputMethodManager)EventsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
         in.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
         EventsActivity.this.getPublicEvents(null);
-        EventsActivity.this.getPrivateEvents();
+        EventsActivity.this.getPrivateEvents(null);
     }
 
-    public void getPrivateEvents() {
-        Client.sharedClient().getPrivateEvents("",new ClientEventCallback() {
+    public void getPrivateEvents(String queryString) {
+        this.isGettingPrivateEvents = true;
+        this.updateProgressDialogVisibility();
+
+        Client.sharedClient().getPrivateEvents(queryString,new ClientEventCallback() {
             @Override
             public void onEventsGathered(List<Entity> events) {
                 ArrayList<EventContainer> privateEventContainers = new ArrayList<EventContainer>();
@@ -141,6 +150,8 @@ public class EventsActivity extends Activity {
                     }
                 }
                 eventListViewAdapter.privateEvents = privateEventContainers;
+                isGettingPrivateEvents = false;
+                updateProgressDialogVisibility();
                 eventListViewAdapter.notifyDataSetChanged();
                 listView.invalidateViews();
                 listView.refreshDrawableState();
@@ -152,6 +163,8 @@ public class EventsActivity extends Activity {
                     Log.d("EventsActivity","Failed getting private events.  Error: " + error);
                 }
                 eventListViewAdapter.privateEvents = null;
+                isGettingPrivateEvents = false;
+                updateProgressDialogVisibility();
                 eventListViewAdapter.notifyDataSetChanged();
                 listView.invalidateViews();
                 listView.refreshDrawableState();
@@ -160,6 +173,9 @@ public class EventsActivity extends Activity {
     }
 
     public void getPublicEvents(String queryString) {
+        this.isGettingPublicEvents = true;
+        this.updateProgressDialogVisibility();
+
         HashMap<String,Object> query = new HashMap<String, Object>();
         if( queryString != null ) {
             query.put("ql",queryString);
@@ -175,6 +191,8 @@ public class EventsActivity extends Activity {
                     }
                 }
                 eventListViewAdapter.publicEvents = publicEventContainers;
+                isGettingPublicEvents = false;
+                updateProgressDialogVisibility();
                 eventListViewAdapter.notifyDataSetChanged();
                 listView.invalidateViews();
                 listView.refreshDrawableState();
@@ -186,11 +204,25 @@ public class EventsActivity extends Activity {
                     Log.d("EventsActivity","Failed getting public events.  Error: " + error);
                 }
                 eventListViewAdapter.publicEvents = null;
+                isGettingPublicEvents = false;
+                updateProgressDialogVisibility();
                 eventListViewAdapter.notifyDataSetChanged();
                 listView.invalidateViews();
                 listView.refreshDrawableState();
             }
         });
+    }
+
+    public void updateProgressDialogVisibility() {
+        if( isGettingPrivateEvents || isGettingPublicEvents ) {
+            if( this.progressLayout.getVisibility() != View.VISIBLE ) {
+                this.progressLayout.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if( this.progressLayout.getVisibility() != View.GONE ) {
+                this.progressLayout.setVisibility(View.GONE);
+            }
+        }
     }
 
     public class EventContainer {
@@ -217,8 +249,8 @@ public class EventsActivity extends Activity {
 
     public class EventListViewAdapter extends BaseAdapter {
 
-        private ArrayList<EventContainer> publicEvents;
-        private ArrayList<EventContainer> privateEvents;
+        private ArrayList<EventContainer> publicEvents = null;
+        private ArrayList<EventContainer> privateEvents = null;
 
         public void setPublicEvents(ArrayList<EventContainer> publicEvents) {
             this.publicEvents = publicEvents;
@@ -228,13 +260,9 @@ public class EventsActivity extends Activity {
             this.privateEvents = privateEvents;
         }
 
-        public EventListViewAdapter() {
-
-        }
-
         @Override
         public int getCount() {
-            int count = 0;
+            int count = 2;
             if( publicEvents != null ) {
                 count += publicEvents.size();
             }
@@ -262,25 +290,48 @@ public class EventsActivity extends Activity {
 
         @Override
         public View getView(int arg0, View arg1, ViewGroup arg2) {
-            if(arg1==null)
-            {
+            Boolean isSectionHeader = arg0 == 0;
+            if( !isSectionHeader && publicEvents == null ) {
+                isSectionHeader = arg0 == 1;
+            } else if( !isSectionHeader && publicEvents != null ) {
+                isSectionHeader = (arg0 == (publicEvents.size() + 1));
+            }
+
+            if( isSectionHeader ) {
+                LayoutInflater inflater = (LayoutInflater) EventsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                arg1 = inflater.inflate(R.layout.sectionlistitem, arg2,false);
+            } else {
                 LayoutInflater inflater = (LayoutInflater) EventsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 arg1 = inflater.inflate(R.layout.eventlistitem, arg2,false);
             }
 
-            TextView eventNameTextView = (TextView)arg1.findViewById(R.id.textView1);
-            TextView eventLocationTextView = (TextView)arg1.findViewById(R.id.textView2);
-
-            EventContainer event = null;
-            if( publicEvents.size() > arg0 ) {
-                event = publicEvents.get(arg0);
+            if( isSectionHeader ) {
+                TextView sectionHeaderTextView = (TextView) arg1.findViewById(R.id.textView1);
+                if( arg0 == 0 ) {
+                    sectionHeaderTextView.setText("Public Events");
+                } else {
+                    sectionHeaderTextView.setText("Private Events");
+                }
             } else {
-                event = privateEvents.get(arg0 - publicEvents.size());
+                int eventIndex = arg0 - 1;
+                TextView eventNameTextView = (TextView)arg1.findViewById(R.id.textView1);
+                TextView eventLocationTextView = (TextView)arg1.findViewById(R.id.textView2);
+
+                EventContainer event = null;
+                if( publicEvents.size() + 1 > eventIndex ) {
+                    event = publicEvents.get(eventIndex);
+                } else if( privateEvents != null ){
+                    event = privateEvents.get(eventIndex - publicEvents.size() - 1);
+                }
+
+                if( event != null ) {
+                    eventNameTextView.setText(event.eventName);
+                    eventLocationTextView.setText(event.eventLocation);
+                } else {
+                    eventNameTextView.setText(null);
+                    eventLocationTextView.setText(null);
+                }
             }
-
-            eventNameTextView.setText(event.eventName);
-            eventLocationTextView.setText(event.eventLocation);
-
             return arg1;
         }
     }

@@ -9,6 +9,23 @@
     tools:context="com.apigee.eventmanager.EventsActivity"
     android:clickable="false">
 
+    <LinearLayout
+        android:id="@+id/progressLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_alignTop="@+id/listView"
+        android:layout_below="@+id/listView">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </ProgressBar>
+    </LinearLayout>
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +58,7 @@
         android:id="@+id/eventsTextView"
         android:layout_alignTop="@+id/addEventButton"
         android:layout_centerHorizontal="true"
-        android:textSize="40dp" />
+        android:textSize="40sp" />
 
     <Switch
         android:layout_width="wrap_content"

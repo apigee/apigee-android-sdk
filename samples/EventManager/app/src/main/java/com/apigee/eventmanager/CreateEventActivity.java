@@ -21,7 +21,6 @@ public class CreateEventActivity extends Activity {
 
     private static String TAG = "CreateEventActivity";
 
-    private Button addEventButton;
     private Button cancelButton;
     private EditText eventNameEditText;
     private EditText cityEditText;
@@ -33,7 +32,6 @@ public class CreateEventActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-        addEventButton = (Button) this.findViewById(R.id.addEventButton);
         cancelButton = (Button) this.findViewById(R.id.cancelButton);
         eventNameEditText = (EditText) this.findViewById(R.id.eventNameEditText);
         cityEditText = (EditText) this.findViewById(R.id.cityEditText);
@@ -47,7 +45,7 @@ public class CreateEventActivity extends Activity {
             }
         });
 
-        addEventButton.setOnClickListener( new View.OnClickListener() {
+        ((Button) this.findViewById(R.id.addEventButton)).setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String eventNameText = eventNameEditText.getText().toString();

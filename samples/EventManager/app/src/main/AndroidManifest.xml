@@ -30,7 +30,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.apigee.myapplication.MyActivity" />
+                android:value="com.apigee.eventmanager.LoginActivity" />
         </activity>
         <activity
             android:name=".EventsActivity"
@@ -39,7 +39,7 @@
             android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.apigee.myapplication.MyActivity" />
+                android:value="com.apigee.eventmanager.LoginActivity" />
         </activity>
         <activity
             android:name=".CreateEventActivity"
