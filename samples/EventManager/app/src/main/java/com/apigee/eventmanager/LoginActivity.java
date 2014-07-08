@@ -32,23 +32,25 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 EditText usernameEditText = (EditText) LoginActivity.this.findViewById(R.id.usernameEditText);
                 EditText passwordEditText = (EditText) LoginActivity.this.findViewById(R.id.passwordEditText);
-                Client.sharedClient().loginUser(usernameEditText.getText().toString(),passwordEditText.getText().toString(), new ClientRequestCallback() {
-                    @Override
-                    public void onSuccess(User user) {
-                        if( user != null ) {
-                            Log.d("LoginActivity", "User login successful! Username: " + user.getUsername());
-                            Intent eventsIntent = new Intent(LoginActivity.this,EventsActivity.class);
-                            LoginActivity.this.startActivity(eventsIntent);
-                        } else {
-                            // TODO: Show alert that says login failed.
+                if( usernameEditText.getText().toString().isEmpty() || passwordEditText.getText().toString().isEmpty() ) {
+                    Client.showAlert(LoginActivity.this,"Error","All fields must be filled!");
+                } else {
+                    Client.sharedClient().loginUser(usernameEditText.getText().toString(),passwordEditText.getText().toString(), new ClientRequestCallback() {
+                        @Override
+                        public void onSuccess(User user) {
+                            if( user != null ) {
+                                Log.d("LoginActivity", "User login successful! Username: " + user.getUsername());
+                                Intent eventsIntent = new Intent(LoginActivity.this,EventsActivity.class);
+                                LoginActivity.this.startActivity(eventsIntent);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailed(String errorString) {
-                            // TODO: Show alert that says login failed.
-                    }
-                });
+                        @Override
+                        public void onFailed(String errorString) {
+                            Client.showAlert(LoginActivity.this,"Login Failed",errorString);
+                        }
+                    });
+                }
             }
         });
     }

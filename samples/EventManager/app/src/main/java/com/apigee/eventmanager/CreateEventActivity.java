@@ -4,18 +4,14 @@ import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
-import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
 import com.apigee.sdk.data.client.entities.Entity;
-import com.apigee.sdk.data.client.response.ApiResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -57,8 +53,9 @@ public class CreateEventActivity extends Activity {
                 String eventNameText = eventNameEditText.getText().toString();
                 String cityText = cityEditText.getText().toString();
                 String stateText = stateEditText.getText().toString();
-                if( !eventNameText.isEmpty() && !cityText.isEmpty() && !stateText.isEmpty() ) {
-
+                if( eventNameText.isEmpty() || cityText.isEmpty() || stateText.isEmpty() ) {
+                    Client.showAlert(CreateEventActivity.this,"Error","All fields must be filled");
+                } else {
                     double latitude = 0.0;
                     double longitude = 0.0;
                     if(Geocoder.isPresent()){
@@ -71,7 +68,6 @@ public class CreateEventActivity extends Activity {
                                 longitude = address.getLongitude();
                             }
                         } catch (IOException e) {
-                            // TODO: Event Location invalid alert.
                         }
                     }
 
@@ -83,45 +79,14 @@ public class CreateEventActivity extends Activity {
                     eventEntityMap.put("eventName", eventNameText);
                     eventEntityMap.put("location", eventLocationMap);
 
-                    ArrayList<Map<String, Object>> eventArray = new ArrayList<Map<String, Object>>();
-                    eventArray.add(eventEntityMap);
-
-                    final boolean isPublicEvent = publicSwitch.isChecked();
-                    String eventType = (isPublicEvent)? "publicevents": "privateevents";
-
-                    Client.sharedClient().dataClient().createEntitiesAsync(eventType, eventArray, new ApiResponseCallback() {
+                    Client.sharedClient().createEvent(publicSwitch.isChecked(),eventEntityMap, new ClientCreateEventCallback() {
                         @Override
-                        public void onResponse(ApiResponse response) {
-                            if( response != null ) {
-                                List entities = response.getEntities();
-                                if( entities != null && entities.size() > 0 ) {
-                                    Entity createdEventEntity = (Entity) entities.get(0);
-                                    Log.d("Tag",createdEventEntity.getStringProperty("eventName"));
-                                    if( !isPublicEvent ) {
-                                        Client.sharedClient().dataClient().connectEntitiesAsync("users",Client.sharedClient().currentUser().getUuid().toString(),"private",createdEventEntity.getUuid().toString(), new ApiResponseCallback() {
-                                            @Override
-                                            public void onResponse(ApiResponse response) {
-                                                if( response != null ) {
-                                                    Log.d(TAG,response.toString());
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onException(Exception e) {
-                                                Log.d(TAG,e.toString());
-                                            }
-                                        });
-                                    }
-                                    CreateEventActivity.this.finish();
-                                }
-                            } else {
-                                Log.d(TAG,"Add Event Response is null!");
-                            }
+                        public void onSuccess(Entity createdEntity) {
+                            CreateEventActivity.this.finish();
                         }
-
                         @Override
-                        public void onException(Exception e) {
-                            Log.d(TAG,e.toString());
+                        public void onFailed(String error) {
+                            Client.showAlert(CreateEventActivity.this,"Error Creating Event",error);
                         }
                     });
                 }

@@ -30,18 +30,22 @@ public class RegisterActivity extends Activity {
                 String fullName = ((EditText)RegisterActivity.this.findViewById(R.id.registerFullNameEditText)).getText().toString();
                 String email = ((EditText)RegisterActivity.this.findViewById(R.id.registerEmailEditText)).getText().toString();
                 String password = ((EditText)RegisterActivity.this.findViewById(R.id.registerPasswordEditText)).getText().toString();
-                Client.sharedClient().createUser(username,fullName,email,password, new ClientRequestCallback() {
-                    @Override
-                    public void onSuccess(User user) {
-                        System.out.println(user.getUsername());
-                        RegisterActivity.this.finish();
-                    }
+                if( username.isEmpty() || fullName.isEmpty() || email.isEmpty() || password.isEmpty() ) {
+                    Client.showAlert(RegisterActivity.this,"Error","All Fields must be filled!");
+                } else {
+                    Client.sharedClient().createUser(username,fullName,email,password, new ClientRequestCallback() {
+                        @Override
+                        public void onSuccess(User user) {
+                            System.out.println(user.getUsername());
+                            RegisterActivity.this.finish();
+                        }
 
-                    @Override
-                    public void onFailed(String errorString) {
-                        // TODO: Show Alert that registration failed.
-                    }
-                });
+                        @Override
+                        public void onFailed(String errorString) {
+                            Client.showAlert(RegisterActivity.this,"Error registering user.",errorString);
+                        }
+                    });
+                }
             }
         });
     }

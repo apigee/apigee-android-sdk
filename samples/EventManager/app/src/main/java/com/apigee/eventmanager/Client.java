@@ -1,6 +1,8 @@
 package com.apigee.eventmanager;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 
 import com.apigee.sdk.ApigeeClient;
@@ -14,12 +16,17 @@ import com.apigee.sdk.data.client.response.ApiResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ApigeeCorporation on 6/30/14.
  */
 
 public class Client {
+
+    private final static String TAG = "Client";
+
     public ApigeeClient apigeeClient;
 
     public DataClient dataClient() {
@@ -122,8 +129,55 @@ public class Client {
         });
     }
 
+    public void createEvent(final Boolean isPublicEvent, Map<String,Object> eventEntityMap, final ClientCreateEventCallback callback) {
+        ArrayList<Map<String, Object>> eventArray = new ArrayList<Map<String, Object>>();
+        eventArray.add(eventEntityMap);
+
+        String eventType = (isPublicEvent)? "publicevents": "privateevents";
+
+        this.dataClient().createEntitiesAsync(eventType, eventArray, new ApiResponseCallback() {
+            @Override
+            public void onResponse(ApiResponse response) {
+                if( response != null ) {
+                    List entities = response.getEntities();
+                    if( entities != null && entities.size() > 0 ) {
+                        final Entity createdEventEntity = (Entity) entities.get(0);
+                        Log.d("Tag",createdEventEntity.getStringProperty("eventName"));
+                        if( !isPublicEvent ) {
+                            Client.sharedClient().dataClient().connectEntitiesAsync("users",Client.sharedClient().currentUser().getUuid().toString(),"private",createdEventEntity.getUuid().toString(), new ApiResponseCallback() {
+                                @Override
+                                public void onResponse(ApiResponse response) {
+                                    if( callback != null ) {
+                                        callback.onSuccess(createdEventEntity);
+                                    }
+                                }
+                                @Override
+                                public void onException(Exception e) {
+                                    if( callback != null ) {
+                                        callback.onFailed("Failed to connect private entity with exception: " + e.toString());
+                                    }
+                                }
+                            });
+                        } else if( callback != null ) {
+                            callback.onSuccess(createdEventEntity);
+                        }
+                    }
+                } else if( callback != null ){
+                    callback.onFailed("Add Event Response is null!");
+                }
+            }
+
+            @Override
+            public void onException(Exception e) {
+                if( callback != null ) {
+                    callback.onFailed("Failed to create entity with exception: " + e.toString());
+                }
+            }
+        });
+    }
+
     public void getPublicEvents(HashMap<String, Object> query, final ClientEventCallback clientEventCallback) {
-        this.dataClient().getCollectionAsync("publicEvents", query, new ApiResponseCallback() {
+        this.dataClient().getCollectionAsync("publicevents", query, new ApiResponseCallback() {
             @Override
             public void onResponse(ApiResponse response) {
                 if (clientEventCallback != null) {
@@ -170,5 +224,16 @@ public class Client {
                 Log.d("", "");
             }
         });
+    }
+
+    public static void showAlert(Context context, String title, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert).create().show();
     }
 }
