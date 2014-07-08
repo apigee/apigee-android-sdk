@@ -25,21 +25,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.apigee.eventmanager.RegisterActivity"
+            android:name=".RegisterActivity"
             android:label="@string/title_activity_register"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.apigee.myapplication.MyActivity" />
         </activity>
         <activity
-            android:name="com.apigee.eventmanager.EventsActivity"
+            android:name=".EventsActivity"
             android:label="@string/title_activity_events"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.apigee.myapplication.MyActivity" />
+        </activity>
+        <activity
+            android:name=".CreateEventActivity"
+            android:label="@string/title_activity_create_event"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.apigee.eventmanager.EventsActivity" />
         </activity>
     </application>
 
