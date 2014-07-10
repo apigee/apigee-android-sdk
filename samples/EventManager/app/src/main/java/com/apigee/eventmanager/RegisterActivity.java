@@ -36,7 +36,9 @@ public class RegisterActivity extends Activity {
                     Client.sharedClient().createUser(username,fullName,email,password, new ClientRequestCallback() {
                         @Override
                         public void onSuccess(User user) {
-                            System.out.println(user.getUsername());
+                            if( user != null ) {
+                                System.out.println(user.getUsername());
+                            }
                             RegisterActivity.this.finish();
                         }
 
