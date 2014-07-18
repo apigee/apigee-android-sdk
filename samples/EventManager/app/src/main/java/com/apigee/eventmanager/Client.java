@@ -30,13 +30,12 @@ public class Client {
 
     private static final String TAG = "Client";
 
-    static final String ORG_ID = "rwalsh";
-    static final String APP_ID = "sdk.demo";
+    static final String ORG_ID = "<Your organization ID>";
+    static final String APP_ID = "<Your application ID or 'sandbox'>";
+    static final String GCM_NOTIFIER_ID = "<Your notifier name>";
+    static final String GCM_SENDER_ID = "<Your GCM sender ID>";
 
-    static final String GCM_NOTIFIER_ID = "eventManagerNotifier";
-    static final String GCM_SENDER_ID = "415824951560";
     static final String DEVICES = "devices";
-
     static final String USERS = "users";
     static final String ME = "me";
     static final String PRIVATE = "private";
@@ -231,7 +230,6 @@ public class Client {
                         clientEventCallback.onFailed("No Response.");
                     }
                 }
-                Log.d("", "");
             }
 
             @Override
