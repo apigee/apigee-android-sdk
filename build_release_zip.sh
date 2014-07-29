@@ -34,7 +34,7 @@ fi
 
 
 # set up our tools
-MVN_COMMAND="mvn"
+GRADLE_COMMAND="gradle"
 
 # set our paths and file names
 LIBRARY_BASE_NAME="apigee-android"
@@ -43,7 +43,7 @@ ZIP_BASE_NAME="${LIBRARY_BASE_NAME}-sdk"
 ZIP_FILE_NAME="${ZIP_BASE_NAME}.zip"
 TOPLEVEL_ZIP_DIR="zip"
 DEST_ZIP_DIR="${TOPLEVEL_ZIP_DIR}/${LIBRARY_BASE_NAME}-sdk-${SDK_VERSION}"
-BUILT_SDK_JAR_FILE="source/target/${JAR_FILE_NAME}"
+BUILT_SDK_JAR_FILE="source/build/libs/${JAR_FILE_NAME}"
 ZIP_JAR_DIR="${DEST_ZIP_DIR}/lib"
 NEW_PROJECT_TEMPLATE_DIR="new-project-template"
 SAMPLES_DIR="samples"
@@ -51,8 +51,11 @@ DEST_SAMPLES_DIR="${DEST_ZIP_DIR}/${SAMPLES_DIR}"
 
 # make a clean build
 cd source
-"${MVN_COMMAND}" clean
-"${MVN_COMMAND}" install -Dmaven.test.skip=true
+"${GRADLE_COMMAND}" clean
+"${GRADLE_COMMAND}" shadowJar
+
+# TODO: Ask about using gradle to produce javadoc.
+#"${GRADLE_COMMAND}" javadoc
 
 cd ..
 
