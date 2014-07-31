@@ -7,11 +7,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.TimeZone;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by ApigeeCorporation on 7/30/14.
@@ -21,25 +22,22 @@ public class ApplicationConfigurationModelTest {
     static String appConfigSampleDataLocation = "apigeeMobileConfigSample.json";
 
     static App app = null;
-    static Calendar cal = Calendar.getInstance();
-    static JacksonMarshallingService marshallingService = new JacksonMarshallingService();
 
     @BeforeClass
     public static void setUpOnce() {
-        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         try {
             InputStream inputStream = ApplicationConfigurationModel.class.getClassLoader().getResourceAsStream(appConfigSampleDataLocation);
             assertNotNull("Sample data input stream is null.",inputStream);
             String jsonString = StringUtils.inputStreamToString(inputStream);
             assertNotNull("Sample data input stream to string method failed.",jsonString);
-            app = (App)marshallingService.demarshall(jsonString, App.class);
+            app = (App)new JacksonMarshallingService().demarshall(jsonString, App.class);
             assertNotNull("App configuration object is null. Creation failed.",app);
         } catch (Exception e) {
         }
     }
 
     @Test
-    public void AppConfigurationModel_DefaultLevelConfigTest() {
+    public void test_DefaultLevelConfig() {
         ApplicationConfigurationModel defaultAppConfig = app.getDefaultAppConfig();
         assertNotNull("defaultAppConfig should not be null.",defaultAppConfig);
 
@@ -75,11 +73,11 @@ public class ApplicationConfigurationModelTest {
     }
 
     @Test
-    public void AppConfigurationModel_DeviceLevelConfigTest() {
+    public void test_DeviceLevelConfig() {
         ApplicationConfigurationModel deviceLevelAppConfig = app.getDeviceLevelAppConfig();
         assertNotNull("deviceLevelAppConfig should not be null.",deviceLevelAppConfig);
 
-        assertEquals("appConfigType should be Beta.",deviceLevelAppConfig.getAppConfigType(),"Beta");
+        assertEquals("appConfigType should be Beta.", deviceLevelAppConfig.getAppConfigType(), "Beta");
         //assertEquals("appConfigId should be 0.",(long)deviceLevelAppConfig.getAppConfigID(),0);
         //assertNull("description should be null.",deviceLevelAppConfig.getDescription());
         assertNull("lastModifiedDate should be null.", deviceLevelAppConfig.getLastModifiedDate());
@@ -111,7 +109,7 @@ public class ApplicationConfigurationModelTest {
     }
 
     @Test
-    public void AppConfigurationModel_DeviceTypeConfigTest() {
+    public void test_DeviceTypeConfig() {
         ApplicationConfigurationModel deviceTypeAppConfig = app.getDeviceTypeAppConfig();
         assertNotNull("deviceTypeAppConfig should not be null.",deviceTypeAppConfig);
 
@@ -147,7 +145,7 @@ public class ApplicationConfigurationModelTest {
     }
 
     @Test
-    public void AppConfigurationModel_ABTestingConfigTest() {
+    public void test_ABTestingConfig() {
         ApplicationConfigurationModel abTestingAppConfig = app.getABTestingAppConfig();
         assertNotNull("abTestingAppConfig should not be null.",abTestingAppConfig);
 

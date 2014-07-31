@@ -28,7 +28,7 @@ public class AppTest {
     }
 
     @Test
-    public void App_SampleDataTest() {
+    public void test_AppSampleData() {
         App app = null;
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(appConfigSampleDataLocation);
