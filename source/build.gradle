@@ -1,0 +1,56 @@
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group = 'com.apigee'
+version = '2.0.12'
+
+compileJava.options.encoding = 'UTF-8'
+
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.2'
+    }
+}
+
+tasks.withType(Test) {
+    include '**/*Test*'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    /**
+     * Please replace this with location of folder where android jar is located
+     */
+    compile files('/Applications/Android Studio.app/sdk/platforms/android-17/android.jar')
+
+    compile 'org.apache.httpcomponents:httpclient:4.1.2'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.2.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+    testCompile 'junit:junit:4.+'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+shadowJar {
+    classifier = ''
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('com.fasterxml.jackson.core:jackson-core:2.2.3'))
+        include(dependency('com.fasterxml.jackson.core:jackson-annotations:2.2.3'))
+        include(dependency('com.fasterxml.jackson.core:jackson-databind:2.2.3'))
+    }
+}
+
+shadowJar {
+    relocate 'com.fasterxml.jackson', 'com.apigee.fasterxml.jackson'
+}
+
+javadoc {
+    destinationDir = file("../docs/")
+}

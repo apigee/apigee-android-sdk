@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: android">
+    <CLASSES>
+      <root url="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
