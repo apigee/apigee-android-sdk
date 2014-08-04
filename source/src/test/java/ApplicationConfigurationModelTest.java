@@ -15,7 +15,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by ApigeeCorporation on 7/30/14.
+ * The ApplicationConfigurationModelTest test case is used to test the validity of the creation of the various ApplicationConfigurationModel objects that are read from the App top level object.
+ *
+ * @author  ApigeeCorporation
  */
 public class ApplicationConfigurationModelTest {
 
@@ -36,6 +38,9 @@ public class ApplicationConfigurationModelTest {
         }
     }
 
+    /**
+     * Tests the validity of the App's defaultAppConfig property.
+     */
     @Test
     public void test_DefaultLevelConfig() {
         ApplicationConfigurationModel defaultAppConfig = app.getDefaultAppConfig();
@@ -72,6 +77,9 @@ public class ApplicationConfigurationModelTest {
         assertEquals("customConfigParams should have 0 count..",defaultAppConfig.getCustomConfigParameters().size(),0);
     }
 
+    /**
+     * Tests the validity of the App's deviceLevelAppConfig property.
+     */
     @Test
     public void test_DeviceLevelConfig() {
         ApplicationConfigurationModel deviceLevelAppConfig = app.getDeviceLevelAppConfig();
@@ -108,6 +116,9 @@ public class ApplicationConfigurationModelTest {
         assertEquals("customConfigParams should have 0 count..",deviceLevelAppConfig.getCustomConfigParameters().size(),0);
     }
 
+    /**
+     * Tests the validity of the App's deviceTypeAppConfig property.
+     */
     @Test
     public void test_DeviceTypeConfig() {
         ApplicationConfigurationModel deviceTypeAppConfig = app.getDeviceTypeAppConfig();
@@ -144,6 +155,9 @@ public class ApplicationConfigurationModelTest {
         assertEquals("customConfigParams should have 0 count..",deviceTypeAppConfig.getCustomConfigParameters().size(),0);
     }
 
+    /**
+     * Tests the validity of the App's abTestingAppConfig property.
+     */
     @Test
     public void test_ABTestingConfig() {
         ApplicationConfigurationModel abTestingAppConfig = app.getABTestingAppConfig();

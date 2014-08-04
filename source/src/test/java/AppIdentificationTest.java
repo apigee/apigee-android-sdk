@@ -7,7 +7,9 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 
 /**
- * Created by ApigeeCorporation on 7/29/14.
+ * The AppIdentificationTest test case is used to validate the various ways of creating the AppIdentification object.
+ *
+ * @author  ApigeeCorporation
  */
 public class AppIdentificationTest {
 
