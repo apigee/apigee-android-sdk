@@ -14,7 +14,9 @@ import static org.junit.Assert.*;
 
 
 /**
- * Created by ApigeeCorporation on 7/31/14.
+ * The ApigeeAuthTokenTest test case is used to validate the creation and validity of a token requests response.  This comes into play when, for example, you login a user with the ApigeeDataClient.
+ *
+ * @author  ApigeeCorporation
  */
 public class ApigeeAuthTokenTest {
 
@@ -34,12 +36,18 @@ public class ApigeeAuthTokenTest {
         }
     }
 
+    /**
+     * Tests the validity of the top level access_token and expires_in properties.
+     */
     @Test
     public void test_AuthProperties() {
         assertEquals("access_token is not equal.",apiResponse.getAccessToken(),"YWMt7J72Zg0fEeShX-l2bfgeBwAAAUdktenuCX-b_zZ_TvaOMAfcnBKgOFHJJ9U");
         assertEquals("expires_in is not equal.",apiResponse.getProperties().get("expires_in").asLong(),604800L);
     }
 
+    /**
+     * Tests the validity of the ApigeeUser created through the use of the sample data.
+     */
     @Test
     public void test_UserProperties() {
         User user = apiResponse.getUser();

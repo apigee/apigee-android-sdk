@@ -14,7 +14,9 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 
 /**
- * Created by ApigeeCorporation on 8/1/14.
+ * The ApigeeEntityRequestTest test case is used to test the validity of various parts of a sample entity request operation.
+ *
+ * @author  ApigeeCorporation
  */
 public class ApigeeEntityResponseTest {
 
@@ -34,6 +36,9 @@ public class ApigeeEntityResponseTest {
         }
     }
 
+    /**
+     * Tests the top level properties of the sample data (everything but the entites) for validity.
+     */
     @Test
     public void test_sampleTopLevelProperties() {
         assertNotNull("apiResponse should not be null.",apiResponse);
@@ -50,6 +55,9 @@ public class ApigeeEntityResponseTest {
         assertEquals("uri should be https://api.usergrid.com/rwalsh/sdk.demo/publicevents",apiResponse.getUri(),"https://api.usergrid.com/rwalsh/sdk.demo/publicevents");
     }
 
+    /**
+     * Tests the first entity of the sample data for validity.
+     */
     @Test
     public void test_sampleFirstEntityData() {
         Entity firstEntity = apiResponse.getFirstEntity();

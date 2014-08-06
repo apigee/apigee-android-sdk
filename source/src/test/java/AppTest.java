@@ -13,7 +13,9 @@ import java.util.TimeZone;
 import static org.junit.Assert.*;
 
 /**
- * Created by ApigeeCorporation on 7/29/14.
+ * The AppTest test case is used to test the validity of the creation of the App object.  This data comes in as part of the config request and tests all aspects of the request except for the monitoring settings creation, which is tested in the ApplicationConfigurationModelTest test case.
+ *
+ * @author  ApigeeCorporation
  */
 public class AppTest {
 
@@ -27,6 +29,9 @@ public class AppTest {
         cal.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
+    /**
+     * Tests the creation of the App object and validates the objects various properties.
+     */
     @Test
     public void test_AppSampleData() {
         App app = null;
