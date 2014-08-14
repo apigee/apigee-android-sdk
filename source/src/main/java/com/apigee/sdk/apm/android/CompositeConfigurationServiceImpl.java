@@ -25,8 +25,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
-import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.AppConfigCustomParameter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
@@ -55,7 +55,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	private ApigeeMonitoringClient monitoringClient;
 
 	ApplicationConfigurationModel configurationModel; // Designated App Config.
-	App compositeApplicationConfigurationModel;
+	ApigeeApp compositeApplicationConfigurationModel;
 
 	String appConfigType;
 
@@ -98,15 +98,15 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	}
 
 	
-	private App getCompositeApplicationConfigurationModelFromInputStream(
+	private ApigeeApp getCompositeApplicationConfigurationModelFromInputStream(
 			InputStream is) throws LoadConfigurationException {
 		try {
 
 			String output = inputStreamAsString(is);
 
 			Object object = marshallingService.demarshall(output,
-					App.class);
-			return (App) object;
+					ApigeeApp.class);
+			return (ApigeeApp) object;
 		} catch (RuntimeException e) {
 			System.out.println("RuntimeException caught:");
 			e.printStackTrace();
@@ -154,7 +154,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 			try {
 				is = appActivity
 						.openFileInput(getConfigFileName());
-				App config = getCompositeApplicationConfigurationModelFromInputStream(is);
+				ApigeeApp config = getCompositeApplicationConfigurationModelFromInputStream(is);
 				this.compositeApplicationConfigurationModel = config;
 
 				setValidApplicationConfiguration(config);
@@ -189,7 +189,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 			try {
 				is = appActivity
 						.openFileInput(getConfigFileName());
-				App config = getCompositeApplicationConfigurationModelFromInputStream(is);
+				ApigeeApp config = getCompositeApplicationConfigurationModelFromInputStream(is);
 				this.compositeApplicationConfigurationModel = config;
 
 				setValidApplicationConfiguration(config);
@@ -314,8 +314,8 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		
 		if( (jsonConfig != null) && (jsonConfig.length() > 0) ) {
 			
-			Object object = marshallingService.demarshall(jsonConfig,App.class);
-			App model = (App) object;
+			Object object = marshallingService.demarshall(jsonConfig,ApigeeApp.class);
+			ApigeeApp model = (ApigeeApp) object;
 			
 			if( model != null ) {
 				Date serverConfigModifiedDate = model.getLastModifiedDate();
@@ -407,7 +407,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		return sb.toString();
 	}
 
-	public void setValidApplicationConfiguration(App config) {
+	public void setValidApplicationConfiguration(ApigeeApp config) {
 
 		this.compositeApplicationConfigurationModel = config;
 
@@ -428,7 +428,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 
 	}
 
-	private boolean matchesDeviceLevelFilter(App config) {
+	private boolean matchesDeviceLevelFilter(ApigeeApp config) {
 		if (config.getDeviceLevelOverrideEnabled()) {
 			try {
 				TelephonyManager telephonyManager = (TelephonyManager) appActivity
@@ -474,7 +474,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	}
 
 	private boolean matchesDeviceTypeFilter(
-			App config) {
+			ApigeeApp config) {
 		if (config.getDeviceTypeOverrideEnabled()) {
 			try {
 				TelephonyManager telephonyManager = (TelephonyManager) appActivity
@@ -523,7 +523,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	}
 
 	private boolean matchesABTestingFilter(
-			App config) {
+			ApigeeApp config) {
 		if (config.getABTestingOverrideEnabled()
 				&& (config.getABTestingPercentage() != 0)
 				&& (randomNumber <= config.getABTestingPercentage())) {
@@ -582,7 +582,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	}
 
 	@Override
-	public App getCompositeApplicationConfigurationModel() {
+	public ApigeeApp getCompositeApplicationConfigurationModel() {
 		return compositeApplicationConfigurationModel;
 	}
 

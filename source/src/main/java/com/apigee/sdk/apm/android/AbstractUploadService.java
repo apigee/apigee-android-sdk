@@ -19,7 +19,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
@@ -201,7 +201,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			// application Id
 			ApplicationConfigurationService configService = monitoringClient.getApplicationConfigurationService();
 			if (null != configService) {
-				App app = configService.getCompositeApplicationConfigurationModel();
+				ApigeeApp app = configService.getCompositeApplicationConfigurationModel();
 				if( app != null ) {
 					Long instaOpsAppId = app.getInstaOpsApplicationId();
 					if (instaOpsAppId != null) {
@@ -376,7 +376,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 		ApplicationConfigurationService configService = monitoringClient.getApplicationConfigurationService();
 		
 		if (null != configService) {
-			App app = configService.getCompositeApplicationConfigurationModel();
+			ApigeeApp app = configService.getCompositeApplicationConfigurationModel();
 			if( app != null ) {
 				String orgName = app.getOrgName();
 				String appName = app.getAppName();

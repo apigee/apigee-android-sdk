@@ -15,7 +15,7 @@ import com.apigee.sdk.DefaultAndroidLog;
 import com.apigee.sdk.Logger;
 import com.apigee.sdk.apm.android.crashlogging.CrashManager;
 import com.apigee.sdk.apm.android.metrics.LowPriorityThreadFactory;
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.data.client.ApigeeDataClient;
@@ -340,7 +340,7 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 		ApplicationConfigurationService configService = this.getApplicationConfigurationService();
 		
 		if (null != configService) {
-			App compositeAppConfigModel =
+			ApigeeApp compositeAppConfigModel =
 					configService.getCompositeApplicationConfigurationModel();
 			if (null != compositeAppConfigModel) {
 				boolean monitoringDisabled = 
@@ -839,7 +839,7 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 		ApplicationConfigurationService configService = getApplicationConfigurationService();
 		
 		if (null != configService) {
-			App app = configService.getCompositeApplicationConfigurationModel();
+			ApigeeApp app = configService.getCompositeApplicationConfigurationModel();
 			if( app != null ) {
 				String orgName = app.getOrgName();
 				String appName = app.getAppName();

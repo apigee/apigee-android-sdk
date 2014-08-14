@@ -3,8 +3,8 @@ package com.apigee.sdk.apm.android;
 import java.util.Date;
 import java.util.HashSet;
 
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
-import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.AppConfigURLRegex;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
@@ -47,9 +47,9 @@ public class DefaultConfigBuilder {
 		return model;
 	}
 	
-	public App getDefaultCompositeApplicationConfigurationModel()
+	public ApigeeApp getDefaultCompositeApplicationConfigurationModel()
 	{
-		App model = new App();
+		ApigeeApp model = new ApigeeApp();
 		
 		model.setABTestingOverrideEnabled(false);
 		model.setDeviceLevelOverrideEnabled(false);

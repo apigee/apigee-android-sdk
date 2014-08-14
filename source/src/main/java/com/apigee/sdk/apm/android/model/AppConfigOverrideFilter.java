@@ -24,7 +24,7 @@ public class AppConfigOverrideFilter implements Serializable {
 
 	private Long id;
 
-	private App application;
+	private ApigeeApp application;
 
 	private String filterValue;
 
@@ -34,7 +34,7 @@ public class AppConfigOverrideFilter implements Serializable {
 	}
 
 	public AppConfigOverrideFilter(String filterValue, FILTER_TYPE filterType,
-			App app) {
+			ApigeeApp app) {
 		this.filterValue = filterValue;
 		this.filterType = filterType;
 		this.application = app;
@@ -66,12 +66,12 @@ public class AppConfigOverrideFilter implements Serializable {
 	}
 
 	@JsonBackReference
-	public App getApplication() {
+	public ApigeeApp getApplication() {
 		return application;
 	}
 
 	public void setApplication(
-			App application) {
+			ApigeeApp application) {
 		this.application = application;
 	}
 

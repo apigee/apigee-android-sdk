@@ -1,14 +1,14 @@
 package com.apigee.sdk.apm.android.model;
 
+import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
-
-import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 //import com.apigee.sdk.android.model.CONFIG_TYPE;
 
 /**
@@ -56,7 +56,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  * @author prabhat
  * 
  */
-public class App implements Serializable {
+public class ApigeeApp implements Serializable {
 
 	/**
     * 
@@ -131,7 +131,7 @@ public class App implements Serializable {
 	Set<AppConfigOverrideFilter> networkOperatorRegexFilters;
 
 
-	public App() {
+	public ApigeeApp() {
 		this.defaultAppConfig = new ApplicationConfigurationModel(
 				ApigeeMobileAPMConstants.CONFIG_TYPE_DEFAULT);
 		this.deviceLevelAppConfig = new ApplicationConfigurationModel(

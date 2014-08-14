@@ -1,5 +1,5 @@
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.util.StringUtils;
 
 import org.junit.BeforeClass;
@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  *
  * @author  ApigeeCorporation
  */
-public class AppTest {
+public class ApigeeAppTest {
 
     static String appConfigSampleDataLocation = "apigeeMobileConfigSample.json";
 
@@ -34,13 +34,13 @@ public class AppTest {
      */
     @Test
     public void test_AppSampleData() {
-        App app = null;
+        ApigeeApp app = null;
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(appConfigSampleDataLocation);
             assertNotNull("Sample data input stream is null.",inputStream);
             String jsonString = StringUtils.inputStreamToString(inputStream);
             assertNotNull("Sample data input stream to string method failed.",jsonString);
-            app = (App)marshallingService.demarshall(jsonString, App.class);
+            app = (ApigeeApp)marshallingService.demarshall(jsonString, ApigeeApp.class);
         } catch (Exception e) {
         }
 

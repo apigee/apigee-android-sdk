@@ -6,7 +6,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 
@@ -44,7 +44,7 @@ public class UploadService extends AbstractUploadService implements MetricsUploa
 		// Prevent sending of data if this application is turned off.
 		// TODO: Need to add code to look at isActive in CompositeApp
 		
-		App configModel =
+		ApigeeApp configModel =
 				getConfigurationService().getCompositeApplicationConfigurationModel();
 
 		if (configModel == null) {

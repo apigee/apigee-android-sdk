@@ -2,7 +2,7 @@ package com.apigee.sdk.apm.android;
 
 import java.beans.PropertyChangeSupport;
 
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 
 /**
@@ -13,7 +13,7 @@ public abstract class BaseWebManagerClientConfigLoader implements ApplicationCon
 	PropertyChangeSupport configChangeSupport;
 	protected ApplicationConfigurationModel configurationModel;
 
-	protected App compositeApplicationConfigurationModel;
+	protected ApigeeApp compositeApplicationConfigurationModel;
 
 	public BaseWebManagerClientConfigLoader() {
 		configurationModel = new ApplicationConfigurationModel();
@@ -30,7 +30,7 @@ public abstract class BaseWebManagerClientConfigLoader implements ApplicationCon
 			throws LoadConfigurationException;
 
 	@Override
-	public App getCompositeApplicationConfigurationModel() {
+	public ApigeeApp getCompositeApplicationConfigurationModel() {
 		// TODO Auto-generated method stub
 		return null;
 	}
