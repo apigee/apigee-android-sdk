@@ -39,7 +39,7 @@ public class ApigeeWebViewClient extends WebViewClient
 			if( lowerUrl.startsWith("http://") || lowerUrl.startsWith("https://") ) {
 				long endTimeMillis = System.currentTimeMillis();
 		
-				MonitoringClient monitoringClient = MonitoringClient.getInstance();
+				ApigeeMonitoringClient monitoringClient = ApigeeMonitoringClient.getInstance();
 		
 				if( (monitoringClient != null) && monitoringClient.isInitialized() ) {
 					NetworkMetricsCollectorService metricsCollectorService = monitoringClient.getMetricsCollectorService();

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.apigee.sdk.data.client.entities.Entity;
 import com.apigee.sdk.data.client.entities.Message;
 import com.apigee.sdk.data.client.entities.User;
@@ -744,7 +744,7 @@ public class ApiResponse {
 	 *
 	 * @param  dataClient  an instance of DataClient
 	 */
-	public void setDataClient(DataClient dataClient) {
+	public void setDataClient(ApigeeDataClient dataClient) {
 		if( (entities != null) && !entities.isEmpty() ) {
 			for ( Entity entity : entities ) {
 				entity.setDataClient(dataClient);

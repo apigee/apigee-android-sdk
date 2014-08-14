@@ -44,7 +44,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	private ApplicationConfigurationService configurationService;
 	private SessionManager sessionManager;
 	private ObjectMapper objectMapper;
-	private MonitoringClient monitoringClient;
+	private ApigeeMonitoringClient monitoringClient;
 
 
 	protected AbstractUploadService(Context appActivity,
@@ -53,7 +53,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			NetworkMetricsCollectorService httpMetrics,
 			ApplicationConfigurationService configService,
 			SessionManager sessionManager,
-			MonitoringClient monitoringClient) {
+			ApigeeMonitoringClient monitoringClient) {
 		this.appActivity = appActivity;
 		this.appIdentification = appIdentification;
 		this.logger = log;
@@ -178,10 +178,10 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 
 		try {
 			//set device hardware metadata
-			sessionMetrics.setDeviceModel(MonitoringClient.getDeviceModel());
-			sessionMetrics.setDeviceOSVersion(MonitoringClient.getDeviceOSVersion());
-			sessionMetrics.setDevicePlatform(MonitoringClient.getDevicePlatform());
-			sessionMetrics.setDeviceType(MonitoringClient.getDeviceType());
+			sessionMetrics.setDeviceModel(ApigeeMonitoringClient.getDeviceModel());
+			sessionMetrics.setDeviceOSVersion(ApigeeMonitoringClient.getDeviceOSVersion());
+			sessionMetrics.setDevicePlatform(ApigeeMonitoringClient.getDevicePlatform());
+			sessionMetrics.setDeviceType(ApigeeMonitoringClient.getDeviceType());
 			String android_id = Secure.getString(
 					appActivity.getContentResolver(), Secure.ANDROID_ID);
 			sessionMetrics.setDeviceId(android_id);
@@ -195,8 +195,8 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			sessionMetrics.setSessionId(sessionId);
 			sessionMetrics.setTimeStamp(new Date());			
 			sessionMetrics.setSessionStartTime(sessionManager.getSessionStartTime());
-			sessionMetrics.setSdkVersion(MonitoringClient.getSDKVersion());
-			sessionMetrics.setSdkType(MonitoringClient.getDevicePlatform());
+			sessionMetrics.setSdkVersion(ApigeeMonitoringClient.getSDKVersion());
+			sessionMetrics.setSdkType(ApigeeMonitoringClient.getDevicePlatform());
 			
 			// application Id
 			ApplicationConfigurationService configService = monitoringClient.getApplicationConfigurationService();

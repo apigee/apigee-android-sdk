@@ -11,7 +11,7 @@ import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.
 import java.util.List;
 import java.util.UUID;
 
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.apigee.sdk.data.client.utils.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,7 +39,7 @@ public class Message extends Entity {
 		setType(ENTITY_TYPE);
 	}
 	
-	public Message(DataClient dataClient) {
+	public Message(ApigeeDataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);
 	}

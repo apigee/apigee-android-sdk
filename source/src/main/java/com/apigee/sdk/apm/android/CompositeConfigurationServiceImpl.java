@@ -32,7 +32,7 @@ import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 
 /**
  * @y.exclude
@@ -51,8 +51,8 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	private int randomNumber;
 	
 	private AppIdentification appIdentification = null;
-	private DataClient dataClient;
-	private MonitoringClient monitoringClient;
+	private ApigeeDataClient dataClient;
+	private ApigeeMonitoringClient monitoringClient;
 
 	ApplicationConfigurationModel configurationModel; // Designated App Config.
 	App compositeApplicationConfigurationModel;
@@ -67,8 +67,8 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	
 	public CompositeConfigurationServiceImpl(Context appActivity,
 			AppIdentification appIdentification,
-			DataClient dataClient,
-			MonitoringClient monitoringClient,
+			ApigeeDataClient dataClient,
+			ApigeeMonitoringClient monitoringClient,
 			HttpClient client) {
 		this.client = client;
 
@@ -485,7 +485,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 						.getActiveNetworkInfo();
 	
 				String deviceModel = Build.MODEL;
-				String devicePlatform = MonitoringClient.getDevicePlatform();
+				String devicePlatform = ApigeeMonitoringClient.getDevicePlatform();
 				String networkOperator = telephonyManager.getNetworkOperatorName();
 				String networkType = networkInfo.getTypeName();
 	

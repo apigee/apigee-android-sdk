@@ -126,7 +126,7 @@ public class AndroidLog implements Logger {
 		}
 		
 		// is monitoring paused?
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (client != null) {
 			if (client.isPaused()) {
 				return;

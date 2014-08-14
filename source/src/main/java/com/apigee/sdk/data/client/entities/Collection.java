@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.apigee.sdk.data.client.DataClient;
-import com.apigee.sdk.data.client.DataClient.Query;
+import com.apigee.sdk.data.client.ApigeeDataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient.Query;
 import com.apigee.sdk.data.client.response.ApiResponse;
 
 /**
@@ -18,7 +18,7 @@ import com.apigee.sdk.data.client.response.ApiResponse;
  */
 public class Collection
 {
-	private DataClient dataClient;
+	private ApigeeDataClient dataClient;
 	private String type;
 	private Map<String,Object> qs;
 
@@ -35,7 +35,7 @@ public class Collection
 	 * @param  type  the entity 'type' associated with the colleciton
 	 * @param  qs  optional Map object of query parameters to apply to the collection retrieval
 	 */	
-	public Collection(DataClient dataClient, String type, Map<String,Object> qs) {
+	public Collection(ApigeeDataClient dataClient, String type, Map<String,Object> qs) {
 	    this.dataClient = dataClient;
 	    this.type = type;
 	    

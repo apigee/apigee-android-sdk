@@ -1,24 +1,6 @@
 package com.apigee.sdk.apm.android;
 
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,7 +18,25 @@ import com.apigee.sdk.apm.android.metrics.LowPriorityThreadFactory;
 import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /*
  * App monitoring server communications:
@@ -60,7 +60,7 @@ import com.apigee.sdk.data.client.DataClient;
  * @see com.apigee.sdk.ApigeeClient
  * @see <a href="http://apigee.com/docs/app-services/content/app-monitoring">App Monitoring documentation</a>
  */
-public class MonitoringClient implements SessionTimeoutListener {
+public class ApigeeMonitoringClient implements SessionTimeoutListener {
 
 	/**
    * @y.exclude
@@ -82,7 +82,7 @@ public class MonitoringClient implements SessionTimeoutListener {
    */
 	public static final int SESSION_EXPIRATION_MILLIS = 1000 * 60 * 30;
 	
-	private static MonitoringClient singleton = null;
+	private static ApigeeMonitoringClient singleton = null;
 
 	private Handler sendMetricsHandler;
 	private HttpClient httpClient;
@@ -110,7 +110,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	
 	private SessionManager sessionManager;
 	
-	private DataClient dataClient;
+	private ApigeeDataClient dataClient;
 	
     private static ThreadPoolExecutor sExecutor =
             new ThreadPoolExecutor(0, 1, SUBMIT_THREAD_TTL_MILLIS, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new LowPriorityThreadFactory());
@@ -133,8 +133,8 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @throws InitializationException
 	 * @see  AppMon
 	 */
-	public static synchronized MonitoringClient initialize(AppIdentification appIdentification,
-			DataClient dataClient,
+	public static synchronized ApigeeMonitoringClient initialize(AppIdentification appIdentification,
+			ApigeeDataClient dataClient,
 			Context appActivity,
 			MonitoringOptions monitoringOptions) throws InitializationException {
 
@@ -155,14 +155,14 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @throws InitializationException
 	 * @see  AppMon
 	 */
-	public static synchronized MonitoringClient initialize(AppIdentification appIdentification,
-			DataClient dataClient,
+	public static synchronized ApigeeMonitoringClient initialize(AppIdentification appIdentification,
+			ApigeeDataClient dataClient,
 			Context appActivity, HttpClient client,
 			MonitoringOptions monitoringOptions)
 	throws InitializationException {
 		if (singleton == null) {
 			try {
-				MonitoringClient instance = new MonitoringClient(appIdentification, dataClient,
+				ApigeeMonitoringClient instance = new ApigeeMonitoringClient(appIdentification, dataClient,
 						appActivity, client, monitoringOptions);
 				
 				singleton = instance;
@@ -192,7 +192,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 *
 	 * @return the MonitoringClient, or null if the client has not been initialized
 	 */
-	public static MonitoringClient getInstance() {
+	public static ApigeeMonitoringClient getInstance() {
 		if (singleton != null) {
 			return singleton;
 		} else {
@@ -214,14 +214,14 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * 
 	 * 
 	 */
-	public MonitoringClient(AppIdentification appIdentification, DataClient dataClient, Context appActivity,
-			HttpClient client,
-			MonitoringOptions monitoringOptions) throws InitializationException {
+	public ApigeeMonitoringClient(AppIdentification appIdentification, ApigeeDataClient dataClient, Context appActivity,
+                                  HttpClient client,
+                                  MonitoringOptions monitoringOptions) throws InitializationException {
 		defaultLogger = new DefaultAndroidLog();
 		initializeInstance(appIdentification, dataClient, appActivity, client, monitoringOptions);
 	}
 
-	protected void initializeInstance(AppIdentification appIdentification, DataClient dataClient, Context appActivity,
+	protected void initializeInstance(AppIdentification appIdentification, ApigeeDataClient dataClient, Context appActivity,
 			HttpClient client,
 			MonitoringOptions monitoringOptions) throws InitializationException {
 
@@ -665,7 +665,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 				}
 			}
 			
-			final MonitoringClient monitoringClient = this;
+			final ApigeeMonitoringClient monitoringClient = this;
 			
 			// read configuration
 			sExecutor.execute(new Runnable() {
@@ -710,7 +710,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 			sendMetricsHandler = new Handler(appActivity.getMainLooper());
 		}
 
-		final MonitoringClient client = this;
+		final ApigeeMonitoringClient client = this;
 		final long uploadIntervalMillis = loader.getConfigurations().getAgentUploadIntervalInSeconds() * 1000;		
 		
 		Runnable runnable = new Runnable() {
@@ -917,9 +917,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 */
 	private class UploadDataTask implements Runnable {
 
-		private MonitoringClient client;
+		private ApigeeMonitoringClient client;
 		
-		public UploadDataTask(MonitoringClient client) {
+		public UploadDataTask(ApigeeMonitoringClient client) {
 			this.client = client;
 		}
 		
@@ -954,9 +954,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @y.exclude
 	 */
 	private class ForcedUploadDataTask implements Runnable {
-		private MonitoringClient client;
+		private ApigeeMonitoringClient client;
 		
-		public ForcedUploadDataTask(MonitoringClient client) {
+		public ForcedUploadDataTask(ApigeeMonitoringClient client) {
 			this.client = client;
 		}
 		
@@ -977,9 +977,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @y.exclude
 	 */
 	private class CrashManagerTask implements Runnable {
-		private MonitoringClient client;
+		private ApigeeMonitoringClient client;
 
-		public CrashManagerTask(MonitoringClient client) {
+		public CrashManagerTask(ApigeeMonitoringClient client) {
 			this.client = client;
 		}
 		

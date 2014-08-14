@@ -1,5 +1,7 @@
 package com.apigee.sdk;
 
+import com.apigee.sdk.data.client.ApigeeDataClient;
+
 import java.util.UUID;
 
 /**
@@ -20,13 +22,13 @@ public class AppIdentification {
 	public AppIdentification(String organizationId, String applicationId) {
 		this.organizationId = organizationId;
 		this.applicationId = applicationId;
-		baseURL = com.apigee.sdk.data.client.DataClient.PUBLIC_API_URL;
+		baseURL = ApigeeDataClient.PUBLIC_API_URL;
 	}
 
 	public AppIdentification(UUID organizationUUID, UUID applicationUUID) {
 		this.organizationUUID = organizationUUID;
 		this.applicationUUID = applicationUUID;
-		baseURL = com.apigee.sdk.data.client.DataClient.PUBLIC_API_URL;
+		baseURL = ApigeeDataClient.PUBLIC_API_URL;
 	}
 
 	public String getOrganizationId() {

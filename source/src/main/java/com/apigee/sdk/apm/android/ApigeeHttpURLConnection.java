@@ -33,7 +33,7 @@ public class ApigeeHttpURLConnection extends HttpURLConnection
 		boolean errorOccurred = false;
 		realConnection.disconnect();
 		
-		MonitoringClient monitoringClient = MonitoringClient.getInstance();
+		ApigeeMonitoringClient monitoringClient = ApigeeMonitoringClient.getInstance();
 		
 		if( (monitoringClient != null) && monitoringClient.isInitialized() ) {
 
@@ -120,7 +120,7 @@ public class ApigeeHttpURLConnection extends HttpURLConnection
 	public void connect() throws java.io.IOException
 	{
 		startTimeMillis = System.currentTimeMillis();
-        MonitoringClient monitoringClient = MonitoringClient.getInstance();
+        ApigeeMonitoringClient monitoringClient = ApigeeMonitoringClient.getInstance();
         if (monitoringClient != null ) {
             if (monitoringClient.getAppIdentification() != null) {
                 realConnection.setRequestProperty("X-Apigee-Client-Org-Name", monitoringClient.getAppIdentification().getOrganizationId());

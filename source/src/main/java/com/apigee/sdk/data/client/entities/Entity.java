@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.apigee.sdk.data.client.DataClient;
-import com.apigee.sdk.data.client.DataClient.Query;
+import com.apigee.sdk.data.client.ApigeeDataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient.Query;
 import com.apigee.sdk.data.client.response.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -43,7 +43,7 @@ public class Entity {
     
 
     protected Map<String, JsonNode> properties = new HashMap<String, JsonNode>();
-    private DataClient dataClient;
+    private ApigeeDataClient dataClient;
 
     public static Map<String, Class<? extends Entity>> CLASS_FOR_ENTITY_TYPE = new HashMap<String, Class<? extends Entity>>();
     static {
@@ -60,7 +60,7 @@ public class Entity {
      * Constructor for instantiating an Entity with a DataClient.
      * @param  dataClient  a DataClient object
      */
-    public Entity(DataClient dataClient) {
+    public Entity(ApigeeDataClient dataClient) {
     	this.dataClient = dataClient;
     }
 
@@ -71,7 +71,7 @@ public class Entity {
      * @param  dataClient  a DataClient object
      * @param  type  the 'type' property of the entity
      */
-    public Entity(DataClient dataClient, String type) {
+    public Entity(ApigeeDataClient dataClient, String type) {
     	this.dataClient = dataClient;
         setType(type);
     }
@@ -80,7 +80,7 @@ public class Entity {
      * Gets the DataClient currently saved in the Entity object.
      * @return the DataClient instance
      */
-    public DataClient getDataClient() {
+    public ApigeeDataClient getDataClient() {
     	return dataClient;
     }
 
@@ -88,7 +88,7 @@ public class Entity {
      * Sets the DataClient in the Entity object.
      * @param  dataClient  the DataClient instance
      */
-    public void setDataClient(DataClient dataClient) {
+    public void setDataClient(ApigeeDataClient dataClient) {
         this.dataClient = dataClient;
     }
 
@@ -410,7 +410,7 @@ public class Entity {
         UUID uuid = this.getUuid();
         boolean entityAlreadyExists = false;
         
-        if (DataClient.isUuidValid(uuid)) {
+        if (ApigeeDataClient.isUuidValid(uuid)) {
             entityAlreadyExists = true;
         }
         

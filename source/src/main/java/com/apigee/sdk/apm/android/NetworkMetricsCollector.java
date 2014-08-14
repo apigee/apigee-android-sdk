@@ -37,7 +37,7 @@ public class NetworkMetricsCollector implements NetworkMetricsCollectorService {
 			Map<String,Object> httpHeaders) {
 		
 		// is monitoring paused?
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (client != null) {
 			if (client.isPaused()) {
 				return;

@@ -15,9 +15,9 @@ import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
  */
 public class UploadService extends AbstractUploadService implements MetricsUploadService {
 
-	private MonitoringClient monitoringClient;
+	private ApigeeMonitoringClient monitoringClient;
 
-	public UploadService(MonitoringClient monitoringClient,
+	public UploadService(ApigeeMonitoringClient monitoringClient,
 			Context appActivity,
 			AppIdentification appIdentification, AndroidLog log,
 			NetworkMetricsCollectorService httpMetrics,

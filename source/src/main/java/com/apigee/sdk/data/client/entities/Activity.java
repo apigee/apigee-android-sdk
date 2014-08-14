@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -146,7 +146,7 @@ public class Activity extends Entity {
      *
      * @param  dataClient  an instance of DataClient
      */
-    public Activity(DataClient dataClient) {
+    public Activity(ApigeeDataClient dataClient) {
     	super(dataClient);
         setType("activity");
     }
@@ -158,7 +158,7 @@ public class Activity extends Entity {
      * @param  dataClient  an instance of DataClient
      * @param  id  the UUID of the activity entity
      */
-    public Activity(DataClient dataClient, UUID id) {
+    public Activity(ApigeeDataClient dataClient, UUID id) {
         this(dataClient);
         setUuid(id);
     }
@@ -180,7 +180,7 @@ public class Activity extends Entity {
      * @param  objectContent  optional. The content of the object, e.g. a link to a posted photo
      * @return an Activity object
      */
-    public static Activity newActivity(DataClient dataClient, String verb, String title,
+    public static Activity newActivity(ApigeeDataClient dataClient, String verb, String title,
             String content, String category, Entity user, Entity object,
             String objectType, String objectName, String objectContent){
 

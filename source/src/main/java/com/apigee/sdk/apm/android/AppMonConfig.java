@@ -16,7 +16,7 @@ public class AppMonConfig {
 	public static String getValue(String category, String key)
 	{
 		String value = null;
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if( null != client && AppMon.isInitialized() ) {
 			ApplicationConfigurationService appConfigService = client.getApplicationConfigurationService();
 			if (null != appConfigService ) {
