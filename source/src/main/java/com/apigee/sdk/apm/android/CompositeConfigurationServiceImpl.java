@@ -27,10 +27,10 @@ import android.util.Log;
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.model.AppConfigCustomParameter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.data.client.ApigeeDataClient;
 
@@ -54,7 +54,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	private ApigeeDataClient dataClient;
 	private ApigeeMonitoringClient monitoringClient;
 
-	ApplicationConfigurationModel configurationModel; // Designated App Config.
+	ApigeeMonitoringSettings configurationModel; // Designated App Config.
 	ApigeeApp compositeApplicationConfigurationModel;
 
 	String appConfigType;
@@ -78,7 +78,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		
 		this.appActivity = appActivity;
 
-		this.configurationModel = new ApplicationConfigurationModel();
+		this.configurationModel = new ApigeeMonitoringSettings();
 
 		Random generator = new Random();
 
@@ -577,7 +577,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	
 
 	@Override
-	public ApplicationConfigurationModel getConfigurations() {
+	public ApigeeMonitoringSettings getConfigurations() {
 		return configurationModel;
 	}
 

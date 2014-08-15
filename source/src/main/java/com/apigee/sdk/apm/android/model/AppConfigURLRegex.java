@@ -11,14 +11,14 @@ public class AppConfigURLRegex {
 
 	private Long id;
 
-	private ApplicationConfigurationModel appConfig;
+	private ApigeeMonitoringSettings appConfig;
 
 	private String regex;
 
 	public AppConfigURLRegex() {
 	}
 
-	public AppConfigURLRegex(String regex, ApplicationConfigurationModel model) {
+	public AppConfigURLRegex(String regex, ApigeeMonitoringSettings model) {
 		this.regex = regex;
 		appConfig = model;
 		model.addUrlRegex(this);
@@ -41,11 +41,11 @@ public class AppConfigURLRegex {
 	}
 
 	@JsonBackReference
-	public ApplicationConfigurationModel getAppConfig() {
+	public ApigeeMonitoringSettings getAppConfig() {
 		return appConfig;
 	}
 
-	public void setAppConfig(ApplicationConfigurationModel appConfig) {
+	public void setAppConfig(ApigeeMonitoringSettings appConfig) {
 		this.appConfig = appConfig;
 	}
 

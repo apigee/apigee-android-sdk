@@ -1,6 +1,6 @@
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
 import com.apigee.sdk.apm.android.model.ApigeeApp;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.util.StringUtils;
 
 import org.junit.BeforeClass;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author  ApigeeCorporation
  */
-public class ApplicationConfigurationModelTest {
+public class ApigeeMonitoringSettingsTest {
 
     static String appConfigSampleDataLocation = "apigeeMobileConfigSample.json";
 
@@ -28,7 +28,7 @@ public class ApplicationConfigurationModelTest {
     @BeforeClass
     public static void setUpOnce() {
         try {
-            InputStream inputStream = ApplicationConfigurationModel.class.getClassLoader().getResourceAsStream(appConfigSampleDataLocation);
+            InputStream inputStream = ApigeeMonitoringSettings.class.getClassLoader().getResourceAsStream(appConfigSampleDataLocation);
             assertNotNull("Sample data input stream is null.",inputStream);
             String jsonString = StringUtils.inputStreamToString(inputStream);
             assertNotNull("Sample data input stream to string method failed.",jsonString);
@@ -43,7 +43,7 @@ public class ApplicationConfigurationModelTest {
      */
     @Test
     public void test_DefaultLevelConfig() {
-        ApplicationConfigurationModel defaultAppConfig = app.getDefaultAppConfig();
+        ApigeeMonitoringSettings defaultAppConfig = app.getDefaultAppConfig();
         assertNotNull("defaultAppConfig should not be null.",defaultAppConfig);
 
         assertEquals("appConfigType should be Default.",defaultAppConfig.getAppConfigType(),"Default");
@@ -82,7 +82,7 @@ public class ApplicationConfigurationModelTest {
      */
     @Test
     public void test_DeviceLevelConfig() {
-        ApplicationConfigurationModel deviceLevelAppConfig = app.getDeviceLevelAppConfig();
+        ApigeeMonitoringSettings deviceLevelAppConfig = app.getDeviceLevelAppConfig();
         assertNotNull("deviceLevelAppConfig should not be null.",deviceLevelAppConfig);
 
         assertEquals("appConfigType should be Beta.", deviceLevelAppConfig.getAppConfigType(), "Beta");
@@ -121,7 +121,7 @@ public class ApplicationConfigurationModelTest {
      */
     @Test
     public void test_DeviceTypeConfig() {
-        ApplicationConfigurationModel deviceTypeAppConfig = app.getDeviceTypeAppConfig();
+        ApigeeMonitoringSettings deviceTypeAppConfig = app.getDeviceTypeAppConfig();
         assertNotNull("deviceTypeAppConfig should not be null.",deviceTypeAppConfig);
 
         assertEquals("appConfigType should be Device.",deviceTypeAppConfig.getAppConfigType(),"Device");
@@ -160,7 +160,7 @@ public class ApplicationConfigurationModelTest {
      */
     @Test
     public void test_ABTestingConfig() {
-        ApplicationConfigurationModel abTestingAppConfig = app.getABTestingAppConfig();
+        ApigeeMonitoringSettings abTestingAppConfig = app.getABTestingAppConfig();
         assertNotNull("abTestingAppConfig should not be null.",abTestingAppConfig);
 
         assertEquals("appConfigType should be A/B.",abTestingAppConfig.getAppConfigType(),"A/B");

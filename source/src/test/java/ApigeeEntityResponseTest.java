@@ -1,5 +1,5 @@
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.util.StringUtils;
 import com.apigee.sdk.data.client.entities.Entity;
 import com.apigee.sdk.data.client.response.ApiResponse;
@@ -26,7 +26,7 @@ public class ApigeeEntityResponseTest {
     @BeforeClass
     public static void setUpOnce() {
         try {
-            InputStream inputStream = ApplicationConfigurationModel.class.getClassLoader().getResourceAsStream(apigeeEntityResponseJSONLocation);
+            InputStream inputStream = ApigeeMonitoringSettings.class.getClassLoader().getResourceAsStream(apigeeEntityResponseJSONLocation);
             assertNotNull("Sample data input stream is null.",inputStream);
             String jsonString = StringUtils.inputStreamToString(inputStream);
             assertNotNull("Sample data input stream to string method failed.",jsonString);

@@ -3,7 +3,7 @@ package com.apigee.sdk.apm.android;
 import java.beans.PropertyChangeSupport;
 
 import com.apigee.sdk.apm.android.model.ApigeeApp;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 
 /**
  * @y.exclude
@@ -11,17 +11,17 @@ import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 public abstract class BaseWebManagerClientConfigLoader implements ApplicationConfigurationService {
 
 	PropertyChangeSupport configChangeSupport;
-	protected ApplicationConfigurationModel configurationModel;
+	protected ApigeeMonitoringSettings configurationModel;
 
 	protected ApigeeApp compositeApplicationConfigurationModel;
 
 	public BaseWebManagerClientConfigLoader() {
-		configurationModel = new ApplicationConfigurationModel();
+		configurationModel = new ApigeeMonitoringSettings();
 		// configChangeSupport = new PropertyChangeSupport(this);
 	}
 
 	
-	public ApplicationConfigurationModel getConfigurations() {
+	public ApigeeMonitoringSettings getConfigurations() {
 		return configurationModel;
 	}
 

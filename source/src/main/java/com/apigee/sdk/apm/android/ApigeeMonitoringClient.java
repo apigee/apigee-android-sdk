@@ -16,7 +16,7 @@ import com.apigee.sdk.Logger;
 import com.apigee.sdk.apm.android.crashlogging.CrashManager;
 import com.apigee.sdk.apm.android.metrics.LowPriorityThreadFactory;
 import com.apigee.sdk.apm.android.model.ApigeeApp;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.data.client.ApigeeDataClient;
 
@@ -354,7 +354,7 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 				}
 			}
 		
-			ApplicationConfigurationModel configurations = configService.getConfigurations();
+			ApigeeMonitoringSettings configurations = configService.getConfigurations();
 		
 			if ((null != configurations) && (configurations.getSamplingRate() != null))
 			{

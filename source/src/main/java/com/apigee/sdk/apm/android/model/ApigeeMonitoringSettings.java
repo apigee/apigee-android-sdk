@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 //import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-public class ApplicationConfigurationModel implements Serializable {
+public class ApigeeMonitoringSettings implements Serializable {
 
 	/**
     * 
@@ -58,10 +58,10 @@ public class ApplicationConfigurationModel implements Serializable {
 	//private Set<AppConfigCustomParameter> deletedCustomParams = new HashSet<AppConfigCustomParameter>();
 
 	
-	public ApplicationConfigurationModel() {
+	public ApigeeMonitoringSettings() {
 	}
 
-	public ApplicationConfigurationModel(String confType) {
+	public ApigeeMonitoringSettings(String confType) {
 		this.appConfigType = confType;
 	}
 

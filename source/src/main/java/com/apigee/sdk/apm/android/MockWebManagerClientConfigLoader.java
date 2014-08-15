@@ -1,6 +1,6 @@
 package com.apigee.sdk.apm.android;
 
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 
 /**
  * @y.exclude
@@ -22,7 +22,7 @@ public class MockWebManagerClientConfigLoader extends
 	}
 
 	public MockWebManagerClientConfigLoader(
-			ApplicationConfigurationModel configurationModel) {
+			ApigeeMonitoringSettings configurationModel) {
 		this.configurationModel = configurationModel;
 	}
 

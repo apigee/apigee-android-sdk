@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.android.model.ApigeeApp;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 import com.apigee.sdk.apm.android.model.ClientSessionMetrics;
@@ -170,7 +170,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	public ClientSessionMetrics getSessionMetrics() {
 
 		ClientSessionMetrics sessionMetrics = new ClientSessionMetrics();
-		ApplicationConfigurationModel appConfigModel = null;
+		ApigeeMonitoringSettings appConfigModel = null;
 		if( configurationService != null )
 		{
 			appConfigModel = configurationService.getConfigurations();

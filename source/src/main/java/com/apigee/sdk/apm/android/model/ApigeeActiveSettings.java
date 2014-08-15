@@ -27,7 +27,7 @@ public class ApigeeActiveSettings {
         this.apigeeApp = apigeeApp;
     }
 
-    public ApplicationConfigurationModel getActiveSettings() {
+    public ApigeeMonitoringSettings getActiveSettings() {
         ApigeeActiveConfiguration active = this.getActiveConfiguration();
         if (active == ApigeeActiveConfiguration.kApigeeDeviceLevel) {
             return this.apigeeApp.getDeviceLevelAppConfig();

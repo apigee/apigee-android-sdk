@@ -13,7 +13,7 @@ public class AppConfigCustomParameter {
 
 	private String tag;
 
-	private ApplicationConfigurationModel appConfig;
+	private ApigeeMonitoringSettings appConfig;
 
 	private String paramKey;
 
@@ -22,7 +22,7 @@ public class AppConfigCustomParameter {
 	public AppConfigCustomParameter() {
 	}
 
-	public AppConfigCustomParameter(ApplicationConfigurationModel appConfig,
+	public AppConfigCustomParameter(ApigeeMonitoringSettings appConfig,
 			String key, String value) {
 		this.paramKey = key;
 		this.paramValue = value;
@@ -39,11 +39,11 @@ public class AppConfigCustomParameter {
 	}
 
 	@JsonBackReference
-	public ApplicationConfigurationModel getAppConfig() {
+	public ApigeeMonitoringSettings getAppConfig() {
 		return appConfig;
 	}
 
-	public void setAppConfig(ApplicationConfigurationModel appConfig) {
+	public void setAppConfig(ApigeeMonitoringSettings appConfig) {
 		this.appConfig = appConfig;
 	}
 
