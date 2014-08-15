@@ -6,7 +6,12 @@ public class ApigeeMobileAPMConstants {
 	public static final String CONFIG_TYPE_DEVICE_LEVEL="Beta";
 	public static final String CONFIG_TYPE_DEVICE_TYPE="Device";
 	public static final String CONFIG_TYPE_AB="A/B";
-	
+
+    public static final String kApigeeActiveConfigNameDeviceLevel = "DEVICE_LEVEL";
+    public static final String kApigeeActiveConfigNameDeviceType = "DEVICE_TYPE";
+    public static final String kApigeeActiveConfigNameABTesting = "AB_TYPE";
+    public static final String kApigeeActiveConfigNameDefault = "DEFAULT";
+
 	//Log Levels
 	public static final int LOG_ASSERT = 7;
 	public static final int LOG_ERROR = 6;

@@ -16,11 +16,6 @@ public class ApigeeActiveSettings {
         kApigeeDeviceLevel
     }
 
-    private static final String kApigeeActiveConfigNameDeviceLevel = "DEVICE_LEVEL";
-    private static final String kApigeeActiveConfigNameDeviceType = "DEVICE_TYPE";
-    private static final String kApigeeActiveConfigNameABTesting = "AB_TYPE";
-    private static final String kApigeeActiveConfigNameDefault = "DEFAULT";
-
     private ApigeeApp apigeeApp;
 
     public ApigeeActiveSettings(ApigeeApp apigeeApp) {
@@ -150,15 +145,15 @@ public class ApigeeActiveSettings {
     public String getActiveConfigurationName() {
         ApigeeActiveConfiguration active = this.getActiveConfiguration();
         if (active == ApigeeActiveConfiguration.kApigeeDeviceLevel) {
-            return kApigeeActiveConfigNameDeviceLevel;
+            return ApigeeMobileAPMConstants.kApigeeActiveConfigNameDeviceLevel;
         }
         else if (active == ApigeeActiveConfiguration.kApigeeDeviceType) {
-            return kApigeeActiveConfigNameDeviceType;
+            return ApigeeMobileAPMConstants.kApigeeActiveConfigNameDeviceType;
         }
         else if (active == ApigeeActiveConfiguration.kApigeeABTesting) {
-            return kApigeeActiveConfigNameABTesting;
+            return ApigeeMobileAPMConstants.kApigeeActiveConfigNameABTesting;
         }
-        return kApigeeActiveConfigNameDefault;
+        return ApigeeMobileAPMConstants.kApigeeActiveConfigNameDefault;
     }
 
     public String getSettingsDescription() {
