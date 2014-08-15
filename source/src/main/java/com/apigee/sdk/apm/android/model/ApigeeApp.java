@@ -427,11 +427,11 @@ public class ApigeeApp implements Serializable {
 		return filters;
 	}
 
-	//public Boolean getIsDeleted() {
-	//	return isDeleted;
-	//}
+	public Boolean getDeleted() {
+		return deleted;
+	}
 
-	//public void setIsDeleted(Boolean isDeleted) {
-	//	this.isDeleted = isDeleted;
-	//}
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }
