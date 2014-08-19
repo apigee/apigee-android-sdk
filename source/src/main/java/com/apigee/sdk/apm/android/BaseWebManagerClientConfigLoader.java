@@ -1,9 +1,9 @@
 package com.apigee.sdk.apm.android;
 
-import java.beans.PropertyChangeSupport;
-
 import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
+
+import java.beans.PropertyChangeSupport;
 
 /**
  * @y.exclude
@@ -30,7 +30,7 @@ public abstract class BaseWebManagerClientConfigLoader implements ApplicationCon
 			throws LoadConfigurationException;
 
 	@Override
-	public ApigeeApp getCompositeApplicationConfigurationModel() {
+	public ApigeeApp getApigeeApp() {
 		// TODO Auto-generated method stub
 		return null;
 	}

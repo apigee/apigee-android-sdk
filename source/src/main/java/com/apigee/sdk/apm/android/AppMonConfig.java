@@ -18,9 +18,9 @@ public class AppMonConfig {
 		String value = null;
 		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if( null != client && AppMon.isInitialized() ) {
-			ApplicationConfigurationService appConfigService = client.getApplicationConfigurationService();
-			if (null != appConfigService ) {
-				value = appConfigService.getAppConfigCustomParameter(category, key);
+			ApigeeActiveSettings activeSettings = client.getActiveSettings();
+			if (null != activeSettings ) {
+				value = activeSettings.getAppConfigCustomParameter(category, key);
 			}
 		}
 		

@@ -1,7 +1,9 @@
 package com.apigee.sdk.apm.android;
 
-import java.io.IOException;
-import java.util.Properties;
+import android.net.http.AndroidHttpClient;
+
+import com.apigee.sdk.AppIdentification;
+import com.apigee.sdk.apm.http.impl.client.cache.CachingHttpClient;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -19,10 +21,8 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.BasicHttpProcessor;
 import org.apache.http.protocol.HttpContext;
 
-import android.net.http.AndroidHttpClient;
-
-import com.apigee.sdk.AppIdentification;
-import com.apigee.sdk.apm.http.impl.client.cache.CachingHttpClient;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @y.exclude
@@ -38,7 +38,7 @@ public class HttpClientWrapper implements HttpClient {
 	private HttpClient delgatedHttpClientImpl;
 	private AppIdentification appIdentification;
 	private NetworkMetricsCollectorService metricsCollector;
-	private ApplicationConfigurationService webManagerClientConfigLoader;
+	private ApigeeActiveSettings activeSettings;
 
 	BasicHttpProcessor httpproc = new BasicHttpProcessor();
 	CachingHttpClient cachingClient;
@@ -50,19 +50,19 @@ public class HttpClientWrapper implements HttpClient {
 	// Added constructor to make this look closer to Apache's HttpClient constructors
 	public HttpClientWrapper(AppIdentification appIdentification,
 			NetworkMetricsCollectorService metricsCollector,
-			ApplicationConfigurationService webManagerClientConfigLoader)
+            ApigeeActiveSettings activeSettings)
 	{
 		
 		HttpClient delegateClient = AndroidHttpClient.newInstance(appIdentification.getApplicationId());
-		initialize(appIdentification, metricsCollector, webManagerClientConfigLoader,
+		initialize(appIdentification, metricsCollector, activeSettings,
 				delegateClient);
 	}
 
 	public HttpClientWrapper(HttpClient delegateClient,
 			AppIdentification appIdentification,
 			NetworkMetricsCollectorService metricsCollector,
-			ApplicationConfigurationService webManagerClientConfigLoader) {
-		initialize(appIdentification, metricsCollector, webManagerClientConfigLoader,
+			ApigeeActiveSettings activeSettings) {
+		initialize(appIdentification, metricsCollector, activeSettings,
 				delegateClient);
 	}
 
@@ -92,28 +92,26 @@ public class HttpClientWrapper implements HttpClient {
 	
 	protected void initialize(AppIdentification appIdentification,
 			NetworkMetricsCollectorService metricsCollector,
-			ApplicationConfigurationService webManagerClientConfigLoader,
+			ApigeeActiveSettings activeSettings,
 			HttpClient delegateClient) {
 		this.appIdentification = appIdentification;
 		this.metricsCollector = metricsCollector;
-		this.webManagerClientConfigLoader = webManagerClientConfigLoader;
+		this.activeSettings = activeSettings;
 
 		// Initialize the default http client
 		// TODO: Need to read the props for default client connection parameter
 		delgatedHttpClientImpl = delegateClient;
 
-		if (webManagerClientConfigLoader.getConfigurations().getCachingEnabled()) {
-			cachingClient = new CachingHttpClient(delegateClient,
-					webManagerClientConfigLoader.getConfigurations()
-							.getCacheConfig());
+		if (activeSettings.getCachingEnabled()) {
+			cachingClient = new CachingHttpClient(delegateClient,activeSettings.getCacheConfig());
 			delgatedHttpClientImpl = cachingClient;
 		}
 
 		httpproc = createHttpProcessor();
 	}
 
-	public ApplicationConfigurationService getWebManagerClientConfigLoader() {
-		return webManagerClientConfigLoader;
+	public ApigeeActiveSettings getActiveSettings() {
+		return activeSettings;
 	}
 
 	public NetworkMetricsCollectorService getMetricsCollector() {

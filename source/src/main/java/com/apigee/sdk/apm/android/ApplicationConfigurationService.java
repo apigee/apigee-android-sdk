@@ -12,6 +12,6 @@ public interface ApplicationConfigurationService {
 
 	public String getAppConfigCustomParameter(String tag, String key);
 
-	public ApigeeApp getCompositeApplicationConfigurationModel();
+	public ApigeeApp getApigeeApp();
 
 }

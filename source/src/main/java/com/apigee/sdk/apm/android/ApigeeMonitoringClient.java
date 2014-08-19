@@ -15,8 +15,6 @@ import com.apigee.sdk.DefaultAndroidLog;
 import com.apigee.sdk.Logger;
 import com.apigee.sdk.apm.android.crashlogging.CrashManager;
 import com.apigee.sdk.apm.android.metrics.LowPriorityThreadFactory;
-import com.apigee.sdk.apm.android.model.ApigeeApp;
-import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.data.client.ApigeeDataClient;
 
@@ -89,7 +87,7 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 	private HttpClient originalHttpClient;
 
 	private NetworkMetricsCollectorService collector;
-	private CompositeConfigurationServiceImpl loader;
+	private ApigeeActiveSettings activeSettings;
 	private MetricsUploadService uploadService;
 	private DefaultAndroidLog defaultLogger;
 	private AndroidLog log;
@@ -297,14 +295,14 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 	 */
 	synchronized protected void initializeSubServices()
 	{
-		log = new AndroidLog(loader);
+		log = new AndroidLog(activeSettings);
 		
-		collector = new NetworkMetricsCollector(loader);
+		collector = new NetworkMetricsCollector(activeSettings);
 
-		httpClient = new HttpClientWrapper(originalHttpClient, appIdentification, collector, loader);
+		httpClient = new HttpClientWrapper(originalHttpClient, appIdentification, collector, activeSettings);
 					
 		this.uploadService = new UploadService(this, appActivity, appIdentification,
-				log, collector, loader, sessionManager);
+				log, collector, activeSettings, sessionManager);
 	}
 	
 	/**
@@ -333,54 +331,34 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 	 * Retrieves boolean indicating whether App Monitoring is enabled and sending data
 	 * @return boolean indicator
 	 */
-	private boolean allowedToSendData()
-	{
+	private boolean allowedToSendData() {
 		boolean willSendData = false;
-		
-		ApplicationConfigurationService configService = this.getApplicationConfigurationService();
-		
-		if (null != configService) {
-			ApigeeApp compositeAppConfigModel =
-					configService.getCompositeApplicationConfigurationModel();
-			if (null != compositeAppConfigModel) {
-				boolean monitoringDisabled = 
-						compositeAppConfigModel.getMonitoringDisabled() != null && 
-						compositeAppConfigModel.getMonitoringDisabled();
-		
-				if (monitoringDisabled)
-				{
-					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled in configuration. Not sending data");
-					return false;
-				}
-			}
-		
-			ApigeeMonitoringSettings configurations = configService.getConfigurations();
-		
-			if ((null != configurations) && (configurations.getSamplingRate() != null))
-			{
-				Long sampleRate = configurations.getSamplingRate();
-			
-				Random generator = new Random();
-			
-				int coinflip = generator.nextInt(100);
-			
-				if (coinflip < sampleRate.intValue())
-				{
-					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring enabled. Sample Rate : " + sampleRate);
-					this.isPartOfSample = true;
-					willSendData = true;
-				} else {
-					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled. Sample Rate :  "  + sampleRate);
-					this.isPartOfSample = false;
-					willSendData = false;
-				}
+        ApigeeActiveSettings settings = this.activeSettings;
+		if (null != settings) {
+			boolean monitoringDisabled = settings.getMonitoringDisabled() != null && settings.getMonitoringDisabled();
+		    if (monitoringDisabled) {
+			    Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled in configuration. Not sending data");
 			} else {
-				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring Enabled");
-				this.isPartOfSample = true;
-				willSendData = true;
-			}
+                Long samplingRate = settings.getSamplingRate();
+                if ( samplingRate != null ) {
+                    Random generator = new Random();
+                    int coinflip = generator.nextInt(100);
+                    if (coinflip < samplingRate.intValue()) {
+                        Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring enabled. Sample Rate : " + samplingRate);
+                        this.isPartOfSample = true;
+                        willSendData = true;
+                    } else {
+                        Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled. Sample Rate :  "  + samplingRate);
+                        this.isPartOfSample = false;
+                        willSendData = false;
+                    }
+                } else {
+                    Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring Enabled");
+                    this.isPartOfSample = true;
+                    willSendData = true;
+                }
+            }
 		}
-		
 		return willSendData;
 	}
 	
@@ -627,46 +605,30 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 								final boolean enableAutoUpload,
 								final ConfigurationReloadedListener reloadListener) {
 		boolean success = true;
-		loader = new CompositeConfigurationServiceImpl(appActivity,
-														appIdentification,
-														this.dataClient,
-														this,
-														client);
-		
-		initializeSubServices();
+		this.activeSettings = new ApigeeActiveSettings(this.appActivity,this.appIdentification,this.dataClient,this,client);
+		this.initializeSubServices();
 		
 		try {
 			// loader.loadConfigurations(this.appId);
-			boolean loadSuccess = loader.loadLocalApplicationConfiguration();
+			boolean loadSuccess = this.activeSettings.loadLocalApplicationConfiguration();
 			
-			if(loadSuccess)
-			{
+			if(loadSuccess) {
 				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Found previous configuration on disk. ");
 			} else {
 				Log.v(ClientLog.TAG_MONITORING_CLIENT, "No configuration found on disk. Using default configurations");
 			}
 
-			if (allowedToSendData())
-			{
-				isActive = true;
-			} else {
-				isActive = false;
-			}
-			
-			if (isActive || this.alwaysUploadCrashReports)
-			{
-				if (crashReportingEnabled)
-				{
+            this.isActive = this.allowedToSendData();
+			if (this.isActive || this.alwaysUploadCrashReports) {
+				if (crashReportingEnabled) {
 					sExecutor.execute(new CrashManagerTask(this));
-				}
-				else
-				{
+				} else {
 					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Crash reporting disabled");
 				}
 			}
 			
 			final ApigeeMonitoringClient monitoringClient = this;
-			
+
 			// read configuration
 			sExecutor.execute(new Runnable() {
 				public void run() {
@@ -711,7 +673,7 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 		}
 
 		final ApigeeMonitoringClient client = this;
-		final long uploadIntervalMillis = loader.getConfigurations().getAgentUploadIntervalInSeconds() * 1000;		
+		final long uploadIntervalMillis = this.activeSettings.getAgentUploadIntervalInSeconds() * 1000;
 		
 		Runnable runnable = new Runnable() {
 
@@ -836,23 +798,17 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 	 * @y.exclude
 	 */
 	public boolean isAbleToSendDataToServer() {
-		ApplicationConfigurationService configService = getApplicationConfigurationService();
-		
-		if (null != configService) {
-			ApigeeApp app = configService.getCompositeApplicationConfigurationModel();
-			if( app != null ) {
-				String orgName = app.getOrgName();
-				String appName = app.getAppName();
-				Long instaOpsAppId = app.getInstaOpsApplicationId();
-				return ((orgName != null) &&
-						(appName != null) &&
-						(instaOpsAppId != null) &&
-						(orgName.length() > 0) &&
-						(appName.length() > 0) &&
-						(instaOpsAppId.longValue() > 0));
-			}
+		if (null != this.activeSettings) {
+            String orgName = this.activeSettings.getOrgName();
+            String appName = this.activeSettings.getAppName();
+            Long instaOpsAppId = this.activeSettings.getInstaOpsApplicationId();
+            return ((orgName != null) &&
+                    (appName != null) &&
+                    (instaOpsAppId != null) &&
+                    (orgName.length() > 0) &&
+                    (appName.length() > 0) &&
+                    (instaOpsAppId.longValue() > 0));
 		}
-		
 		return false;
 	}
 	
@@ -883,23 +839,16 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 		@Override
 		public void run() {
 			
-			boolean newConfigsExist = loader.synchronizeConfig();
+			boolean newConfigsExist = activeSettings.synchronizeConfig();
 			if(newConfigsExist)
 			{
 				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Found a new configuration - re-initializing sub-services");
 				try {
-					loader.loadLocalApplicationConfiguration();
-					if( this.reloadListener != null )
-					{
+                    activeSettings.loadLocalApplicationConfiguration();
+					if( this.reloadListener != null ) {
 						this.reloadListener.configurationReloaded();
 					}
-
-					if ( allowedToSendData())
-					{
-						isActive = true;
-					} else {
-						isActive = false;
-					}
+                    isActive = allowedToSendData();
 				} catch (LoadConfigurationException e) {
 					Log.e(ClientLog.TAG_MONITORING_CLIENT, "Error trying to reload application configuration " + e.toString());
 				} catch (Throwable t) {
@@ -1019,7 +968,7 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 	public HttpClient getInstrumentedHttpClient(HttpClient client) {
 
 		if (isInitialized && isActive)
-			return new HttpClientWrapper(client, appIdentification, collector, loader);
+			return new HttpClientWrapper(client, appIdentification, collector, activeSettings);
 		else
 			return client;
 	}
@@ -1037,6 +986,13 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 		}
 	}
 
+    /**
+     * @y.exclude
+     */
+    public ApigeeActiveSettings getActiveSettings() {
+        return this.activeSettings;
+    }
+
 	/**
 	 * @y.exclude
 	 */
@@ -1049,13 +1005,6 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 	 */
 	public MetricsUploadService getUploadService() {
 		return uploadService;
-	}
-
-	/**
-	 * @y.exclude
-	 */
-	public ApplicationConfigurationService getApplicationConfigurationService() {
-		return loader;
 	}
 
 	/**
