@@ -1,14 +1,14 @@
 package com.apigee.sdk.data.client.entities;
 
+import com.apigee.sdk.data.client.ApigeeDataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient.Query;
+import com.apigee.sdk.data.client.response.ApiResponse;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import com.apigee.sdk.data.client.ApigeeDataClient;
-import com.apigee.sdk.data.client.ApigeeDataClient.Query;
-import com.apigee.sdk.data.client.response.ApiResponse;
 
 /**
  * Models a collection of entities as a local object. Collections
@@ -58,7 +58,7 @@ public class Collection
 	    this.fetch();
 	}
 
-	/**
+    /**
 	 * Gets the entity 'type' associated with the collection.
 	 *
 	 * @return the collection type
@@ -170,6 +170,15 @@ public class Collection
 	    entity.setUuid(uuid);
 	    return entity.fetch();
 	}
+
+    /**
+     * Gets the list of entities in the Collection object.
+     *
+     * @return the list of entities
+     */
+    public ArrayList<Entity> getList() {
+        return this.list;
+    }
 
 	/**
 	 * Gets the first entity in the Collection object.
