@@ -624,8 +624,11 @@ public class ApigeeDataClient implements LocationListener {
 		HttpURLConnection conn = null;
 		
 		String urlAsString = path(apiUrl, segments);
-		
-		try {
+
+        String errorMessage = null;
+        String exception = null;
+
+        try {
 	        String contentType = "application/json";
 	        if (httpMethod.equals(HTTP_METHOD_POST) && isEmpty(data) && !isEmpty(params)) {
 	            data = encodeParams(params);
@@ -702,28 +705,30 @@ public class ApigeeDataClient implements LocationListener {
 				
 				response.setDataClient(this);
 			} else {
-				response = null;
-				logTrace("no response body from server");
-			}
+                errorMessage = "no response body from server";
+                logError(errorMessage);
+            }
 
 			//final int responseCode = conn.getResponseCode();
 			//logTrace("responseCode from server = " + responseCode);
 		}
 		catch(Exception e) {
-			logError("Error " + httpMethod + " to '" + urlAsString + "'" );
+            errorMessage = "Error " + httpMethod + " to '" + urlAsString + "'";
+            logError(errorMessage);
 			if( e != null ) {
 				e.printStackTrace();
-				logError(e.getLocalizedMessage());
+                exception = e.getLocalizedMessage();
+                logError(exception);
 			}
-			response = null;
 		}
 		catch(Throwable t) {
-			logError("Error " + httpMethod + " to '" + urlAsString + "'" );
+            errorMessage = "Error " + httpMethod + " to '" + urlAsString + "'";
+            logError(errorMessage);
 			if( t != null ) {
 				t.printStackTrace();
-				logError(t.getLocalizedMessage());
+                exception = t.getLocalizedMessage();
+				logError(exception);
 			}
-			response = null;
 		}
 		finally {
 			try {
@@ -741,7 +746,14 @@ public class ApigeeDataClient implements LocationListener {
 			} catch(Exception ignored) {
 			}
 		}
-		
+
+        if( response == null ) {
+            response = new ApiResponse();
+            response.setDataClient(this);
+            response.setErrorDescription(errorMessage);
+            response.setException(exception);
+        }
+
 	    return response;
 	}
 
