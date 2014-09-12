@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/RobertWalsh/apigee-android-sdk.svg?branch=original_master)](https://travis-ci.org/RobertWalsh/apigee-android-sdk)
+
 Apigee Android SDK Overview
 =======================
 
