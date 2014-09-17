@@ -699,6 +699,7 @@ public class ApigeeDataClient implements LocationListener {
 				
 				JacksonMarshallingService marshallingService = new JacksonMarshallingService();
 				response = (ApiResponse) marshallingService.demarshall(responseAsString, ApiResponse.class);
+                response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateSuccess);
 				if( response != null ) {
 					response.setRawResponse(responseAsString);
 				}
@@ -752,6 +753,7 @@ public class ApigeeDataClient implements LocationListener {
             response.setDataClient(this);
             response.setErrorDescription(errorMessage);
             response.setException(exception);
+            response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateFailure);
         }
 
 	    return response;
