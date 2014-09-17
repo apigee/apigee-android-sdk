@@ -1,6 +1,8 @@
 Apigee Android SDK Overview
 =======================
 
+[![Build Status](https://travis-ci.org/apigee/apigee-android-sdk.svg)](https://travis-ci.org/apigee/apigee-android-sdk)
+
 There are 2 main areas of functionality provided: (1) AppServices (Usergrid), and (2) App Monitoring.  App Services provides server-side storage functionality.  App Monitoring provides crash reporting, error tracking, application configuration management, and network performance monitoring.  You may use both of these areas or decide to just use one of them.
 
 
@@ -39,12 +41,21 @@ Once the SDK has been initialized, App Services will automatically begin logging
 
 Building From Source
 --------------------
-To build from source, please use Maven.  Update the path in <android.libs> then issue this command from the 'source' directory of your repository:
+To build from source using Gradle, issue this command from the 'source' directory of your repository:
 
 <pre>
-	mvn install -Dmaven.test.skip=true
+	gradle shadowJar
 </pre>
 
+Running Unit Tests
+--------------------
+To run unit tests using Gradle, issue this command from the 'source' directory of your repository:
+
+<pre>
+    gradle test
+</pre>
+
+The results of the tests can be seen by looking at the created file located at 'source/build/reports/tests/index.html'.
 
 New Functionality for Usergrid
 ------------------------------

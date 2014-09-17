@@ -22,11 +22,6 @@ repositories {
 }
 
 dependencies {
-    /**
-     * Please replace this with location of folder where android jar is located
-     */
-    compile files('/Applications/Android Studio.app/sdk/platforms/android-17/android.jar')
-
     compile 'org.apache.httpcomponents:httpclient:4.1.2'
     compile 'com.fasterxml.jackson.core:jackson-core:2.2.3'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'

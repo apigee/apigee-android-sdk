@@ -1,0 +1,9 @@
+language: java
+
+env:
+   - TERM=dumb
+   
+script:
+    - gradle -p source assemble
+    - gradle -p source shadowJar
+    - gradle -p source test
