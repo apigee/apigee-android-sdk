@@ -1,13 +1,12 @@
 package com.apigee.sdk.data.client.entities;
 
-import static com.apigee.sdk.data.client.utils.JsonUtils.getUUIDProperty;
-import static com.apigee.sdk.data.client.utils.JsonUtils.setBooleanProperty;
-import static com.apigee.sdk.data.client.utils.JsonUtils.setFloatProperty;
-import static com.apigee.sdk.data.client.utils.JsonUtils.setLongProperty;
-import static com.apigee.sdk.data.client.utils.JsonUtils.setStringProperty;
-import static com.apigee.sdk.data.client.utils.JsonUtils.setUUIDProperty;
-import static com.apigee.sdk.data.client.utils.JsonUtils.toJsonString;
-import static com.apigee.sdk.data.client.utils.MapUtils.newMapWithoutKeys;
+import com.apigee.sdk.data.client.ApigeeDataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient.Query;
+import com.apigee.sdk.data.client.response.ApiResponse;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +16,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.apigee.sdk.data.client.ApigeeDataClient;
-import com.apigee.sdk.data.client.ApigeeDataClient.Query;
-import com.apigee.sdk.data.client.response.ApiResponse;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
+import static com.apigee.sdk.data.client.utils.JsonUtils.getUUIDProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setBooleanProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setFloatProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setLongProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setStringProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.setUUIDProperty;
+import static com.apigee.sdk.data.client.utils.JsonUtils.toJsonString;
 
 /**
  * Models an entity of any type as a local object. Type-specific 
@@ -108,10 +107,11 @@ public class Entity {
      */
     @JsonIgnore
     public List<String> getPropertyNames() {
-        List<String> properties = new ArrayList<String>();
-        properties.add(PROPERTY_TYPE);
-        properties.add(PROPERTY_UUID);
-        return properties;
+        List<String> propertyNames = new ArrayList<String>();
+        if( this.getProperties() != null ) {
+            propertyNames.addAll(this.getProperties().keySet());
+        }
+        return propertyNames;
     }
 
     /**
@@ -199,7 +199,7 @@ public class Entity {
      */
     @JsonAnyGetter
     public Map<String, JsonNode> getProperties() {
-        return newMapWithoutKeys(properties, getPropertyNames());
+        return properties;
     }
 
     /**
