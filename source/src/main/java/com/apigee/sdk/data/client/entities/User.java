@@ -7,7 +7,7 @@ import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.
 
 import java.util.List;
 
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.apigee.sdk.data.client.response.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -56,7 +56,7 @@ public class User extends Entity {
 	 *
 	 * @param  dataClient  an instance of the DataClient class
 	 */
-	public User(DataClient dataClient) {
+	public User(ApigeeDataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);
 	}

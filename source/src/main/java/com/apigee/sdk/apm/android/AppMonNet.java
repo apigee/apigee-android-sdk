@@ -21,7 +21,7 @@ public class AppMonNet {
 	public static HttpClient getHttpClient()
 	{
 		HttpClient httpClient = null;
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if ((null != client) && client.isInitialized()) {
 				httpClient = client.getHttpClient();
 		} else {
@@ -42,7 +42,7 @@ public class AppMonNet {
 	public static HttpClient wrap(HttpClient client)
 	{
 		HttpClient wrappedClient = null;
-		MonitoringClient monitoringClient = MonitoringClient.getInstance();
+		ApigeeMonitoringClient monitoringClient = ApigeeMonitoringClient.getInstance();
 		if ((null != monitoringClient) && monitoringClient.isInitialized()) {
 			wrappedClient = monitoringClient.getInstrumentedHttpClient(client);
 		} else {
@@ -61,7 +61,7 @@ public class AppMonNet {
 	 */
 	public static URLWrapper urlForUri(String uri) throws java.net.MalformedURLException
 	{
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		
 		if ((client != null) && client.isInitialized()) {
 			return new ApigeeURLWrapper(uri);
@@ -83,7 +83,7 @@ public class AppMonNet {
 	public static boolean recordNetworkAttemptForUrl(String url,long startTimeMillis,long endTimeMillis,boolean errorOccurred,Exception exception)
 	{
 		boolean metricsRecorded = false;
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		
 		if( (client != null) && client.isInitialized() ) {
 			NetworkMetricsCollectorService metricsCollectorService = client.getMetricsCollectorService();

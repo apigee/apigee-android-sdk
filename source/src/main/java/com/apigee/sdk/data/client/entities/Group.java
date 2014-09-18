@@ -5,7 +5,7 @@ import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.
 
 import java.util.List;
 
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -47,7 +47,7 @@ public class Group extends Entity {
 	 *
 	 * @param dataClient an instance of DataClient
 	 */
-	public Group(DataClient dataClient) {
+	public Group(ApigeeDataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);
 	}

@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
-import com.apigee.sdk.apm.android.model.App;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 
@@ -15,15 +14,15 @@ import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
  */
 public class UploadService extends AbstractUploadService implements MetricsUploadService {
 
-	private MonitoringClient monitoringClient;
+	private ApigeeMonitoringClient monitoringClient;
 
-	public UploadService(MonitoringClient monitoringClient,
+	public UploadService(ApigeeMonitoringClient monitoringClient,
 			Context appActivity,
 			AppIdentification appIdentification, AndroidLog log,
 			NetworkMetricsCollectorService httpMetrics,
-			ApplicationConfigurationService configService, SessionManager sessionManager) {
+			ApigeeActiveSettings activeSettings, SessionManager sessionManager) {
 		
-		super(appActivity, appIdentification, log, httpMetrics, configService, sessionManager,monitoringClient);
+		super(appActivity, appIdentification, log, httpMetrics, activeSettings, sessionManager,monitoringClient);
 		this.monitoringClient = monitoringClient;
 	}
 	
@@ -43,17 +42,16 @@ public class UploadService extends AbstractUploadService implements MetricsUploa
 	public boolean allowedToSendData() {
 		// Prevent sending of data if this application is turned off.
 		// TODO: Need to add code to look at isActive in CompositeApp
-		
-		App configModel =
-				getConfigurationService().getCompositeApplicationConfigurationModel();
 
-		if (configModel == null) {
+		ApigeeActiveSettings activeSettings = this.getActiveSettings();
+
+		if (activeSettings == null) {
 			Log.v(ClientLog.TAG_MONITORING_CLIENT,
 					"Not sending data because App was not initialized");
 			return false;
 		}
 		
-		Boolean monitoringDisabled = configModel.getMonitoringDisabled();
+		Boolean monitoringDisabled = activeSettings.getMonitoringDisabled();
 
 		if (monitoringDisabled == null) {
 			Log.v(ClientLog.TAG_MONITORING_CLIENT,

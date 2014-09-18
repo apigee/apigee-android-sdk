@@ -3,10 +3,10 @@ package com.apigee.sdk.apm.android;
 import java.util.Date;
 import java.util.HashSet;
 
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.model.AppConfigURLRegex;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 
 /**
@@ -14,9 +14,9 @@ import com.apigee.sdk.apm.android.model.ClientLog;
  */
 public class DefaultConfigBuilder {
 	
-	public ApplicationConfigurationModel getDefaultConfigModel()
+	public ApigeeMonitoringSettings getDefaultConfigModel()
 	{
-		ApplicationConfigurationModel model = new ApplicationConfigurationModel();
+		ApigeeMonitoringSettings model = new ApigeeMonitoringSettings();
 		
 		model.setAgentUploadIntervalInSeconds(60L);
 		model.setAppConfigType(ApigeeMobileAPMConstants.CONFIG_TYPE_DEFAULT);
@@ -47,9 +47,9 @@ public class DefaultConfigBuilder {
 		return model;
 	}
 	
-	public App getDefaultCompositeApplicationConfigurationModel()
+	public ApigeeApp getDefaultCompositeApplicationConfigurationModel()
 	{
-		App model = new App();
+		ApigeeApp model = new ApigeeApp();
 		
 		model.setABTestingOverrideEnabled(false);
 		model.setDeviceLevelOverrideEnabled(false);

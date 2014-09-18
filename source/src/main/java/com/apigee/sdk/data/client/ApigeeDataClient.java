@@ -1,30 +1,9 @@
 package com.apigee.sdk.data.client;
 
-import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
-import static com.apigee.sdk.data.client.utils.UrlUtils.addQueryParams;
-import static com.apigee.sdk.data.client.utils.UrlUtils.encodeParams;
-import static com.apigee.sdk.data.client.utils.UrlUtils.path;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Date;
-
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationManager;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -43,6 +22,8 @@ import com.apigee.sdk.data.client.entities.Entity;
 import com.apigee.sdk.data.client.entities.Group;
 import com.apigee.sdk.data.client.entities.Message;
 import com.apigee.sdk.data.client.entities.User;
+import com.apigee.sdk.data.client.push.GCMDestination;
+import com.apigee.sdk.data.client.push.GCMPayload;
 import com.apigee.sdk.data.client.response.ApiResponse;
 import com.apigee.sdk.data.client.utils.DeviceUuidFactory;
 import com.apigee.sdk.data.client.utils.JsonUtils;
@@ -50,8 +31,26 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
-import com.apigee.sdk.data.client.push.GCMDestination;
-import com.apigee.sdk.data.client.push.GCMPayload;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
+import static com.apigee.sdk.data.client.utils.UrlUtils.addQueryParams;
+import static com.apigee.sdk.data.client.utils.UrlUtils.encodeParams;
+import static com.apigee.sdk.data.client.utils.UrlUtils.path;
 
 
 /**
@@ -62,7 +61,7 @@ import com.apigee.sdk.data.client.push.GCMPayload;
  * @see com.apigee.sdk.ApigeeClient
  * @see <a href="http://apigee.com/docs/app-services/content/installing-apigee-sdk-android">Apigee SDK install guide</a>
  */
-public class DataClient implements LocationListener {
+public class ApigeeDataClient implements LocationListener {
 
     private static Logger log = null; //new DefaultAndroidLog();
     
@@ -256,7 +255,7 @@ public class DataClient implements LocationListener {
     /**
      * @y.exclude
      */
-    public DataClient() {
+    public ApigeeDataClient() {
         init();
     }
 
@@ -268,7 +267,7 @@ public class DataClient implements LocationListener {
      * @param  applicationId  the API BaaS application id or name
      * @param  context  the Android Context
      */
-    public DataClient(String organizationId, String applicationId, Context context) {
+    public ApigeeDataClient(String organizationId, String applicationId, Context context) {
         init();
         this.organizationId = organizationId;
         this.applicationId = applicationId;
@@ -285,7 +284,7 @@ public class DataClient implements LocationListener {
      * @param  baseURL  the base URL to use for all API calls
      * @param  context  the Android Context
      */
-    public DataClient(String organizationId, String applicationId, String baseURL, Context context) {
+    public ApigeeDataClient(String organizationId, String applicationId, String baseURL, Context context) {
         init();
         this.organizationId = organizationId;
         this.applicationId = applicationId;
@@ -409,7 +408,7 @@ public class DataClient implements LocationListener {
      * @param apiUrl the Usergrid API url (default: http://api.usergrid.com)
      * @return DataClient object for method call chaining
      */
-    public DataClient withApiUrl(String apiUrl) {
+    public ApigeeDataClient withApiUrl(String apiUrl) {
         this.apiUrl = apiUrl;
         return this;
     }
@@ -421,7 +420,7 @@ public class DataClient implements LocationListener {
      * @param  organizationId  the organizationId to set
      * @return  the updated DataClient object
      */
-    public DataClient withOrganizationId(String organizationId){
+    public ApigeeDataClient withOrganizationId(String organizationId){
         this.organizationId = organizationId;
         return this;
     }
@@ -471,7 +470,7 @@ public class DataClient implements LocationListener {
      * @param  applicationId  the application ID to set
      * @return  the updated DataClient object
      */
-    public DataClient withApplicationId(String applicationId) {
+    public ApigeeDataClient withApplicationId(String applicationId) {
         this.applicationId = applicationId;
         return this;
     }
@@ -500,7 +499,7 @@ public class DataClient implements LocationListener {
      * @param clientId the client key id
      * @return DataClient object for method call chaining
      */
-    public DataClient withClientId(String clientId) {
+    public ApigeeDataClient withClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -530,7 +529,7 @@ public class DataClient implements LocationListener {
      * @param clientSecret the client secret
      * @return DataClient object for method call chaining
      */
-    public DataClient withClientSecret(String clientSecret) {
+    public ApigeeDataClient withClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
         return this;
     }
@@ -625,8 +624,11 @@ public class DataClient implements LocationListener {
 		HttpURLConnection conn = null;
 		
 		String urlAsString = path(apiUrl, segments);
-		
-		try {
+
+        String errorMessage = null;
+        String exception = null;
+
+        try {
 	        String contentType = "application/json";
 	        if (httpMethod.equals(HTTP_METHOD_POST) && isEmpty(data) && !isEmpty(params)) {
 	            data = encodeParams(params);
@@ -697,34 +699,37 @@ public class DataClient implements LocationListener {
 				
 				JacksonMarshallingService marshallingService = new JacksonMarshallingService();
 				response = (ApiResponse) marshallingService.demarshall(responseAsString, ApiResponse.class);
+                response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateSuccess);
 				if( response != null ) {
 					response.setRawResponse(responseAsString);
 				}
 				
 				response.setDataClient(this);
 			} else {
-				response = null;
-				logTrace("no response body from server");
-			}
+                errorMessage = "no response body from server";
+                logError(errorMessage);
+            }
 
 			//final int responseCode = conn.getResponseCode();
 			//logTrace("responseCode from server = " + responseCode);
 		}
 		catch(Exception e) {
-			logError("Error " + httpMethod + " to '" + urlAsString + "'" );
+            errorMessage = "Error " + httpMethod + " to '" + urlAsString + "'";
+            logError(errorMessage);
 			if( e != null ) {
 				e.printStackTrace();
-				logError(e.getLocalizedMessage());
+                exception = e.getLocalizedMessage();
+                logError(exception);
 			}
-			response = null;
 		}
 		catch(Throwable t) {
-			logError("Error " + httpMethod + " to '" + urlAsString + "'" );
+            errorMessage = "Error " + httpMethod + " to '" + urlAsString + "'";
+            logError(errorMessage);
 			if( t != null ) {
 				t.printStackTrace();
-				logError(t.getLocalizedMessage());
+                exception = t.getLocalizedMessage();
+				logError(exception);
 			}
-			response = null;
 		}
 		finally {
 			try {
@@ -742,7 +747,15 @@ public class DataClient implements LocationListener {
 			} catch(Exception ignored) {
 			}
 		}
-		
+
+        if( response == null ) {
+            response = new ApiResponse();
+            response.setDataClient(this);
+            response.setErrorDescription(errorMessage);
+            response.setException(exception);
+            response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateFailure);
+        }
+
 	    return response;
 	}
 

@@ -169,7 +169,7 @@ public class PerformanceMonitoringInterceptor implements
         context.setAttribute(ATTR_REQ_START_TIME, System.currentTimeMillis());
         context.setAttribute(ATTR_URI, request.getRequestLine().getUri());
 
-        MonitoringClient monitoringClient = MonitoringClient.getInstance();
+        ApigeeMonitoringClient monitoringClient = ApigeeMonitoringClient.getInstance();
         if (monitoringClient != null ) {
             if (monitoringClient.getAppIdentification() != null) {
                 request.setHeader("X-Apigee-Client-Org-Name", monitoringClient.getAppIdentification().getOrganizationId());

@@ -1,24 +1,6 @@
 package com.apigee.sdk.apm.android;
 
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -33,10 +15,26 @@ import com.apigee.sdk.DefaultAndroidLog;
 import com.apigee.sdk.Logger;
 import com.apigee.sdk.apm.android.crashlogging.CrashManager;
 import com.apigee.sdk.apm.android.metrics.LowPriorityThreadFactory;
-import com.apigee.sdk.apm.android.model.App;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /*
  * App monitoring server communications:
@@ -60,7 +58,7 @@ import com.apigee.sdk.data.client.DataClient;
  * @see com.apigee.sdk.ApigeeClient
  * @see <a href="http://apigee.com/docs/app-services/content/app-monitoring">App Monitoring documentation</a>
  */
-public class MonitoringClient implements SessionTimeoutListener {
+public class ApigeeMonitoringClient implements SessionTimeoutListener {
 
 	/**
    * @y.exclude
@@ -82,14 +80,14 @@ public class MonitoringClient implements SessionTimeoutListener {
    */
 	public static final int SESSION_EXPIRATION_MILLIS = 1000 * 60 * 30;
 	
-	private static MonitoringClient singleton = null;
+	private static ApigeeMonitoringClient singleton = null;
 
 	private Handler sendMetricsHandler;
 	private HttpClient httpClient;
 	private HttpClient originalHttpClient;
 
 	private NetworkMetricsCollectorService collector;
-	private CompositeConfigurationServiceImpl loader;
+	private ApigeeActiveSettings activeSettings;
 	private MetricsUploadService uploadService;
 	private DefaultAndroidLog defaultLogger;
 	private AndroidLog log;
@@ -110,7 +108,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	
 	private SessionManager sessionManager;
 	
-	private DataClient dataClient;
+	private ApigeeDataClient dataClient;
 	
     private static ThreadPoolExecutor sExecutor =
             new ThreadPoolExecutor(0, 1, SUBMIT_THREAD_TTL_MILLIS, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new LowPriorityThreadFactory());
@@ -133,8 +131,8 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @throws InitializationException
 	 * @see  AppMon
 	 */
-	public static synchronized MonitoringClient initialize(AppIdentification appIdentification,
-			DataClient dataClient,
+	public static synchronized ApigeeMonitoringClient initialize(AppIdentification appIdentification,
+			ApigeeDataClient dataClient,
 			Context appActivity,
 			MonitoringOptions monitoringOptions) throws InitializationException {
 
@@ -155,14 +153,14 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @throws InitializationException
 	 * @see  AppMon
 	 */
-	public static synchronized MonitoringClient initialize(AppIdentification appIdentification,
-			DataClient dataClient,
+	public static synchronized ApigeeMonitoringClient initialize(AppIdentification appIdentification,
+			ApigeeDataClient dataClient,
 			Context appActivity, HttpClient client,
 			MonitoringOptions monitoringOptions)
 	throws InitializationException {
 		if (singleton == null) {
 			try {
-				MonitoringClient instance = new MonitoringClient(appIdentification, dataClient,
+				ApigeeMonitoringClient instance = new ApigeeMonitoringClient(appIdentification, dataClient,
 						appActivity, client, monitoringOptions);
 				
 				singleton = instance;
@@ -192,7 +190,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 *
 	 * @return the MonitoringClient, or null if the client has not been initialized
 	 */
-	public static MonitoringClient getInstance() {
+	public static ApigeeMonitoringClient getInstance() {
 		if (singleton != null) {
 			return singleton;
 		} else {
@@ -214,14 +212,14 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * 
 	 * 
 	 */
-	public MonitoringClient(AppIdentification appIdentification, DataClient dataClient, Context appActivity,
-			HttpClient client,
-			MonitoringOptions monitoringOptions) throws InitializationException {
+	public ApigeeMonitoringClient(AppIdentification appIdentification, ApigeeDataClient dataClient, Context appActivity,
+                                  HttpClient client,
+                                  MonitoringOptions monitoringOptions) throws InitializationException {
 		defaultLogger = new DefaultAndroidLog();
 		initializeInstance(appIdentification, dataClient, appActivity, client, monitoringOptions);
 	}
 
-	protected void initializeInstance(AppIdentification appIdentification, DataClient dataClient, Context appActivity,
+	protected void initializeInstance(AppIdentification appIdentification, ApigeeDataClient dataClient, Context appActivity,
 			HttpClient client,
 			MonitoringOptions monitoringOptions) throws InitializationException {
 
@@ -297,14 +295,14 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 */
 	synchronized protected void initializeSubServices()
 	{
-		log = new AndroidLog(loader);
+		log = new AndroidLog(activeSettings);
 		
-		collector = new NetworkMetricsCollector(loader);
+		collector = new NetworkMetricsCollector(activeSettings);
 
-		httpClient = new HttpClientWrapper(originalHttpClient, appIdentification, collector, loader);
+		httpClient = new HttpClientWrapper(originalHttpClient, appIdentification, collector, activeSettings);
 					
 		this.uploadService = new UploadService(this, appActivity, appIdentification,
-				log, collector, loader, sessionManager);
+				log, collector, activeSettings, sessionManager);
 	}
 	
 	/**
@@ -333,54 +331,34 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * Retrieves boolean indicating whether App Monitoring is enabled and sending data
 	 * @return boolean indicator
 	 */
-	private boolean allowedToSendData()
-	{
+	private boolean allowedToSendData() {
 		boolean willSendData = false;
-		
-		ApplicationConfigurationService configService = this.getApplicationConfigurationService();
-		
-		if (null != configService) {
-			App compositeAppConfigModel =
-					configService.getCompositeApplicationConfigurationModel();
-			if (null != compositeAppConfigModel) {
-				boolean monitoringDisabled = 
-						compositeAppConfigModel.getMonitoringDisabled() != null && 
-						compositeAppConfigModel.getMonitoringDisabled();
-		
-				if (monitoringDisabled)
-				{
-					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled in configuration. Not sending data");
-					return false;
-				}
-			}
-		
-			ApplicationConfigurationModel configurations = configService.getConfigurations();
-		
-			if ((null != configurations) && (configurations.getSamplingRate() != null))
-			{
-				Long sampleRate = configurations.getSamplingRate();
-			
-				Random generator = new Random();
-			
-				int coinflip = generator.nextInt(100);
-			
-				if (coinflip < sampleRate.intValue())
-				{
-					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring enabled. Sample Rate : " + sampleRate);
-					this.isPartOfSample = true;
-					willSendData = true;
-				} else {
-					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled. Sample Rate :  "  + sampleRate);
-					this.isPartOfSample = false;
-					willSendData = false;
-				}
+        ApigeeActiveSettings settings = this.activeSettings;
+		if (null != settings) {
+			boolean monitoringDisabled = settings.getMonitoringDisabled() != null && settings.getMonitoringDisabled();
+		    if (monitoringDisabled) {
+			    Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled in configuration. Not sending data");
 			} else {
-				Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring Enabled");
-				this.isPartOfSample = true;
-				willSendData = true;
-			}
+                Long samplingRate = settings.getSamplingRate();
+                if ( samplingRate != null ) {
+                    Random generator = new Random();
+                    int coinflip = generator.nextInt(100);
+                    if (coinflip < samplingRate.intValue()) {
+                        Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring enabled. Sample Rate : " + samplingRate);
+                        this.isPartOfSample = true;
+                        willSendData = true;
+                    } else {
+                        Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring disabled. Sample Rate :  "  + samplingRate);
+                        this.isPartOfSample = false;
+                        willSendData = false;
+                    }
+                } else {
+                    Log.i(ClientLog.TAG_MONITORING_CLIENT, "Monitoring Enabled");
+                    this.isPartOfSample = true;
+                    willSendData = true;
+                }
+            }
 		}
-		
 		return willSendData;
 	}
 	
@@ -627,46 +605,30 @@ public class MonitoringClient implements SessionTimeoutListener {
 								final boolean enableAutoUpload,
 								final ConfigurationReloadedListener reloadListener) {
 		boolean success = true;
-		loader = new CompositeConfigurationServiceImpl(appActivity,
-														appIdentification,
-														this.dataClient,
-														this,
-														client);
-		
-		initializeSubServices();
+		this.activeSettings = new ApigeeActiveSettings(this.appActivity,this.appIdentification,this.dataClient,this,client);
+		this.initializeSubServices();
 		
 		try {
 			// loader.loadConfigurations(this.appId);
-			boolean loadSuccess = loader.loadLocalApplicationConfiguration();
+			boolean loadSuccess = this.activeSettings.loadLocalApplicationConfiguration();
 			
-			if(loadSuccess)
-			{
+			if(loadSuccess) {
 				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Found previous configuration on disk. ");
 			} else {
 				Log.v(ClientLog.TAG_MONITORING_CLIENT, "No configuration found on disk. Using default configurations");
 			}
 
-			if (allowedToSendData())
-			{
-				isActive = true;
-			} else {
-				isActive = false;
-			}
-			
-			if (isActive || this.alwaysUploadCrashReports)
-			{
-				if (crashReportingEnabled)
-				{
+            this.isActive = this.allowedToSendData();
+			if (this.isActive || this.alwaysUploadCrashReports) {
+				if (crashReportingEnabled) {
 					sExecutor.execute(new CrashManagerTask(this));
-				}
-				else
-				{
+				} else {
 					Log.i(ClientLog.TAG_MONITORING_CLIENT, "Crash reporting disabled");
 				}
 			}
 			
-			final MonitoringClient monitoringClient = this;
-			
+			final ApigeeMonitoringClient monitoringClient = this;
+
 			// read configuration
 			sExecutor.execute(new Runnable() {
 				public void run() {
@@ -710,8 +672,8 @@ public class MonitoringClient implements SessionTimeoutListener {
 			sendMetricsHandler = new Handler(appActivity.getMainLooper());
 		}
 
-		final MonitoringClient client = this;
-		final long uploadIntervalMillis = loader.getConfigurations().getAgentUploadIntervalInSeconds() * 1000;		
+		final ApigeeMonitoringClient client = this;
+		final long uploadIntervalMillis = this.activeSettings.getAgentUploadIntervalInSeconds() * 1000;
 		
 		Runnable runnable = new Runnable() {
 
@@ -836,23 +798,17 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @y.exclude
 	 */
 	public boolean isAbleToSendDataToServer() {
-		ApplicationConfigurationService configService = getApplicationConfigurationService();
-		
-		if (null != configService) {
-			App app = configService.getCompositeApplicationConfigurationModel();
-			if( app != null ) {
-				String orgName = app.getOrgName();
-				String appName = app.getAppName();
-				Long instaOpsAppId = app.getInstaOpsApplicationId();
-				return ((orgName != null) &&
-						(appName != null) &&
-						(instaOpsAppId != null) &&
-						(orgName.length() > 0) &&
-						(appName.length() > 0) &&
-						(instaOpsAppId.longValue() > 0));
-			}
+		if (null != this.activeSettings) {
+            String orgName = this.activeSettings.getOrgName();
+            String appName = this.activeSettings.getAppName();
+            Long instaOpsAppId = this.activeSettings.getInstaOpsApplicationId();
+            return ((orgName != null) &&
+                    (appName != null) &&
+                    (instaOpsAppId != null) &&
+                    (orgName.length() > 0) &&
+                    (appName.length() > 0) &&
+                    (instaOpsAppId.longValue() > 0));
 		}
-		
 		return false;
 	}
 	
@@ -883,23 +839,16 @@ public class MonitoringClient implements SessionTimeoutListener {
 		@Override
 		public void run() {
 			
-			boolean newConfigsExist = loader.synchronizeConfig();
+			boolean newConfigsExist = activeSettings.synchronizeConfig();
 			if(newConfigsExist)
 			{
 				Log.v(ClientLog.TAG_MONITORING_CLIENT, "Found a new configuration - re-initializing sub-services");
 				try {
-					loader.loadLocalApplicationConfiguration();
-					if( this.reloadListener != null )
-					{
+                    activeSettings.loadLocalApplicationConfiguration();
+					if( this.reloadListener != null ) {
 						this.reloadListener.configurationReloaded();
 					}
-
-					if ( allowedToSendData())
-					{
-						isActive = true;
-					} else {
-						isActive = false;
-					}
+                    isActive = allowedToSendData();
 				} catch (LoadConfigurationException e) {
 					Log.e(ClientLog.TAG_MONITORING_CLIENT, "Error trying to reload application configuration " + e.toString());
 				} catch (Throwable t) {
@@ -917,9 +866,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 */
 	private class UploadDataTask implements Runnable {
 
-		private MonitoringClient client;
+		private ApigeeMonitoringClient client;
 		
-		public UploadDataTask(MonitoringClient client) {
+		public UploadDataTask(ApigeeMonitoringClient client) {
 			this.client = client;
 		}
 		
@@ -954,9 +903,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @y.exclude
 	 */
 	private class ForcedUploadDataTask implements Runnable {
-		private MonitoringClient client;
+		private ApigeeMonitoringClient client;
 		
-		public ForcedUploadDataTask(MonitoringClient client) {
+		public ForcedUploadDataTask(ApigeeMonitoringClient client) {
 			this.client = client;
 		}
 		
@@ -977,9 +926,9 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 * @y.exclude
 	 */
 	private class CrashManagerTask implements Runnable {
-		private MonitoringClient client;
+		private ApigeeMonitoringClient client;
 
-		public CrashManagerTask(MonitoringClient client) {
+		public CrashManagerTask(ApigeeMonitoringClient client) {
 			this.client = client;
 		}
 		
@@ -1019,7 +968,7 @@ public class MonitoringClient implements SessionTimeoutListener {
 	public HttpClient getInstrumentedHttpClient(HttpClient client) {
 
 		if (isInitialized && isActive)
-			return new HttpClientWrapper(client, appIdentification, collector, loader);
+			return new HttpClientWrapper(client, appIdentification, collector, activeSettings);
 		else
 			return client;
 	}
@@ -1037,6 +986,13 @@ public class MonitoringClient implements SessionTimeoutListener {
 		}
 	}
 
+    /**
+     * @y.exclude
+     */
+    public ApigeeActiveSettings getActiveSettings() {
+        return this.activeSettings;
+    }
+
 	/**
 	 * @y.exclude
 	 */
@@ -1049,13 +1005,6 @@ public class MonitoringClient implements SessionTimeoutListener {
 	 */
 	public MetricsUploadService getUploadService() {
 		return uploadService;
-	}
-
-	/**
-	 * @y.exclude
-	 */
-	public ApplicationConfigurationService getApplicationConfigurationService() {
-		return loader;
 	}
 
 	/**

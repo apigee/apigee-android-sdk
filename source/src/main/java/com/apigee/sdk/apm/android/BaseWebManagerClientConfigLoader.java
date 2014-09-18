@@ -1,9 +1,9 @@
 package com.apigee.sdk.apm.android;
 
-import java.beans.PropertyChangeSupport;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 
-import com.apigee.sdk.apm.android.model.App;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import java.beans.PropertyChangeSupport;
 
 /**
  * @y.exclude
@@ -11,17 +11,17 @@ import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 public abstract class BaseWebManagerClientConfigLoader implements ApplicationConfigurationService {
 
 	PropertyChangeSupport configChangeSupport;
-	protected ApplicationConfigurationModel configurationModel;
+	protected ApigeeMonitoringSettings configurationModel;
 
-	protected App compositeApplicationConfigurationModel;
+	protected ApigeeApp compositeApplicationConfigurationModel;
 
 	public BaseWebManagerClientConfigLoader() {
-		configurationModel = new ApplicationConfigurationModel();
+		configurationModel = new ApigeeMonitoringSettings();
 		// configChangeSupport = new PropertyChangeSupport(this);
 	}
 
 	
-	public ApplicationConfigurationModel getConfigurations() {
+	public ApigeeMonitoringSettings getConfigurations() {
 		return configurationModel;
 	}
 
@@ -30,7 +30,7 @@ public abstract class BaseWebManagerClientConfigLoader implements ApplicationCon
 			throws LoadConfigurationException;
 
 	@Override
-	public App getCompositeApplicationConfigurationModel() {
+	public ApigeeApp getApigeeApp() {
 		// TODO Auto-generated method stub
 		return null;
 	}

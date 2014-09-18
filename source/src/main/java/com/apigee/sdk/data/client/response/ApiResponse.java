@@ -1,17 +1,9 @@
 package com.apigee.sdk.data.client.response;
 
-import static com.apigee.sdk.data.client.utils.JsonUtils.toJsonString;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.apigee.sdk.data.client.entities.Entity;
 import com.apigee.sdk.data.client.entities.Message;
 import com.apigee.sdk.data.client.entities.User;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,9 +12,23 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static com.apigee.sdk.data.client.utils.JsonUtils.toJsonString;
+
 public class ApiResponse {
 
-	private String accessToken;
+    public static enum ApiTransactionResponseState {
+        kApiTransactionResponseStateSuccess,
+        kApiTransactionResponseStateFailure,
+        kApiTransactionResponseStatePending
+    };
+
+
+    private String accessToken;
 
 	private String error;
 	private String errorDescription;
@@ -54,6 +60,8 @@ public class ApiResponse {
 
 	private User user;
 	private String rawResponse;
+    private ApiTransactionResponseState transactionResponseState;
+
 
 	private final Map<String, JsonNode> properties = new HashMap<String, JsonNode>();
 
@@ -744,12 +752,24 @@ public class ApiResponse {
 	 *
 	 * @param  dataClient  an instance of DataClient
 	 */
-	public void setDataClient(DataClient dataClient) {
+	public void setDataClient(ApigeeDataClient dataClient) {
 		if( (entities != null) && !entities.isEmpty() ) {
 			for ( Entity entity : entities ) {
 				entity.setDataClient(dataClient);
 			}
 		}
 	}
+
+    public void setTransactionResponseState(ApiTransactionResponseState transactionResponseState) {
+        this.transactionResponseState = transactionResponseState;
+    }
+
+    public ApiTransactionResponseState getTransactionResponseState() {
+        return this.transactionResponseState;
+    }
+
+    public Boolean completedSuccessfully() {
+        return (this.getTransactionResponseState() == ApiTransactionResponseState.kApiTransactionResponseStateSuccess);
+    }
 
 }

@@ -3,10 +3,10 @@ package com.apigee.sdk;
 import android.content.Context;
 import android.util.Log;
 
+import com.apigee.sdk.apm.android.ApigeeMonitoringClient;
 import com.apigee.sdk.apm.android.AppMon;
-import com.apigee.sdk.apm.android.MonitoringClient;
 import com.apigee.sdk.apm.android.MonitoringOptions;
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 
 
 /**
@@ -31,8 +31,8 @@ public class ApigeeClient {
      */
 	public static final String SDK_TYPE     = "Android";
 
-	private DataClient dataClient;
-	private MonitoringClient monitoringClient;
+	private ApigeeDataClient dataClient;
+	private ApigeeMonitoringClient monitoringClient;
 	private AppIdentification appIdentification;
 
 	
@@ -90,10 +90,10 @@ public class ApigeeClient {
     		urlSpecified = true;
     		appIdentification.setBaseURL(baseURL);
     	} else {
-    		appIdentification.setBaseURL(DataClient.PUBLIC_API_URL);
+    		appIdentification.setBaseURL(ApigeeDataClient.PUBLIC_API_URL);
     	}
     	
-        dataClient = new DataClient(organizationId,applicationId,null,context);
+        dataClient = new ApigeeDataClient(organizationId,applicationId,null,context);
         Log.d(LOGGING_TAG,"dataClient created");
         
         if (urlSpecified) {
@@ -104,19 +104,19 @@ public class ApigeeClient {
         	monitoringClient = AppMon.initialize(appIdentification, dataClient, context, monitoringOptions);
         	if( monitoringClient != null ) {
         		Log.d(LOGGING_TAG,"monitoringClient created");
-        		DataClient.setLogger(monitoringClient.getLogger());
+        		ApigeeDataClient.setLogger(monitoringClient.getLogger());
         	} else {
         		Log.d(LOGGING_TAG,"unable to create monitoringClient");
-        		DataClient.setLogger(new DefaultAndroidLog());
+        		ApigeeDataClient.setLogger(new DefaultAndroidLog());
         	}
         } else {
         	monitoringClient = AppMon.initialize(appIdentification, dataClient, context, monitoringOptions);
         	if( monitoringClient != null ) {
         		Log.d(LOGGING_TAG,"monitoringClient created");
-        		DataClient.setLogger(monitoringClient.getLogger());
+        		ApigeeDataClient.setLogger(monitoringClient.getLogger());
         	} else {
         		Log.d(LOGGING_TAG,"unable to create monitoringClient");
-        		DataClient.setLogger(new DefaultAndroidLog());
+        		ApigeeDataClient.setLogger(new DefaultAndroidLog());
         	}
         }
     }
@@ -126,7 +126,7 @@ public class ApigeeClient {
      * 
      * @return DataClient object
      */
-    public DataClient getDataClient() {
+    public ApigeeDataClient getDataClient() {
     	return dataClient;
     }
     
@@ -135,7 +135,7 @@ public class ApigeeClient {
      * 
      * @return MonitoringClient object
      */
-    public MonitoringClient getMonitoringClient() {
+    public ApigeeMonitoringClient getMonitoringClient() {
     	return monitoringClient;
     }
     

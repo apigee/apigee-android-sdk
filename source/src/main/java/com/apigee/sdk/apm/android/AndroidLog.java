@@ -1,17 +1,17 @@
 package com.apigee.sdk.apm.android;
 
+import android.util.Log;
+
+import com.apigee.sdk.Logger;
+import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
+import com.apigee.sdk.apm.android.model.ClientLog;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import android.util.Log;
-
-import com.apigee.sdk.Logger;
-import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
-import com.apigee.sdk.apm.android.model.ClientLog;
 
 /**
  * 
@@ -35,13 +35,13 @@ public class AndroidLog implements Logger {
 	int logTriggerLevel;
 	boolean useTagFilter;
 	String tagFilter;
-	ApplicationConfigurationService configService;
+	ApigeeActiveSettings activeSettings;
 	
 
-	public AndroidLog(ApplicationConfigurationService configService) {
+	public AndroidLog(ApigeeActiveSettings activeSettings) {
 		log = new ConcurrentLinkedQueue<ClientLog>();
 	
-		this.configService = configService;
+		this.activeSettings = activeSettings;
 	
 		logMaxSize = 100;
 		useLogTriggerLevel = false;
@@ -113,7 +113,7 @@ public class AndroidLog implements Logger {
 	}
 
 	protected boolean isLogLevelBeingCaptured(int level) {
-		return level >= configService.getConfigurations().getLogLevelToMonitor();
+		return level >= this.activeSettings.getLogLevelToMonitor();
 	}
 	
 	private void writeToLog(int level, String tag, String msg) {
@@ -126,7 +126,7 @@ public class AndroidLog implements Logger {
 		}
 		
 		// is monitoring paused?
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (client != null) {
 			if (client.isPaused()) {
 				return;

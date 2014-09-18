@@ -16,11 +16,11 @@ public class AppMonConfig {
 	public static String getValue(String category, String key)
 	{
 		String value = null;
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if( null != client && AppMon.isInitialized() ) {
-			ApplicationConfigurationService appConfigService = client.getApplicationConfigurationService();
-			if (null != appConfigService ) {
-				value = appConfigService.getAppConfigCustomParameter(category, key);
+			ApigeeActiveSettings activeSettings = client.getActiveSettings();
+			if (null != activeSettings ) {
+				value = activeSettings.getAppConfigCustomParameter(category, key);
 			}
 		}
 		

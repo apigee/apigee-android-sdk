@@ -1,14 +1,14 @@
 package com.apigee.sdk.apm.android.model;
 
+import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
-
-import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 //import com.apigee.sdk.android.model.CONFIG_TYPE;
 
 /**
@@ -56,7 +56,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  * @author prabhat
  * 
  */
-public class App implements Serializable {
+public class ApigeeApp implements Serializable {
 
 	/**
     * 
@@ -98,20 +98,20 @@ public class App implements Serializable {
 	
 	String customUploadUrl;
 
-	ApplicationConfigurationModel defaultAppConfig;
+	ApigeeMonitoringSettings defaultAppConfig;
 
 	Set<AppConfigOverrideFilter> appConfigOverrideFilters = new HashSet<AppConfigOverrideFilter>();
 
-	ApplicationConfigurationModel deviceLevelAppConfig;
+	ApigeeMonitoringSettings deviceLevelAppConfig;
 
 
 	Boolean deviceLevelOverrideEnabled = false;
 
-	ApplicationConfigurationModel deviceTypeAppConfig;
+	ApigeeMonitoringSettings deviceTypeAppConfig;
 
 	Boolean deviceTypeOverrideEnabled = false;
 
-	ApplicationConfigurationModel ABTestingAppConfig;
+	ApigeeMonitoringSettings ABTestingAppConfig;
 
 	Boolean ABTestingOverrideEnabled = false;
 
@@ -131,14 +131,14 @@ public class App implements Serializable {
 	Set<AppConfigOverrideFilter> networkOperatorRegexFilters;
 
 
-	public App() {
-		this.defaultAppConfig = new ApplicationConfigurationModel(
+	public ApigeeApp() {
+		this.defaultAppConfig = new ApigeeMonitoringSettings(
 				ApigeeMobileAPMConstants.CONFIG_TYPE_DEFAULT);
-		this.deviceLevelAppConfig = new ApplicationConfigurationModel(
+		this.deviceLevelAppConfig = new ApigeeMonitoringSettings(
 				ApigeeMobileAPMConstants.CONFIG_TYPE_DEVICE_LEVEL);
-		this.deviceTypeAppConfig = new ApplicationConfigurationModel(
+		this.deviceTypeAppConfig = new ApigeeMonitoringSettings(
 				ApigeeMobileAPMConstants.CONFIG_TYPE_DEVICE_TYPE);
-		this.ABTestingAppConfig = new ApplicationConfigurationModel(
+		this.ABTestingAppConfig = new ApigeeMonitoringSettings(
 				ApigeeMobileAPMConstants.CONFIG_TYPE_AB);
 	}
 	
@@ -286,12 +286,12 @@ public class App implements Serializable {
 		this.monitoringDisabled = monitoringDisabled;
 	}
 
-	public ApplicationConfigurationModel getDeviceLevelAppConfig() {
+	public ApigeeMonitoringSettings getDeviceLevelAppConfig() {
 		return deviceLevelAppConfig;
 	}
 
 	public void setDeviceLevelAppConfig(
-			ApplicationConfigurationModel deviceLevelAppConfig) {
+			ApigeeMonitoringSettings deviceLevelAppConfig) {
 		this.deviceLevelAppConfig = deviceLevelAppConfig;
 	}
 
@@ -320,12 +320,12 @@ public class App implements Serializable {
 		this.deviceLevelOverrideEnabled = deviceLevelOverrideEnabled;
 	}
 
-	public ApplicationConfigurationModel getDeviceTypeAppConfig() {
+	public ApigeeMonitoringSettings getDeviceTypeAppConfig() {
 		return deviceTypeAppConfig;
 	}
 
 	public void setDeviceTypeAppConfig(
-			ApplicationConfigurationModel deviceTypeAppConfig) {
+			ApigeeMonitoringSettings deviceTypeAppConfig) {
 		this.deviceTypeAppConfig = deviceTypeAppConfig;
 	}
 
@@ -373,12 +373,12 @@ public class App implements Serializable {
 		this.deviceTypeOverrideEnabled = deviceTypeOverrideEnabled;
 	}
 
-	public ApplicationConfigurationModel getABTestingAppConfig() {
+	public ApigeeMonitoringSettings getABTestingAppConfig() {
 		return ABTestingAppConfig;
 	}
 
 	public void setABTestingAppConfig(
-			ApplicationConfigurationModel ABTestingAppConfig) {
+			ApigeeMonitoringSettings ABTestingAppConfig) {
 		this.ABTestingAppConfig = ABTestingAppConfig;
 	}
 
@@ -398,12 +398,12 @@ public class App implements Serializable {
 		this.ABTestingOverrideEnabled = ABTestingOverrideEnabled;
 	}
 
-	public ApplicationConfigurationModel getDefaultAppConfig() {
+	public ApigeeMonitoringSettings getDefaultAppConfig() {
 		return defaultAppConfig;
 	}
 
 	public void setDefaultAppConfig(
-			ApplicationConfigurationModel defaultAppConfig) {
+			ApigeeMonitoringSettings defaultAppConfig) {
 		this.defaultAppConfig = defaultAppConfig;
 	}
 
@@ -427,11 +427,11 @@ public class App implements Serializable {
 		return filters;
 	}
 
-	//public Boolean getIsDeleted() {
-	//	return isDeleted;
-	//}
+	public Boolean getDeleted() {
+		return deleted;
+	}
 
-	//public void setIsDeleted(Boolean isDeleted) {
-	//	this.isDeleted = isDeleted;
-	//}
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

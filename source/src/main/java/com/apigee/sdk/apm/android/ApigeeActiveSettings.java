@@ -1,20 +1,5 @@
 package com.apigee.sdk.apm.android;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
-import java.util.Random;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -25,108 +10,103 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
+import com.apigee.sdk.apm.android.model.ApigeeApp;
 import com.apigee.sdk.apm.android.model.ApigeeMobileAPMConstants;
-import com.apigee.sdk.apm.android.model.App;
+import com.apigee.sdk.apm.android.model.ApigeeMonitoringSettings;
 import com.apigee.sdk.apm.android.model.AppConfigCustomParameter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter;
 import com.apigee.sdk.apm.android.model.AppConfigOverrideFilter.FILTER_TYPE;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
+import com.apigee.sdk.apm.android.model.AppConfigURLRegex;
 import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
+import com.apigee.sdk.data.client.ApigeeDataClient;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Date;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @y.exclude
  */
-public class CompositeConfigurationServiceImpl implements ApplicationConfigurationService {
+public class ApigeeActiveSettings implements ApplicationConfigurationService {
+
+    public enum ApigeeActiveConfiguration {
+        kApigeeDefault,
+        kApigeeABTesting,
+        kApigeeDeviceType,
+        kApigeeDeviceLevel
+    }
 
 	public static final String PROP_CACHE_LAST_MODIFIED_DATE = "WebConfigLastModifiedDate";
 	public static final String CONFIGURATION_FILE_NAME = "config.json";
 	
-	protected static final String TAG = CompositeConfigurationServiceImpl.class
-			.getSimpleName();
+	protected static final String TAG = ApigeeActiveSettings.class.getSimpleName();
 
-	Context appActivity;
-	HttpClient client;
+	private Context appActivity;
+	private HttpClient client;
 
-	private int randomNumber;
-	
-	private AppIdentification appIdentification = null;
-	private DataClient dataClient;
-	private MonitoringClient monitoringClient;
+	private AppIdentification appIdentification;
+	private ApigeeDataClient dataClient;
+	private ApigeeMonitoringClient monitoringClient;
 
-	ApplicationConfigurationModel configurationModel; // Designated App Config.
-	App compositeApplicationConfigurationModel;
+	private ApigeeApp apigeeApp;
+    private ApigeeMonitoringSettings activeSettings;
+    private ApigeeActiveConfiguration activeConfiguration;
+    private String activeConfigType;
+    private String activeConfigName;
 
-	String appConfigType;
+    private int randomNumber;
 
-	SharedPreferences settings;
-	SharedPreferences.Editor editor;
+	private SharedPreferences settings;
+	private SharedPreferences.Editor editor;
 
-	JacksonMarshallingService marshallingService = new JacksonMarshallingService();
+	private JacksonMarshallingService marshallingService = new JacksonMarshallingService();
 
-	
-	public CompositeConfigurationServiceImpl(Context appActivity,
-			AppIdentification appIdentification,
-			DataClient dataClient,
-			MonitoringClient monitoringClient,
-			HttpClient client) {
-		this.client = client;
-
-		this.appIdentification = appIdentification;
-		this.dataClient = dataClient;
+	public ApigeeActiveSettings(Context appActivity,AppIdentification appIdentification,ApigeeDataClient dataClient,ApigeeMonitoringClient monitoringClient,HttpClient client) {
+        this.appActivity = appActivity;
+        this.client = client;
+        this.appIdentification = appIdentification;
+        this.dataClient = dataClient;
 		this.monitoringClient = monitoringClient;
-		
-		this.appActivity = appActivity;
 
-		this.configurationModel = new ApplicationConfigurationModel();
+        this.randomNumber = new Random().nextInt(1000);
 
-		Random generator = new Random();
+        this.settings = appActivity.getSharedPreferences("AndroidHttpClientWrapper_" + appIdentification.getUniqueIdentifier(), Context.MODE_PRIVATE);
+		this.editor = this.settings.edit();
 
-		randomNumber = generator.nextInt(1000);
-
-		settings = appActivity.getSharedPreferences("AndroidHttpClientWrapper_"
-				+ appIdentification.getUniqueIdentifier(), Context.MODE_PRIVATE);
-		editor = settings.edit();
-
-		
-		DefaultConfigBuilder defaultConfig = new DefaultConfigBuilder();
-		
-		compositeApplicationConfigurationModel = defaultConfig.getDefaultCompositeApplicationConfigurationModel();
-
-		setValidApplicationConfiguration(compositeApplicationConfigurationModel);
-		
+        this.setValidApplicationConfiguration(new DefaultConfigBuilder().getDefaultCompositeApplicationConfigurationModel());
 	}
 
-	
-	private App getCompositeApplicationConfigurationModelFromInputStream(
-			InputStream is) throws LoadConfigurationException {
+	private ApigeeApp getCompositeApplicationConfigurationModelFromInputStream(InputStream is) throws LoadConfigurationException {
 		try {
-
 			String output = inputStreamAsString(is);
-
-			Object object = marshallingService.demarshall(output,
-					App.class);
-			return (App) object;
-		} catch (RuntimeException e) {
+			Object object = marshallingService.demarshall(output,ApigeeApp.class);
+			return (ApigeeApp) object;
+		} catch (RuntimeException exception) {
 			System.out.println("RuntimeException caught:");
-			e.printStackTrace();
-			throw new LoadConfigurationException(
-					"Parsing of configuration failed", e);
-		} catch (IOException e) {
+            exception.printStackTrace();
+			throw new LoadConfigurationException("Parsing of configuration failed", exception);
+		} catch (IOException exception) {
 			System.out.println("IOException caught:");
-			e.printStackTrace();
-
-			throw new LoadConfigurationException(
-					"Parsing error of configuration", e);
+            exception.printStackTrace();
+			throw new LoadConfigurationException("Parsing error of configuration", exception);
 		}
 	}
-	
-	protected String getSettingsLastModifiedDate() {
-		return settings.getString(PROP_CACHE_LAST_MODIFIED_DATE, null);
-	}
 
-	public boolean loadLocalApplicationConfiguration()
-			throws LoadConfigurationException {
+	public boolean loadLocalApplicationConfiguration() throws LoadConfigurationException {
+
 		/*
 		 * Pseudocode :
 		 * 
@@ -138,33 +118,24 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		 * 6. Deserialize file and set appropriate ApplicationConfigModel
 		 */	
 
-		InputStream is = null;
-
-		
 		Log.v(ClientLog.TAG_MONITORING_CLIENT, "Loading configuration from cache location");
-		String lastModifiedDate = getSettingsLastModifiedDate();
-		
-		if(lastModifiedDate == null)
-		{
-			return false;
-		}
-		else
-		{
-			// Attempts to load from cache
-			try {
-				is = appActivity
-						.openFileInput(getConfigFileName());
-				App config = getCompositeApplicationConfigurationModelFromInputStream(is);
-				this.compositeApplicationConfigurationModel = config;
+		String lastModifiedDate = this.getSettingsLastModifiedDate();
 
-				setValidApplicationConfiguration(config);
+		if(lastModifiedDate == null) {
+			return false;
+		} else {
+            InputStream is = null;
+			try {
+                // Attempts to load from cache
+				is = this.appActivity.openFileInput(getConfigFileName());
+				ApigeeApp config = this.getCompositeApplicationConfigurationModelFromInputStream(is);
+				this.apigeeApp = config;
+				this.setValidApplicationConfiguration(config);
 				return true;
 			} catch (FileNotFoundException e1) {
 				Log.i(TAG, "Could not load cached configuration file");
 				cleanCache();
-				throw new LoadConfigurationException(
-						"Error loading configuration file. Two possibilties: 1) There wasn't an older config available 2) File failed to open",
-						e1);
+				throw new LoadConfigurationException("Error loading configuration file. Two possibilties: 1) There wasn't an older config available 2) File failed to open",e1);
 			} finally {
 				if( is != null ) {
 					try {
@@ -174,49 +145,36 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 				}
 			}
 		}
-
 	}
 	
-	public boolean reloadApplicationConfiguration()
-			throws LoadConfigurationException {
-		
+	public boolean reloadApplicationConfiguration() throws LoadConfigurationException {
 		String lastModifiedDate = getSettingsLastModifiedDate();
-		
-		if(lastModifiedDate == null)
-		{
-			InputStream is = null;
-			
+		if(lastModifiedDate == null) {
+			InputStream inputStream = null;
 			try {
-				is = appActivity
-						.openFileInput(getConfigFileName());
-				App config = getCompositeApplicationConfigurationModelFromInputStream(is);
-				this.compositeApplicationConfigurationModel = config;
-
-				setValidApplicationConfiguration(config);
+                inputStream = appActivity.openFileInput(getConfigFileName());
+				ApigeeApp config = getCompositeApplicationConfigurationModelFromInputStream(inputStream);
+				this.apigeeApp = config;
+				this.setValidApplicationConfiguration(config);
 				return true;
 			} catch (FileNotFoundException e1) {
 				Log.i(TAG, "Could not load cached configuration file");
 				cleanCache();
-				throw new LoadConfigurationException(
-						"Error loading configuration file. Two possibilties: 1) There wasn't an older config available 2) File failed to open",
-						e1);
+				throw new LoadConfigurationException("Error loading configuration file. Two possibilties: 1) There wasn't an older config available 2) File failed to open",e1);
 			} finally {
-				if( is != null ) {
+				if( inputStream != null ) {
 					try {
-						is.close();
+                        inputStream.close();
 					} catch (IOException ignored) {
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 	
-	public String retrieveConfigFromServer()
-	{
+	public String retrieveConfigFromServer() {
 	    if( this.monitoringClient.isDeviceNetworkConnected() ) {
 	    	
 	    	String urlAsString = monitoringClient.getConfigDownloadURL();
@@ -314,8 +272,8 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		
 		if( (jsonConfig != null) && (jsonConfig.length() > 0) ) {
 			
-			Object object = marshallingService.demarshall(jsonConfig,App.class);
-			App model = (App) object;
+			Object object = marshallingService.demarshall(jsonConfig,ApigeeApp.class);
+			ApigeeApp model = (ApigeeApp) object;
 			
 			if( model != null ) {
 				Date serverConfigModifiedDate = model.getLastModifiedDate();
@@ -391,7 +349,6 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		public boolean failed = false;
 		public String lastModifiedDate;
 		public InputStream is;
-
 	}
 
 	public static String inputStreamAsString(InputStream stream) throws IOException {
@@ -407,28 +364,32 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 		return sb.toString();
 	}
 
-	public void setValidApplicationConfiguration(App config) {
-
-		this.compositeApplicationConfigurationModel = config;
-
+	public void setValidApplicationConfiguration(ApigeeApp config) {
+		this.apigeeApp = config;
 		if (matchesDeviceLevelFilter(config)) {
-			this.configurationModel = config.getDeviceLevelAppConfig();
-			this.appConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_DEVICE_LEVEL;
+			this.activeSettings = config.getDeviceLevelAppConfig();
+            this.activeConfiguration = ApigeeActiveConfiguration.kApigeeDeviceLevel;
+			this.activeConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_DEVICE_LEVEL;
+            this.activeConfigName = ApigeeMobileAPMConstants.kApigeeActiveConfigNameDeviceLevel;
 		} else if (matchesDeviceTypeFilter(config)) {
-			this.configurationModel = config.getDeviceTypeAppConfig();
-			this.appConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_DEVICE_TYPE;
-		} else if (matchesABTestingFilter(config)) {
-			this.configurationModel = config.getABTestingAppConfig();
-
-			this.appConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_AB;
-		} else {
-			this.configurationModel = config.getDefaultAppConfig();
-			this.appConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_DEFAULT;
-		}
-
+			this.activeSettings = config.getDeviceTypeAppConfig();
+            this.activeConfiguration = ApigeeActiveConfiguration.kApigeeDeviceType;
+			this.activeConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_DEVICE_TYPE;
+            this.activeConfigName = ApigeeMobileAPMConstants.kApigeeActiveConfigNameDeviceType;
+        } else if (matchesABTestingFilter(config)) {
+			this.activeSettings = config.getABTestingAppConfig();
+            this.activeConfiguration = ApigeeActiveConfiguration.kApigeeABTesting;
+            this.activeConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_AB;
+            this.activeConfigName = ApigeeMobileAPMConstants.kApigeeActiveConfigNameABTesting;
+        } else {
+			this.activeSettings = config.getDefaultAppConfig();
+            this.activeConfiguration = ApigeeActiveConfiguration.kApigeeDefault;
+            this.activeConfigType = ApigeeMobileAPMConstants.CONFIG_TYPE_DEFAULT;
+            this.activeConfigName = ApigeeMobileAPMConstants.kApigeeActiveConfigNameDefault;
+        }
 	}
 
-	private boolean matchesDeviceLevelFilter(App config) {
+	private boolean matchesDeviceLevelFilter(ApigeeApp config) {
 		if (config.getDeviceLevelOverrideEnabled()) {
 			try {
 				TelephonyManager telephonyManager = (TelephonyManager) appActivity
@@ -474,7 +435,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	}
 
 	private boolean matchesDeviceTypeFilter(
-			App config) {
+			ApigeeApp config) {
 		if (config.getDeviceTypeOverrideEnabled()) {
 			try {
 				TelephonyManager telephonyManager = (TelephonyManager) appActivity
@@ -485,7 +446,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 						.getActiveNetworkInfo();
 	
 				String deviceModel = Build.MODEL;
-				String devicePlatform = MonitoringClient.getDevicePlatform();
+				String devicePlatform = ApigeeMonitoringClient.getDevicePlatform();
 				String networkOperator = telephonyManager.getNetworkOperatorName();
 				String networkType = networkInfo.getTypeName();
 	
@@ -523,7 +484,7 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 	}
 
 	private boolean matchesABTestingFilter(
-			App config) {
+			ApigeeApp config) {
 		if (config.getABTestingOverrideEnabled()
 				&& (config.getABTestingPercentage() != 0)
 				&& (randomNumber <= config.getABTestingPercentage())) {
@@ -574,43 +535,227 @@ public class CompositeConfigurationServiceImpl implements ApplicationConfigurati
 			
 		return matcher.matches();
 	}
-	
 
 	@Override
-	public ApplicationConfigurationModel getConfigurations() {
-		return configurationModel;
+	public ApigeeMonitoringSettings getConfigurations() {
+		return this.activeSettings;
 	}
 
 	@Override
-	public App getCompositeApplicationConfigurationModel() {
-		return compositeApplicationConfigurationModel;
+	public ApigeeApp getApigeeApp() {
+		return apigeeApp;
 	}
 
-	
 	public String getAppConfigCustomParameter(String tag, String key) {
-
 		String customConfigParameterValue = null;
-
-		if (configurationModel != null
-				&& configurationModel.getCustomConfigParameters() != null) {
-
-			for (AppConfigCustomParameter param : configurationModel
-					.getCustomConfigParameters()) {
-				if (param.getTag() != null && param.getTag().equals(tag)
-						&& param.getParamKey() != null
-						&& param.getParamKey().equals(key)) {
-					return param.getParamValue();
+		if (this.activeSettings != null && this.activeSettings.getCustomConfigParameters() != null) {
+			for (AppConfigCustomParameter param : this.activeSettings.getCustomConfigParameters()) {
+                if (param.getTag() != null && param.getTag().equals(tag) && param.getParamKey() != null && param.getParamKey().equals(key)) {
+					customConfigParameterValue = param.getParamValue();
+                    break;
 				}
 			}
-
-			return customConfigParameterValue;
-		} else {
-			return null;
 		}
-	}
+        return customConfigParameterValue;
+    }
 	
 	public String getConfigFileName() {
 		return this.monitoringClient.getUniqueIdentifierForApp() + "_" + CONFIGURATION_FILE_NAME;
 	}
 
+    protected String getSettingsLastModifiedDate() {
+        return settings.getString(PROP_CACHE_LAST_MODIFIED_DATE, null);
+    }
+
+    public String getActiveConfigType() {
+        return this.activeConfigType;
+    }
+
+    public Long getInstaOpsApplicationId() {
+        return this.apigeeApp.getInstaOpsApplicationId();
+    }
+
+    public UUID getApplicationUUID() {
+        return this.apigeeApp.getApplicationUUID();
+    }
+
+    public UUID getOrganizationUUID() {
+        return this.apigeeApp.getOrganizationUUID();
+    }
+
+    public String getOrgName() {
+        return this.apigeeApp.getOrgName();
+    }
+
+    public String getAppName() {
+        return this.apigeeApp.getAppName();
+    }
+
+    public String getFullAppName() {
+        return this.apigeeApp.getFullAppName();
+    }
+
+    public String getAppOwner() {
+        return this.apigeeApp.getAppOwner();
+    }
+
+    public Date getAppCreatedDate() {
+        return this.apigeeApp.getCreatedDate();
+    }
+
+    public Date getAppLastModifiedDate() {
+        return this.apigeeApp.getLastModifiedDate();
+    }
+
+    public Boolean getMonitoringDisabled() {
+        return this.apigeeApp.getMonitoringDisabled();
+    }
+
+    public Boolean getDeleted() {
+        return this.apigeeApp.getDeleted();
+    }
+
+    public String getGoogleId() {
+        return this.apigeeApp.getGoogleId();
+    }
+
+    public String getAppleId() {
+        return this.apigeeApp.getAppleId();
+    }
+
+    public String getAppDescription(){
+        return this.apigeeApp.getDescription();
+    }
+
+    public String getEnvironment() {
+        return this.apigeeApp.getEnvironment();
+    }
+
+    public String getCustomUploadUrl() {
+        return this.apigeeApp.getCustomUploadUrl();
+    }
+
+    public Integer getABTestingPercentage() {
+        return this.apigeeApp.getABTestingPercentage();
+    }
+
+    public Set<AppConfigOverrideFilter> getAppConfigOverrideFilters() {
+        return this.apigeeApp.getAppConfigOverrideFilters();
+    }
+
+    public Set<AppConfigOverrideFilter> getDeviceNumberFilters() {
+        return this.apigeeApp.getDeviceNumberFilters();
+    }
+
+    public Set<AppConfigOverrideFilter> getDeviceIdFilters() {
+        return this.apigeeApp.getDeviceIdFilters();
+    }
+
+    public Set<AppConfigOverrideFilter> getDevicePlatformRegexFilters(){
+        return this.apigeeApp.getDevicePlatformRegexFilters();
+    }
+
+    public Set<AppConfigOverrideFilter> getNetworkTypeRegexFilters() {
+        return this.apigeeApp.getNetworkTypeRegexFilters();
+    }
+
+    public Set<AppConfigOverrideFilter> getNetworkOperatorRegexFilters() {
+        return this.apigeeApp.getNetworkOperatorRegexFilters();
+    }
+
+    public CacheConfig getCacheConfig() {
+        return this.activeSettings.getCacheConfig();
+    }
+
+    public String getSettingsDescription() {
+        return this.activeSettings.getDescription();
+    }
+
+    public Set<AppConfigURLRegex> getURLRegex() {
+        return this.activeSettings.getUrlRegex();
+    }
+
+    public Boolean getNetworkMonitoringEnabled() {
+        return this.activeSettings.getNetworkMonitoringEnabled();
+    }
+
+    public Integer getLogLevelToMonitor() {
+        return this.activeSettings.getLogLevelToMonitor();
+    }
+
+    public Boolean getEnableLogMonitoring() {
+        return this.activeSettings.getEnableLogMonitoring();
+    }
+
+    public Set<AppConfigCustomParameter> getCustomConfigParams() {
+        return this.activeSettings.getCustomConfigParameters();
+    }
+
+    public Boolean getCachingEnabled() {
+        return this.activeSettings.getCachingEnabled();
+    }
+
+    public Boolean getMonitorAllUrls() {
+        return this.activeSettings.getMonitorAllUrls();
+    }
+
+    public Boolean getSessionDataCaptureEnabled() {
+        return this.activeSettings.getSessionDataCaptureEnabled();
+    }
+
+    public Boolean getBatteryStatusCaptureEnabled() {
+        return this.activeSettings.getBatteryStatusCaptureEnabled();
+    }
+
+    public Boolean getIMEICaptureEnabled() {
+        return this.activeSettings.getIMEICaptureEnabled();
+    }
+
+    public Boolean getObfuscateIMEI() {
+        return this.activeSettings.getObfuscateIMEI();
+    }
+
+    public Boolean getDeviceIdCaptureEnabled() {
+        return this.activeSettings.getDeviceIdCaptureEnabled();
+    }
+
+    public Boolean getObfuscateDeviceId() {
+        return this.activeSettings.getObfuscateDeviceId();
+    }
+
+    public Boolean getDeviceModelCaptureEnabled() {
+        return this.activeSettings.getDeviceModelCaptureEnabled();
+    }
+
+    public Boolean getLocationCaptureEnabled() {
+        return this.activeSettings.getLocationCaptureEnabled();
+    }
+
+    public Long getLocationCaptureResolution() {
+        return this.activeSettings.getLocationCaptureResolution();
+    }
+
+    public Boolean getNetworkCarrierCaptureEnabled() {
+        return this.activeSettings.getNetworkCarrierCaptureEnabled();
+    }
+
+    public Boolean getEnableUploadWhenRoaming() {
+        return this.activeSettings.getEnableUploadWhenRoaming();
+    }
+
+    public Boolean getEnableUploadWhenMobile() {
+        return this.activeSettings.getEnableUploadWhenMobile();
+    }
+
+    public Long getAgentUploadIntervalInSeconds() {
+        return this.activeSettings.getAgentUploadIntervalInSeconds();
+    }
+
+    public Long getAgentUploadInterval() {
+        return this.activeSettings.getAgentUploadInterval();
+    }
+
+    public Long getSamplingRate() {
+        return this.activeSettings.getSamplingRate();
+    }
 }

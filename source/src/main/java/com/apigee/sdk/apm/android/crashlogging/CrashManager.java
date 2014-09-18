@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.android.AndroidLog;
-import com.apigee.sdk.apm.android.MonitoringClient;
+import com.apigee.sdk.apm.android.ApigeeMonitoringClient;
 import com.apigee.sdk.apm.android.crashlogging.internal.ExceptionHandler;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.util.StringUtils;
@@ -75,7 +75,7 @@ public class CrashManager {
    * @param context The context to use. Usually your Activity object.
    * @param appIdentifier App ID of your app on HockeyApp.
    */
-  public static void register(Context context, AppIdentification appIdentification, MonitoringClient monitoringClient) {
+  public static void register(Context context, AppIdentification appIdentification, ApigeeMonitoringClient monitoringClient) {
     register(context, appIdentification, null, monitoringClient);
   }
 
@@ -86,7 +86,7 @@ public class CrashManager {
    * @param appIdentifier App ID of your app on HockeyApp.
    * @param listener Implement for callback functions.
    */
-  public static void register(Context context, AppIdentification appIdentification, CrashManagerListener listener, MonitoringClient monitoringClient) {
+  public static void register(Context context, AppIdentification appIdentification, CrashManagerListener listener, ApigeeMonitoringClient monitoringClient) {
     initialize(context, appIdentification, listener, false);
     execute(context, listener, monitoringClient);
   }
@@ -112,7 +112,7 @@ public class CrashManager {
    * @param context The context to use. Usually your Activity object.
    * @param listener Implement for callback functions.
    */
-  public static void execute(Context context, CrashManagerListener listener, MonitoringClient monitoringClient) {
+  public static void execute(Context context, CrashManagerListener listener, ApigeeMonitoringClient monitoringClient) {
     Boolean ignoreDefaultHandler = (listener != null) && (listener.ignoreDefaultHandler());
     
     if( hasStackTraces() ) {
@@ -153,7 +153,7 @@ public class CrashManager {
    * @param context The context to use. Usually your Activity object.
    * @param listener Implement for callback functions.
    */
-  public static void submitStackTraces(Context context, CrashManagerListener listener, MonitoringClient monitoringClient) {
+  public static void submitStackTraces(Context context, CrashManagerListener listener, ApigeeMonitoringClient monitoringClient) {
     Log.d(ClientLog.TAG_MONITORING_CLIENT, "Looking for exceptions in: " + Constants.FILES_PATH);
     String[] list = searchForStackTraces();
     Boolean successful = false;
@@ -253,7 +253,7 @@ public class CrashManager {
    * Starts thread to send crashes to HockeyApp, then registers the exception 
    * handler. 
    */
-  private static void sendCrashes(final Context context, final CrashManagerListener listener, final boolean ignoreDefaultHandler, final MonitoringClient monitoringClient) {
+  private static void sendCrashes(final Context context, final CrashManagerListener listener, final boolean ignoreDefaultHandler, final ApigeeMonitoringClient monitoringClient) {
     
     new Thread() {
       @Override
@@ -358,7 +358,7 @@ public class CrashManager {
   }
 
   
-	protected static void submitStackTrace(Context context, String fileNameOnDevice, MonitoringClient monitoringClient) throws IOException 
+	protected static void submitStackTrace(Context context, String fileNameOnDevice, ApigeeMonitoringClient monitoringClient) throws IOException
 	{
 	    UUID uuid = UUID.randomUUID();
 	    String uuidAsString = uuid.toString();
@@ -390,7 +390,7 @@ public class CrashManager {
 	
 	
 	//Apigee specific logger
-	public static void register(Context context, AndroidLog log, AppIdentification appIdentification, MonitoringClient monitoringClient) {
+	public static void register(Context context, AndroidLog log, AppIdentification appIdentification, ApigeeMonitoringClient monitoringClient) {
 		logger = log;
 	    register(context, appIdentification, new CrashManagerListener() {
 			@Override

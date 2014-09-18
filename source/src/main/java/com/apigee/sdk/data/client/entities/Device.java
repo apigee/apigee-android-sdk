@@ -5,7 +5,7 @@ import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.
 
 import java.util.List;
 
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -42,7 +42,7 @@ public class Device extends Entity {
 	 * Constructs the Device object with a DataClient. Sets 'type'
 	 * property to 'device'.
 	 */
-	public Device(DataClient dataClient) {
+	public Device(ApigeeDataClient dataClient) {
 		super(dataClient);
 		setType(ENTITY_TYPE);
 	}

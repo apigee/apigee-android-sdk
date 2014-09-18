@@ -1,12 +1,12 @@
 package com.apigee.sdk.apm.android;
 
+import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.apigee.sdk.apm.android.model.ClientNetworkMetrics;
 
 /**
  * @y.exclude
@@ -15,15 +15,15 @@ public class NetworkMetricsCollector implements NetworkMetricsCollectorService {
 
 	public final static int MAX_NUM_METRICS = 100;
 
-	private ApplicationConfigurationService configLoader;
+	private ApigeeActiveSettings activeSettings;
 	ArrayList<ClientNetworkMetrics> metrics;
 
 	public Collection<ClientNetworkMetrics> getMetrics() {
 		return metrics;
 	}
 
-	public NetworkMetricsCollector(ApplicationConfigurationService configLoader) {
-		this.configLoader = configLoader;
+	public NetworkMetricsCollector(ApigeeActiveSettings activeSettings) {
+		this.activeSettings = activeSettings;
 		initializeMetrics();
 	}
 
@@ -37,7 +37,7 @@ public class NetworkMetricsCollector implements NetworkMetricsCollectorService {
 			Map<String,Object> httpHeaders) {
 		
 		// is monitoring paused?
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (client != null) {
 			if (client.isPaused()) {
 				return;
@@ -49,8 +49,7 @@ public class NetworkMetricsCollector implements NetworkMetricsCollectorService {
 		ClientNetworkMetrics metric = new ClientNetworkMetrics();
 		
 		metric.setUrl(url);
-		metric.setAppConfigType(configLoader.getConfigurations()
-				.getAppConfigType());
+		metric.setAppConfigType(this.activeSettings.getActiveConfigType());
 
 		metric.setStartTime(new Date(start));
 		metric.setEndTime(new Date(end));
@@ -137,8 +136,8 @@ public class NetworkMetricsCollector implements NetworkMetricsCollectorService {
 		return populatedMetrics;
 	}
 
-	public ApplicationConfigurationService getConfigLoader() {
-		return configLoader;
+	public ApigeeActiveSettings getActiveSettings() {
+		return this.activeSettings;
 	}
 
 	/**

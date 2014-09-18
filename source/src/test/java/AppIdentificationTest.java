@@ -1,4 +1,5 @@
 import com.apigee.sdk.AppIdentification;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class AppIdentificationTest {
 
         assertEquals("organizationID is not equal.",ORG_ID,appIdentification.getOrganizationId());
         assertEquals("appID is not equal.",APP_ID,appIdentification.getApplicationId());
-        assertEquals("baseURL is not equal.",com.apigee.sdk.data.client.DataClient.PUBLIC_API_URL,appIdentification.getBaseURL());
+        assertEquals("baseURL is not equal.", ApigeeDataClient.PUBLIC_API_URL,appIdentification.getBaseURL());
     }
 
     @Test public void test_CreationWithUUIDs() {
@@ -43,6 +44,6 @@ public class AppIdentificationTest {
 
         assertEquals("organizationUUID is not equal.",ORG_UUID,appIdentification.getOrganizationUUID());
         assertEquals("applicationUUID is not equal.",APP_UUID,appIdentification.getApplicationUUID());
-        assertEquals("baseURL is not equal.",com.apigee.sdk.data.client.DataClient.PUBLIC_API_URL,appIdentification.getBaseURL());
+        assertEquals("baseURL is not equal.", ApigeeDataClient.PUBLIC_API_URL,appIdentification.getBaseURL());
     }
 }

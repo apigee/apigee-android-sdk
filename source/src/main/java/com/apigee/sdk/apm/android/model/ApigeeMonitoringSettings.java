@@ -1,14 +1,14 @@
 package com.apigee.sdk.apm.android.model;
 
+import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.apigee.sdk.apm.http.impl.client.cache.CacheConfig;
 //import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-public class ApplicationConfigurationModel implements Serializable {
+public class ApigeeMonitoringSettings implements Serializable {
 
 	/**
     * 
@@ -16,19 +16,11 @@ public class ApplicationConfigurationModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	Date lastModifiedDate;
-
 	Boolean networkMonitoringEnabled = true;
-
 	Boolean sessionDataCaptureEnabled = true;
-
 	Boolean enableLogMonitoring = true;
-
 	Boolean monitorAllUrls = true;
-
-
 	int logLevelToMonitor = ApigeeMobileAPMConstants.LOG_DEBUG;
-
-
 	Boolean batteryStatusCaptureEnabled = true;
 	Boolean IMEICaptureEnabled = true;
 	Boolean obfuscateIMEI = true;
@@ -38,14 +30,13 @@ public class ApplicationConfigurationModel implements Serializable {
 	Boolean locationCaptureEnabled = false;
 	Long locationCaptureResolution = 1L;
 	Boolean networkCarrierCaptureEnabled= true;
-
-	
 	Boolean enableUploadWhenRoaming = false;
 	Boolean enableUploadWhenMobile = true;
-
+    Long agentUploadInterval = 60L * 1000L;
 	Long agentUploadIntervalInSeconds = 60L;
-	
 	Long samplingRate = 100L;
+
+    String description;
 
 	/**
 	 * regex but then need to worry about XSS on UI..oh boy ;-) Examples:
@@ -67,10 +58,10 @@ public class ApplicationConfigurationModel implements Serializable {
 	//private Set<AppConfigCustomParameter> deletedCustomParams = new HashSet<AppConfigCustomParameter>();
 
 	
-	public ApplicationConfigurationModel() {
+	public ApigeeMonitoringSettings() {
 	}
 
-	public ApplicationConfigurationModel(String confType) {
+	public ApigeeMonitoringSettings(String confType) {
 		this.appConfigType = confType;
 	}
 
@@ -116,13 +107,13 @@ public class ApplicationConfigurationModel implements Serializable {
 	//	this.appConfigId = appConfigId;
 	//}
 
-	//public String getDescription() {
-	//	return description;
-	//}
+	public String getDescription() {
+		return description;
+	}
 
-	//public void setDescription(String description) {
-	//	this.description = description;
-	//}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public Date getLastModifiedDate() {
 		return lastModifiedDate;
@@ -296,13 +287,13 @@ public class ApplicationConfigurationModel implements Serializable {
 		this.enableUploadWhenMobile = enableUploadWhenMobile;
 	}
 
-	//public Long getAgentUploadInterval() {
-	//	return agentUploadInterval;
-	//}
+	public Long getAgentUploadInterval() {
+		return agentUploadInterval;
+	}
 
-	//public void setAgentUploadInterval(Long agentUploadInterval) {
-	//	this.agentUploadInterval = agentUploadInterval;
-	//}
+	public void setAgentUploadInterval(Long agentUploadInterval) {
+		this.agentUploadInterval = agentUploadInterval;
+	}
 
 	public Long getAgentUploadIntervalInSeconds() {
 		return agentUploadIntervalInSeconds;

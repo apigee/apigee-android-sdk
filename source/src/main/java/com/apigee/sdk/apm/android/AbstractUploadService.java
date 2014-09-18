@@ -1,10 +1,5 @@
 package com.apigee.sdk.apm.android;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -19,8 +14,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
-import com.apigee.sdk.apm.android.model.App;
-import com.apigee.sdk.apm.android.model.ApplicationConfigurationModel;
 import com.apigee.sdk.apm.android.model.ClientLog;
 import com.apigee.sdk.apm.android.model.ClientMetricsEnvelope;
 import com.apigee.sdk.apm.android.model.ClientSessionMetrics;
@@ -28,6 +21,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @y.exclude
@@ -41,24 +39,24 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	private AppIdentification appIdentification;
 	private AndroidLog logger;
 	private NetworkMetricsCollectorService httpMetrics;
-	private ApplicationConfigurationService configurationService;
+	private ApigeeActiveSettings activeSettings;
 	private SessionManager sessionManager;
 	private ObjectMapper objectMapper;
-	private MonitoringClient monitoringClient;
+	private ApigeeMonitoringClient monitoringClient;
 
 
 	protected AbstractUploadService(Context appActivity,
 			AppIdentification appIdentification,
 			AndroidLog log,
 			NetworkMetricsCollectorService httpMetrics,
-			ApplicationConfigurationService configService,
+			ApigeeActiveSettings activeSettings,
 			SessionManager sessionManager,
-			MonitoringClient monitoringClient) {
+			ApigeeMonitoringClient monitoringClient) {
 		this.appActivity = appActivity;
 		this.appIdentification = appIdentification;
 		this.logger = log;
 		this.httpMetrics = httpMetrics;
-		this.configurationService = configService;
+		this.activeSettings = activeSettings;
 		this.sessionManager = sessionManager;
 		this.objectMapper = new ObjectMapper();
 		this.monitoringClient = monitoringClient;
@@ -159,8 +157,8 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	}
 
 
-	public ApplicationConfigurationService getConfigurationService() {
-		return configurationService;
+	public ApigeeActiveSettings getActiveSettings() {
+		return activeSettings;
 	}
 
 	public Context getAppActivity() {
@@ -170,18 +168,13 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 	public ClientSessionMetrics getSessionMetrics() {
 
 		ClientSessionMetrics sessionMetrics = new ClientSessionMetrics();
-		ApplicationConfigurationModel appConfigModel = null;
-		if( configurationService != null )
-		{
-			appConfigModel = configurationService.getConfigurations();
-		}
 
 		try {
 			//set device hardware metadata
-			sessionMetrics.setDeviceModel(MonitoringClient.getDeviceModel());
-			sessionMetrics.setDeviceOSVersion(MonitoringClient.getDeviceOSVersion());
-			sessionMetrics.setDevicePlatform(MonitoringClient.getDevicePlatform());
-			sessionMetrics.setDeviceType(MonitoringClient.getDeviceType());
+			sessionMetrics.setDeviceModel(ApigeeMonitoringClient.getDeviceModel());
+			sessionMetrics.setDeviceOSVersion(ApigeeMonitoringClient.getDeviceOSVersion());
+			sessionMetrics.setDevicePlatform(ApigeeMonitoringClient.getDevicePlatform());
+			sessionMetrics.setDeviceType(ApigeeMonitoringClient.getDeviceType());
 			String android_id = Secure.getString(
 					appActivity.getContentResolver(), Secure.ANDROID_ID);
 			sessionMetrics.setDeviceId(android_id);
@@ -195,18 +188,15 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			sessionMetrics.setSessionId(sessionId);
 			sessionMetrics.setTimeStamp(new Date());			
 			sessionMetrics.setSessionStartTime(sessionManager.getSessionStartTime());
-			sessionMetrics.setSdkVersion(MonitoringClient.getSDKVersion());
-			sessionMetrics.setSdkType(MonitoringClient.getDevicePlatform());
+			sessionMetrics.setSdkVersion(ApigeeMonitoringClient.getSDKVersion());
+			sessionMetrics.setSdkType(ApigeeMonitoringClient.getDevicePlatform());
 			
 			// application Id
-			ApplicationConfigurationService configService = monitoringClient.getApplicationConfigurationService();
-			if (null != configService) {
-				App app = configService.getCompositeApplicationConfigurationModel();
-				if( app != null ) {
-					Long instaOpsAppId = app.getInstaOpsApplicationId();
-					if (instaOpsAppId != null) {
-						sessionMetrics.setAppId(instaOpsAppId);
-					}
+			ApigeeActiveSettings activeSettings = monitoringClient.getActiveSettings();
+			if (null != activeSettings) {
+				Long instaOpsAppId = activeSettings.getInstaOpsApplicationId();
+				if (instaOpsAppId != null) {
+					sessionMetrics.setAppId(instaOpsAppId);
 				}
 			}
 
@@ -216,7 +206,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 					.getPackageManager().getPackageInfo(
 							appActivity.getPackageName(), 0).versionName);
 
-			if ((appConfigModel != null) && appConfigModel.getLocationCaptureEnabled()) {
+			if ((activeSettings != null) && activeSettings.getLocationCaptureEnabled()) {
 				if (appActivity.checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
 				{
 					Criteria gpsCriteria = new Criteria();
@@ -256,7 +246,7 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 			}
 
 
-			if ((appConfigModel != null) && appConfigModel.getNetworkCarrierCaptureEnabled()) {
+			if ((this.activeSettings != null) && this.activeSettings.getNetworkCarrierCaptureEnabled()) {
 
 				if (appActivity.checkCallingOrSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED)
 				{			
@@ -373,27 +363,24 @@ public abstract class AbstractUploadService implements MetricsUploadService {
 		}
 		
 		ClientMetricsEnvelope envelope = null;
-		ApplicationConfigurationService configService = monitoringClient.getApplicationConfigurationService();
+		ApigeeActiveSettings activeSettings = monitoringClient.getActiveSettings();
 		
-		if (null != configService) {
-			App app = configService.getCompositeApplicationConfigurationModel();
-			if( app != null ) {
-				String orgName = app.getOrgName();
-				String appName = app.getAppName();
-				Long instaOpsAppId = app.getInstaOpsApplicationId();
+		if (null != activeSettings && activeSettings.getApigeeApp() != null ) {
+            String orgName = activeSettings.getOrgName();
+            String appName = activeSettings.getAppName();
+            Long instaOpsAppId = activeSettings.getInstaOpsApplicationId();
 
-				envelope = new ClientMetricsEnvelope();
-				envelope.setTimeStamp(new Date());
+            envelope = new ClientMetricsEnvelope();
+            envelope.setTimeStamp(new Date());
 
-				envelope.setOrgName(orgName);
-				envelope.setAppName(appName);
-				envelope.setInstaOpsApplicationId(instaOpsAppId);
-					
-				String fullAppName = app.getFullAppName();
-				if (fullAppName != null) {
-					envelope.setFullAppName(fullAppName);
-				}
-			}
+            envelope.setOrgName(orgName);
+            envelope.setAppName(appName);
+            envelope.setInstaOpsApplicationId(instaOpsAppId);
+
+            String fullAppName = activeSettings.getFullAppName();
+            if (fullAppName != null) {
+                envelope.setFullAppName(fullAppName);
+            }
 		}
 		
 		if (envelope == null) {

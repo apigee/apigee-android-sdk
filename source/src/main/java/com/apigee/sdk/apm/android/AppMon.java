@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.apigee.sdk.AppIdentification;
 import com.apigee.sdk.apm.android.model.ClientLog;
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 
 /**
  * High-level convenience methods for interacting with Apigee App Monitoring
@@ -26,9 +26,9 @@ public class AppMon {
 	 * @param appActivity the Android context
 	 * @return an initialized MonitoringClient instance or null on error
 	 * @see AppIdentification
-	 * @see DataClient
+	 * @see com.apigee.sdk.data.client.ApigeeDataClient
 	 */
-	public static MonitoringClient initialize(AppIdentification appIdentification, DataClient dataClient, Context appActivity)
+	public static ApigeeMonitoringClient initialize(AppIdentification appIdentification, ApigeeDataClient dataClient, Context appActivity)
 	{
 		return initialize(appIdentification, dataClient, appActivity, null);
 	}
@@ -41,14 +41,14 @@ public class AppMon {
 	 * @param monitoringOptions options to control App Monitoring functionality (can be null)
 	 * @return an initialized MonitoringClient instance or null on error
 	 * @see AppIdentification
-	 * @see DataClient
+	 * @see com.apigee.sdk.data.client.ApigeeDataClient
 	 * @see MonitoringOptions
 	 */
-	public static MonitoringClient initialize(AppIdentification appIdentification, DataClient dataClient, Context appActivity, MonitoringOptions monitoringOptions)
+	public static ApigeeMonitoringClient initialize(AppIdentification appIdentification, ApigeeDataClient dataClient, Context appActivity, MonitoringOptions monitoringOptions)
 	{
 		if (!isInitialized()) {
 			try {
-				return MonitoringClient.initialize(appIdentification, dataClient, appActivity, monitoringOptions);
+				return ApigeeMonitoringClient.initialize(appIdentification, dataClient, appActivity, monitoringOptions);
 			} catch (InitializationException e) {
 				Log.wtf(ClientLog.TAG_MONITORING_CLIENT, ERR_INIT_FAILURE_MSG);
 			} catch (Throwable t) {
@@ -65,7 +65,7 @@ public class AppMon {
 	 */
 	public static String getApigeeDeviceId(){
 		String deviceId = null;
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (null != client) {
 			deviceId = client.getApigeeDeviceId();
 		}
@@ -83,7 +83,7 @@ public class AppMon {
 	{
 		boolean refreshed = false;
 		if (isInitialized()) {
-			MonitoringClient client = MonitoringClient.getInstance();
+			ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 			if (null != client) {
 				refreshed = client.refreshConfiguration(reloadListener);
 			}
@@ -100,7 +100,7 @@ public class AppMon {
 	{
 		boolean uploaded = false;
 		if (isInitialized()) {
-			MonitoringClient client = MonitoringClient.getInstance();
+			ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 			if (null != client) {
 				uploaded = client.uploadMetrics();
 			}
@@ -115,7 +115,7 @@ public class AppMon {
 	 */
 	public static boolean isInitialized() {
 		boolean isInitialized = false;
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (null != client) {
 			isInitialized = client.isInitialized();
 		}
@@ -127,7 +127,7 @@ public class AppMon {
 	 * Let Apigee App Monitoring know that we just had user interaction (session is active)
 	 */
 	public static void onUserInteraction() {
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (null != client) {
 			client.onUserInteraction();
 		}
@@ -142,7 +142,7 @@ public class AppMon {
 	public static boolean addMetricsUploadListener(UploadListener metricsUploadListener) {
 		boolean listenerAdded = false;
 
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (null != client) {
 			listenerAdded = client.addMetricsUploadListener(metricsUploadListener);
 		}
@@ -159,7 +159,7 @@ public class AppMon {
 	public static boolean removeMetricsUploadListener(UploadListener metricsUploadListener) {
 		boolean listenerRemoved = false;
 
-		MonitoringClient client = MonitoringClient.getInstance();
+		ApigeeMonitoringClient client = ApigeeMonitoringClient.getInstance();
 		if (null != client) {
 			listenerRemoved = client.removeMetricsUploadListener(metricsUploadListener);
 		}
