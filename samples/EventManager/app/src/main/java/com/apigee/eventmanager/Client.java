@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.util.Log;
 
 import com.apigee.sdk.ApigeeClient;
-import com.apigee.sdk.apm.android.MonitoringClient;
-import com.apigee.sdk.data.client.DataClient;
+import com.apigee.sdk.apm.android.ApigeeMonitoringClient;
+import com.apigee.sdk.data.client.ApigeeDataClient;
 import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
 import com.apigee.sdk.data.client.callbacks.DeviceRegistrationCallback;
 import com.apigee.sdk.data.client.callbacks.QueryResultsCallback;
@@ -46,11 +46,11 @@ public class Client {
     public ApigeeClient apigeeClient;
     public Device       device;
 
-    public DataClient dataClient() {
+    public ApigeeDataClient dataClient() {
         return this.apigeeClient.getDataClient();
     }
 
-    public MonitoringClient monitoringClient() {
+    public ApigeeMonitoringClient monitoringClient() {
         return this.apigeeClient.getMonitoringClient();
     }
 
@@ -222,7 +222,7 @@ public class Client {
     public void getPrivateEvents(String queryString, final ClientEventCallback clientEventCallback) {
         this.dataClient().queryEntityConnectionsAsync(USERS, ME, PRIVATE, queryString, new QueryResultsCallback() {
             @Override
-            public void onResponse(DataClient.Query query) {
+            public void onResponse(ApigeeDataClient.Query query) {
                 if (clientEventCallback != null) {
                     if( query != null && query.getResponse() != null ) {
                         clientEventCallback.onEventsGathered(query.getResponse().getEntities());
@@ -233,7 +233,7 @@ public class Client {
             }
 
             @Override
-            public void onQueryResults(DataClient.Query query) { }
+            public void onQueryResults(ApigeeDataClient.Query query) { }
 
             @Override
             public void onException(Exception e) {
@@ -258,7 +258,7 @@ public class Client {
     }
 
     public void registerPush(final Context context, final String regId) {
-        final DataClient dataClient = this.dataClient();
+        final ApigeeDataClient dataClient = this.dataClient();
         if (dataClient != null) {
             dataClient.registerDeviceForPushAsync(dataClient.getUniqueDeviceID(), GCM_NOTIFIER_ID, regId, null, new DeviceRegistrationCallback() {
                 @Override
