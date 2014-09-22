@@ -120,7 +120,7 @@ for sample_entry in ${DEST_SAMPLES_DIR}/*
 do
 	if [ -d "${sample_entry}" ]; then
 		# is it missing a libs subdirectory?
-		SAMPLE_LIBS_DIR="${sample_entry}/libs"
+		SAMPLE_LIBS_DIR="${sample_entry}/app/libs"
 		if [ ! -d "${SAMPLE_LIBS_DIR}" ]; then
 			mkdir "${SAMPLE_LIBS_DIR}"
 		fi
