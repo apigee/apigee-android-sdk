@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="50dp">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="22dp"
+        android:text="Event Name"
+        android:textSize="16sp"
+        android:layout_alignTop="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:layout_marginRight="40dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>

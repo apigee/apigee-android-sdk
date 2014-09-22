@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/Users/ApigeeCorporation/Developer/ApigeeSDKs/Android/My_fork/samples_android_studio/books/app/build/intermediates/pre-dexed/debug/apigee-android-2.0.12-9bd13fab655b0ba8d1b5e3658bb3d015fa3e6b1c.jar"
+        jar="/Users/ApigeeCorporation/Developer/ApigeeSDKs/Android/My_fork/samples_android_studio/books/app/libs/apigee-android-2.0.12.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="5f5787c51816d2ef3c583a2dac7f5e0ecdc50189"/>
+    <item
+        dex="/Users/ApigeeCorporation/Developer/ApigeeSDKs/Android/My_fork/samples_android_studio/books/app/build/intermediates/pre-dexed/debug/support-v4-18.0.0-2484d88715cbcdaf306e7f8449d6546e84c1520d.jar"
+        jar="/Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-v4/18.0.0/support-v4-18.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156"/>
+
+</pre-dex-items>

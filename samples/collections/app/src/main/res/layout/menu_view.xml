@@ -1,0 +1,129 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">	
+	<LinearLayout
+	   
+	    android:id="@+id/LinearLayout1"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    android:paddingTop="@dimen/activity_vertical_margin"
+	    tools:context=".MenuActivity" >
+	
+	    <TextView
+	        android:id="@+id/introText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Tap each button to perform a collection operation. For a detailed explanation of how each operation works, see the code comments in  ApiActivity.java.\n\n"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <TextView
+	        android:id="@+id/createLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Create a new collection"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    <TextView
+	        android:id="@+id/createDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Calls createEntityAsync(), which creates a new collection with an entity in it."
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <Button
+	        android:id="@+id/createButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Create" 
+	        android:onClick="create" />
+	
+	    <TextView
+	        android:id="@+id/updateLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Add Entities to collection"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+		
+	    <TextView
+	        android:id="@+id/updateDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Calls createEntitiesAsync(), which creates one or more entities and adds them to the collection."
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <Button
+	        android:id="@+id/updateButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Add Entities"
+	        android:onClick="update" />
+		
+	    <TextView
+	        android:id="@+id/retrieveLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Retrieve collection"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+		
+	    <TextView
+	        android:id="@+id/retrieveDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Calls retrieveEntitiesAsync(), which retrieves the first 10 entities in the collection."
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <Button
+	        android:id="@+id/retrieveButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Retrieve" 
+	        android:onClick="retrieve" />
+	
+	    <TextView
+	        android:id="@+id/pageLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Retrieve next set of entities"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+		
+	    <TextView
+	        android:id="@+id/pageDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Calls getCollectionAsync() and passes a cursor from the previous retrieve, which returns the next 10 entities in the collection."
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <Button
+	        android:id="@+id/pageButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Retrieve Next Entities"
+	        android:onClick="page" />
+	
+	    <TextView
+	        android:id="@+id/deleteLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Delete entity"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	    
+	    <TextView
+	        android:id="@+id/deleteDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Calls removeEntityAsync(). In this case, we will remove the first 5 entities from the collection."
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	    
+	    <Button
+	        android:id="@+id/deleteButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Delete"
+	        android:onClick="delete" />
+	
+	</LinearLayout>
+</ScrollView>
