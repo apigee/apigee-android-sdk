@@ -1,8 +1,8 @@
-##eventManager android app.
+##monitoring android app.
 
-An app that acts as an EventBrite clone. This shows you some of the general functionality of our SDK including push, user login/logout, and interacting with public and private enitites.
+An app that lets you test the App Monitoring feature by sending logging, crash and error reports to your account.
 
-##Running the eventManager android app
+##Running the monitoring android app
 
 Before running a sample application, place the apigee-android jar into 'app/libs' folder.  
 

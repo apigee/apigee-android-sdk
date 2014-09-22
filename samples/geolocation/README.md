@@ -1,8 +1,8 @@
-##eventManager android app.
+##geolocation android app.
 
-An app that acts as an EventBrite clone. This shows you some of the general functionality of our SDK including push, user login/logout, and interacting with public and private enitites.
+An app that shows you how to creates entities with location data, and perform geolocation queries to retrieve them.
 
-##Running the eventManager android app
+##Running the geolocation android app
 
 Before running a sample application, place the apigee-android jar into 'app/libs' folder.  
 

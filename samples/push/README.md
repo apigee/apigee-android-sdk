@@ -1,9 +1,14 @@
-apigee-android-push-test
-====================
+##push android app.
 
 A simple Android app that registers and pushes a GCM notification to itself via Apigee's App Services.
 
-To run:
+##Running the monitoring android app
+
+Before running a sample application, place the apigee-android jar into 'app/libs' folder.  
+
+Once you have placed the jar into the correct location, you will want to perform a gradle sync to get it to recognize the jar file.
+
+You will also need to take the following steps:
 
 1. Change the GCM_SENDER_ID to your Google API Project Number
 2. Set the API_URL, ORG, APP, USER, and PASSWORD for your App Services app.

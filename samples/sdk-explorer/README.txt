@@ -1,5 +1,4 @@
-Apigee Mobile Analytics SDK Explorer App
-----------------------------------------
+##sdk-explorer android app.
 
 The following app has been instrumented with Apigee Mobile Analytics, and uses the following features:
 
@@ -9,12 +8,14 @@ The following app has been instrumented with Apigee Mobile Analytics, and uses t
 4. Apigee Mobile analytics configuration - check out "ConfigsFragment.java" and "NetworkFragment.java"
 
 
-Building this app
------------------   
-This app relies on ActionBarSherlock v4.2.0 (http://actionbarsherlock.com/index.html).
-Download and setup (follow web site's instructions) in Eclipse as a standalone project.
-Then set up this app's project to be dependent on the ActionBarSherlock project.
+##Running the sdk-explorer android app
 
+Before running a sample application, place the apigee-android jar into 'app/libs' folder.  
+
+Once you have placed the jar into the correct location, you will want to perform a gradle sync to get it to recognize the jar file.  Afterwards, you will be able to run the application.
+
+This app relies on ActionBarSherlock v4.2.0 (http://actionbarsherlock.com/index.html).
+Then set up this app's project to be dependent on the ActionBarSherlock project.
 
 To get this working, you will need to:
 1. Create your own mobile analytics sdk explorer app in your dashboard

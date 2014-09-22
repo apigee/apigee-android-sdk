@@ -1,8 +1,8 @@
-##eventManager android app.
+##entities android app.
 
-An app that acts as an EventBrite clone. This shows you some of the general functionality of our SDK including push, user login/logout, and interacting with public and private enitites.
+An app that shows you how to perform basic CRUD operations on entities in your account.
 
-##Running the eventManager android app
+##Running the entities android app
 
 Before running a sample application, place the apigee-android jar into 'app/libs' folder.  
 
