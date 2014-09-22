@@ -24,10 +24,10 @@ Once you have placed the jar into the correct location, you will want to perform
 
 Some of the apps also require you to provide your organization name by updating the call to Apigee.Client in the app's source. Near the top of the code in each app, you should see something similar to this:
 
-	```java
-        String ORGNAME = "yourorgname"; //Your Apigee.com username
-        String APPNAME = "sandbox"; //Your App Services app name
-    ```
+<pre>
+    String ORGNAME = "yourorgname"; //Your Apigee.com username
+    String APPNAME = "sandbox"; //Your App Services app name
+</pre>
 
 Simply change the value of the orgName property to your Apigee organization name.
 
