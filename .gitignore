@@ -10,6 +10,6 @@ target/
 .classpath
 .project
 .DS_Store
-
+.gradle
 
 /source/.idea/workspace.xml
