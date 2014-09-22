@@ -134,6 +134,21 @@ do
 			rm -r "${sample_entry}/bin"
 			rmdir "${sample_entry}/bin"
 		fi
+
+        # does the sample app directory have a 'build' subdirectory?
+        if [ -d "${sample_entry}/build" ]; then
+            # delete it
+            rm -r "${sample_entry}/build"
+            rmdir "${sample_entry}/build"
+        fi
+
+        # does the sample app directory have a 'app/build' subdirectory?
+        if [ -d "${sample_entry}/app/build" ]; then
+            # delete it
+            rm -r "${sample_entry}/app/build"
+            rmdir "${sample_entry}/app/build"
+        fi
+
 	fi
 done
 
