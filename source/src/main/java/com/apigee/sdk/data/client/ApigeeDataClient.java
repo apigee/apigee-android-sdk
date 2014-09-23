@@ -2191,8 +2191,8 @@ public class ApigeeDataClient implements LocationListener {
      */
     public void queryUsersForGroupAsync(String groupId,
             QueryResultsCallback callback) {
-        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
-                getApplicationId(), "groups", groupId, "users");
+        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null, organizationId,
+                applicationId, "groups", groupId, "users");
     }
 
     /**
