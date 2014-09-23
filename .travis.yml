@@ -6,4 +6,4 @@ env:
 script:
     - gradle -p source assemble
     - gradle -p source shadowJar
-    - gradle -p source test
+    - gradle -p source cleanTest test
