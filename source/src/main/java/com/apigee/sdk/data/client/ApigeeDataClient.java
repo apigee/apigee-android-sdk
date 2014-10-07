@@ -795,6 +795,11 @@ public class ApigeeDataClient implements LocationListener {
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Accept",acceptedContentType);
 
+                    if((accessToken != null) && (accessToken.length() > 0)) {
+                        String authStr = "Bearer " + accessToken;
+                        conn.setRequestProperty("Authorization", authStr);
+                    }
+                    
                     inputStream = conn.getInputStream();
                     if( inputStream != null ) {
                         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 8190);
