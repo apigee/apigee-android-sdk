@@ -31,7 +31,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
+import org.apache.http.util.ByteArrayBuffer;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -758,6 +762,236 @@ public class ApigeeDataClient implements LocationListener {
 
 	    return response;
 	}
+
+    public void getAssetDataForEntityAsync(final Entity entity, final String acceptedContentType, final ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return getAssetDataForEntity(entity, acceptedContentType);
+            }
+        }).execute();
+    }
+
+    public ApiResponse getAssetDataForEntity(Entity entity, String acceptedContentType) {
+        byte[] assetByteArray = null;
+        String errorMessage = null;
+        String exceptionMessage = null;
+        if( entity != null ) {
+            String entityType = entity.getType();
+            String entityUUID = entity.getUuid().toString();
+            if (entityUUID != null && entityType != null && acceptedContentType != null) {
+                String urlAsString = path(apiUrl,organizationId,applicationId,entityType, entityUUID);
+                HttpURLConnection conn = null;
+                InputStream inputStream = null;
+
+                try {
+                    URL url = new URL(urlAsString);
+
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setUseCaches(false);
+                    conn.setDoInput(true);
+                    conn.setDoOutput(false);
+
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Accept",acceptedContentType);
+
+                    if((accessToken != null) && (accessToken.length() > 0)) {
+                        String authStr = "Bearer " + accessToken;
+                        conn.setRequestProperty("Authorization", authStr);
+                    }
+                    
+                    inputStream = conn.getInputStream();
+                    if( inputStream != null ) {
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 8190);
+                        ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(50);
+                        int current = 0;
+                        while ((current = bufferedInputStream.read()) != -1) {
+                            byteArrayBuffer.append((byte)current);
+                        }
+                        assetByteArray = byteArrayBuffer.toByteArray();
+                    }
+                } catch (Exception exception) {
+                    errorMessage = "Error uploading asset to " + "'" + urlAsString + "'";
+                    exceptionMessage = exception.getLocalizedMessage();
+                    exception.printStackTrace();
+                } finally {
+                    try {
+                        if( inputStream != null ) {
+                            inputStream.close();
+                        }
+                        if( conn != null ) {
+                            conn.disconnect();
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+
+        ApiResponse response = new ApiResponse();
+        response.setDataClient(this);
+        if( assetByteArray != null ) {
+            if( assetByteArray.length > 0 ) {
+                response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateSuccess);
+                response.setEntityAssetData(assetByteArray);
+            } else {
+                response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateFailure);
+                response.setErrorDescription("The asset returned with no data.");
+            }
+        } else {
+            response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateFailure);
+            if( errorMessage != null ) {
+                logError(errorMessage);
+                response.setErrorDescription(errorMessage);
+            }
+            if( exceptionMessage != null ) {
+                logError(exceptionMessage);
+                response.setException(exceptionMessage);
+            }
+        }
+
+        return response;
+    }
+
+    public void attachAssetToEntityAsync(final Entity entity, final InputStream assetInputStream, final String assetFileName, final String assetContentType, ApiResponseCallback callback) {
+        (new ClientAsyncTask<ApiResponse>(callback) {
+            @Override
+            public ApiResponse doTask() {
+                return attachAssetToEntity(entity, assetInputStream, assetFileName, assetContentType);
+            }
+        }).execute();
+    }
+
+    public ApiResponse attachAssetToEntity(Entity entity, InputStream assetInputStream, String assetFileName, String assetContentType) {
+        ApiResponse response = null;
+        String errorMessage = null;
+        String exceptionMessage = null;
+        if( entity != null ) {
+            String entityType = entity.getType();
+            String entityUUID = entity.getUuid().toString();
+            if( entityUUID != null && entityType != null && assetInputStream != null && assetFileName != null && assetContentType != null ) {
+
+                String urlAsString = path(apiUrl,organizationId,applicationId,entityType,entityUUID);
+                HttpURLConnection conn = null;
+                DataOutputStream outputStream = null;
+                InputStream inputStream = null;
+
+                try {
+                    URL url = new URL(urlAsString);
+                    conn = (HttpURLConnection) url.openConnection();
+
+                    conn.setRequestMethod("PUT");
+                    conn.setUseCaches(false);
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    String boundary = "*****";
+                    String lineEnd = "\r\n";
+                    String twoHyphens = "--";
+
+                    conn.setRequestProperty("Connection", "Keep-Alive");
+                    conn.setRequestProperty("Cache-Control", "no-cache");
+                    conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+                    if((accessToken != null) && (accessToken.length() > 0)) {
+                        String authStr = "Bearer " + accessToken;
+                        conn.setRequestProperty("Authorization", authStr);
+                    }
+
+                    outputStream = new DataOutputStream(conn.getOutputStream());
+                    outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+                    outputStream.writeBytes("Content-Disposition: form-data; name=file; filename=" + assetFileName + lineEnd);
+                    outputStream.writeBytes("Content-Type:" + assetContentType + lineEnd + lineEnd);
+
+                    int assetSize = assetInputStream.available();
+                    while (assetInputStream.available() > 0) {
+                        byte[] buffer = new byte[assetSize];
+                        int bytesRead = assetInputStream.read(buffer);
+                        if( bytesRead > 0 ) {
+                            outputStream.write(buffer);
+                        }
+                    }
+
+                    outputStream.writeBytes(lineEnd);
+                    outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                    outputStream.flush();
+                    outputStream.close();
+                    outputStream = null;
+
+                    inputStream = conn.getInputStream();
+                    if( inputStream != null ) {
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while( (line = reader.readLine()) != null ) {
+                            sb.append(line);
+                            sb.append('\n');
+                        }
+                        reader.close();
+
+                        String responseAsString = sb.toString();
+                        response = (ApiResponse) new JacksonMarshallingService().demarshall(responseAsString, ApiResponse.class);
+                        response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateSuccess);
+                        if( response != null ) {
+                            response.setRawResponse(responseAsString);
+                        }
+                        response.setDataClient(this);
+                    } else {
+                        errorMessage = "no response body from server";
+                    }
+                } catch(Exception exception) {
+
+                    errorMessage = "Error uploading asset to " + "'" + urlAsString + "'";
+                    exception.printStackTrace();
+                    exceptionMessage = exception.getLocalizedMessage();
+
+                } catch(Throwable throwable) {
+
+                    errorMessage = "Error uploading asset to " + "'" + urlAsString + "'";
+                    throwable.printStackTrace();
+                    exceptionMessage = throwable.getLocalizedMessage();
+
+                } finally {
+
+                    try {
+                        if( outputStream != null ) {
+                            outputStream.close();
+                        }
+                        if( inputStream != null ) {
+                            inputStream.close();
+                        }
+                        if( conn != null ) {
+                            conn.disconnect();
+                        }
+                    } catch(Exception ignored) {
+                    }
+                }
+            }
+            else {
+                errorMessage = "Either entity type or uuid is null or the asset specific parameters were null.";
+            }
+        } else {
+            errorMessage = "Entity is null.";
+        }
+
+        if( response == null ) {
+            response = new ApiResponse();
+            response.setDataClient(this);
+            response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateFailure);
+
+            if( errorMessage != null ) {
+                logError(errorMessage);
+                response.setErrorDescription(errorMessage);
+            }
+            if( exceptionMessage != null ) {
+                logError(exceptionMessage);
+                response.setException(exceptionMessage);
+            }
+        }
+
+        return response;
+    }
 
 
     /**
@@ -2191,8 +2425,8 @@ public class ApigeeDataClient implements LocationListener {
      */
     public void queryUsersForGroupAsync(String groupId,
             QueryResultsCallback callback) {
-        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null,
-                getApplicationId(), "groups", groupId, "users");
+        queryEntitiesRequestAsync(callback, HTTP_METHOD_GET, null, null, organizationId,
+                applicationId, "groups", groupId, "users");
     }
 
     /**

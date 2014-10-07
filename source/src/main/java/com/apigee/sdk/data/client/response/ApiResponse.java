@@ -25,7 +25,7 @@ public class ApiResponse {
         kApiTransactionResponseStateSuccess,
         kApiTransactionResponseStateFailure,
         kApiTransactionResponseStatePending
-    };
+    }
 
 
     private String accessToken;
@@ -61,6 +61,7 @@ public class ApiResponse {
 	private User user;
 	private String rawResponse;
     private ApiTransactionResponseState transactionResponseState;
+    private byte[] entityAssetData;
 
 
 	private final Map<String, JsonNode> properties = new HashMap<String, JsonNode>();
@@ -766,6 +767,14 @@ public class ApiResponse {
 
     public ApiTransactionResponseState getTransactionResponseState() {
         return this.transactionResponseState;
+    }
+
+    public void setEntityAssetData(byte[] entityAssetData) {
+        this.entityAssetData = entityAssetData;
+    }
+
+    public byte[] getEntityAssetData() {
+        return this.entityAssetData;
     }
 
     public Boolean completedSuccessfully() {
