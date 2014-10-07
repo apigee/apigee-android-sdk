@@ -3,6 +3,7 @@
 The sample apps in this directory are intended to show basic usage of some of the major features of App Services using the Apigee Android SDK. By default, all of the sample apps are set up to use the unsecured 'sandbox' application that was created for you when you created your Apigee account.
 
 ##Included Samples Apps
+* **assets** - An app that shows you how to attach image assets to entities and also shows how they can be downloaded and used.
 * **books** - A 'list' app that lets the user create, retrieve and perform geolocation queries on a list of books. This sample also makes use of jQuery and jQuery mobile.
 * **collections** - An app that shows you how to perform basic CRUD operations on collections in your account.
 * **entities** - An app that shows you how to perform basic CRUD operations on entities in your account.
@@ -18,7 +19,7 @@ The sample apps in this directory are intended to show basic usage of some of th
 
 Please note that all sample applications have been refactored to use gradle and Android Studio.  To download Android Studio please visit the [Android Studio download site](https://developer.android.com/sdk/installing/studio.html).
 
-Before running a sample application, place the apigee-android jar into each sample applications 'app/libs' folder.  
+Before running a sample application, place the apigee-android jar into each sample applications `app/libs` folder.  
 
 Once you have placed the jar into the correct location, you will want to perform a gradle sync to get it to recognize the jar file.  Afterwards, you will be able to run the application.
 

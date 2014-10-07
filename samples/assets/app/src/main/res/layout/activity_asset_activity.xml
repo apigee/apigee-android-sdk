@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".asset_activity"
+    android:onClick="uploadImage">
+
+    <TextView
+        android:text="Assets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/assetsText"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="40dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick Image"
+        android:id="@+id/pickImageButton"
+        android:onClick="pickImage"
+        android:layout_below="@+id/pickedImageText"
+        android:layout_alignRight="@+id/pickedImageText"
+        android:layout_alignEnd="@+id/pickedImageText" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/pickedImageView"
+        android:layout_above="@+id/pickedImageText"
+        android:layout_alignLeft="@+id/pickImageButton"
+        android:layout_alignStart="@+id/pickImageButton" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/uploadedImageView"
+        android:layout_toEndOf="@+id/assetsText"
+        android:layout_alignTop="@+id/pickedImageView"
+        android:layout_toRightOf="@+id/assetsText"
+        android:layout_marginLeft="-10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Picked Image"
+        android:id="@+id/pickedImageText"
+        android:textSize="20dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Uploaded Image"
+        android:id="@+id/uploadedImageText"
+        android:textSize="20dp"
+        android:layout_alignTop="@+id/pickedImageText"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Image"
+        android:id="@+id/button"
+        android:onClick="uploadImage"
+        android:layout_below="@+id/pickImageButton"
+        android:layout_alignLeft="@+id/pickImageButton"
+        android:layout_alignStart="@+id/pickImageButton"
+        android:layout_marginLeft="-10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:id="@+id/button2"
+        android:onClick="getUploadedImage"
+        android:layout_above="@+id/button"
+        android:layout_alignLeft="@+id/uploadedImageText"
+        android:layout_alignStart="@+id/uploadedImageText"
+        android:layout_alignRight="@+id/uploadedImageText"
+        android:layout_alignEnd="@+id/uploadedImageText" />
+
+</RelativeLayout>
