@@ -23,7 +23,7 @@ import java.util.Map;
 
 
 public class asset_activity extends Activity {
-    private static final String APIGEE_ORG_NAME = "rwalsh"; // <-- Put your org name here!!!
+    private static final String APIGEE_ORG_NAME = "<YOUR ORG NAME>"; // <-- Put your org name here!!!
     private static final String APIGEE_APP_NAME = "sandbox";
     private static final String ENTITY_TYPE = "pictures";
     private static final String ENTITY_NAME = "testAssetUpload";
