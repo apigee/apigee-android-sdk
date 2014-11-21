@@ -29,6 +29,7 @@ public class ApiResponse {
 
 
     private String accessToken;
+    private String refreshToken;
 
 	private String error;
 	private String errorDescription;
@@ -90,26 +91,45 @@ public class ApiResponse {
 		properties.put(key, value);
 	}
 
-	/**
-    * Returns the OAuth token that was sent with the request
-    *
-    * @return the OAuth token
-    */
-	@JsonProperty("access_token")
-	@JsonSerialize(include = Inclusion.NON_NULL)
-	public String getAccessToken() {
-		return accessToken;
-	}
+    /**
+     * Returns the OAuth token that was sent with the request
+     *
+     * @return the OAuth token
+     */
+    @JsonProperty("access_token")
+    @JsonSerialize(include = Inclusion.NON_NULL)
+    public String getAccessToken() {
+        return accessToken;
+    }
 
-	/**
-    * @y.exclude
-    */
-	@JsonProperty("access_token")
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
+    /**
+     * @y.exclude
+     */
+    @JsonProperty("access_token")
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 
-	/**
+    /**
+     * Returns the OAuth refresh token that was sent with the request
+     *
+     * @return the OAuth token
+     */
+    @JsonProperty("refresh_token")
+    @JsonSerialize(include = Inclusion.NON_NULL)
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    /**
+     * @y.exclude
+     */
+    @JsonProperty("refresh_token")
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    /**
     * Returns the 'error' property of the response.
     *
     * @return the error
