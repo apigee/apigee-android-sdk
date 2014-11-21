@@ -11,6 +11,7 @@ import android.util.Base64;
 import com.apigee.sdk.Logger;
 import com.apigee.sdk.URLConnectionFactory;
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
+import com.apigee.sdk.apm.android.Log;
 import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
 import com.apigee.sdk.data.client.callbacks.ClientAsyncTask;
 import com.apigee.sdk.data.client.callbacks.DeviceRegistrationCallback;
@@ -37,13 +38,18 @@ import com.google.api.client.auth.oauth2.BearerToken;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.PasswordTokenRequest;
 import com.google.api.client.auth.oauth2.StoredCredential;
+import com.google.api.client.auth.oauth2.TokenRequest;
 import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.http.BasicAuthentication;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
 import org.apache.http.util.ByteArrayBuffer;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -3769,28 +3775,64 @@ public class ApigeeDataClient implements LocationListener {
         validateNonEmptyParam(clientId,"clientId");
         validateNonEmptyParam(clientSecret,"clientSecret");
 
+        TokenResponse tokenResponse = null;
+
         Map<String, Object> queryParams = new HashMap<String, Object>();
         queryParams.put("grant_type","client_credentials");
         String accessTokenURLWithClientCredentialsGrantTypeQueryParam = addQueryParams(accessTokenURL,queryParams);
 
-        String credentials = clientId + ":" + clientSecret;
-        String authorizationHeaderValue = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-        Map<String, String> requestProperties = new HashMap<String, String>();
-        requestProperties.put("Authorization",authorizationHeaderValue);
+        TokenRequest tokenRequest = new TokenRequest(new NetHttpTransport(),new JacksonFactory(), new GenericUrl(accessTokenURLWithClientCredentialsGrantTypeQueryParam), "client_credentials");
+        tokenRequest.setClientAuthentication(new BasicAuthentication(clientId,clientSecret));
+        InputStream inputStream = null;
+        try {
+            HttpResponse httpResponse = tokenRequest.executeUnparsed();
+            inputStream = httpResponse.getContent();
+            if( inputStream != null ) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder sb = new StringBuilder();
+                String line;
 
-        ApiResponse response = apiRequestWithBaseURL(accessTokenURLWithClientCredentialsGrantTypeQueryParam, HTTP_METHOD_POST, requestProperties, null, null);
-        if (response == null) {
-            return null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                    sb.append('\n');
+                }
+
+                String responseAsString = sb.toString();
+                JSONObject responseDictionary = new JSONObject(responseAsString);
+                if( responseDictionary.has("access_token") && responseDictionary.getString("access_token") != null ) {
+                    tokenResponse = new TokenResponse();
+                    tokenResponse.setAccessToken(responseDictionary.getString("access_token"));
+                    if( responseDictionary.has("refresh_token") ) {
+                        tokenResponse.setAccessToken(responseDictionary.getString("refresh_token"));
+                    }
+                    if( responseDictionary.has("scope") ) {
+                        tokenResponse.setScope(responseDictionary.getString("scope"));
+                    }
+                    if( responseDictionary.has("token_type") ) {
+                        tokenResponse.setTokenType(responseDictionary.getString("token_type"));
+                    }
+                    if( responseDictionary.has("expires_in") ) {
+                        try{
+                            tokenResponse.setExpiresInSeconds(responseDictionary.getLong("expires_in"));
+                        } catch (Exception exception) {
+                            try {
+                                tokenResponse.setExpiresInSeconds(Long.parseLong(responseDictionary.get("expires_in").toString()));
+                            } catch ( Exception exception1 ) {
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception exception){
+        } finally {
+            if( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch ( Exception exception ) {
+                }
+            }
         }
-        if (!isEmpty(response.getAccessToken())) {
-            logInfo("oauth2AccessToken() with client_credentials: Access token: "
-                    + response.getAccessToken() + " Refresh token: " + response.getRefreshToken());
-        } else {
-            logInfo("oauth2AccessToken() with client_credentials: Response: " + response);
-        }
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken(response.getAccessToken());
-        tokenResponse.setRefreshToken(response.getRefreshToken());
+
         return tokenResponse;
     }
 

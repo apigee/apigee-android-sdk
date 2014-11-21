@@ -59,7 +59,7 @@
                 android:value="com.apigee.oauth2.OAuth2Activity" />
         </activity>
         <activity
-            android:name="com.apigee.sdk.data.client.entities.OAuth2WebViewActivity"
+            android:name="com.apigee.sdk.data.client.activities.OAuth2WebViewActivity"
             android:label="@string/title_oauth2_webview_activity"
             android:screenOrientation="portrait"
             android:parentActivityName=".AuthorizationCodeGrantTypeActivity" >
