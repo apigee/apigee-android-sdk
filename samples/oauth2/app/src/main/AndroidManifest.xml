@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PasswordGrantTypeActivity"
+            android:name=".grantTypeActivities.PasswordGrantTypeActivity"
             android:label="@string/title_activity_password_grant_type"
             android:screenOrientation="portrait"
             android:parentActivityName=".OAuth2Activity" >
@@ -32,7 +32,7 @@
                 android:value="com.apigee.oauth2.OAuth2Activity" />
         </activity>
         <activity
-            android:name=".ClientCredentialsGrantTypeActivity"
+            android:name=".grantTypeActivities.ClientCredentialsGrantTypeActivity"
             android:label="@string/title_activity_client_credentials_grant_type"
             android:screenOrientation="portrait"
             android:parentActivityName=".OAuth2Activity" >
@@ -41,7 +41,7 @@
                 android:value="com.apigee.oauth2.OAuth2Activity" />
         </activity>
         <activity
-            android:name=".ImplicitGrantTypeActivity"
+            android:name=".grantTypeActivities.ImplicitGrantTypeActivity"
             android:label="@string/title_activity_implicit_grant_type"
             android:screenOrientation="portrait"
             android:parentActivityName=".OAuth2Activity" >
@@ -50,7 +50,7 @@
                 android:value="com.apigee.oauth2.OAuth2Activity" />
         </activity>
         <activity
-            android:name=".AuthorizationCodeGrantTypeActivity"
+            android:name=".grantTypeActivities.AuthorizationCodeGrantTypeActivity"
             android:label="@string/title_activity_authorization_code_grant_type"
             android:screenOrientation="portrait"
             android:parentActivityName=".OAuth2Activity" >
@@ -62,7 +62,7 @@
             android:name="com.apigee.sdk.data.client.activities.OAuth2WebViewActivity"
             android:label="@string/title_oauth2_webview_activity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".AuthorizationCodeGrantTypeActivity" >
+            android:parentActivityName=".grantTypeActivities.AuthorizationCodeGrantTypeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

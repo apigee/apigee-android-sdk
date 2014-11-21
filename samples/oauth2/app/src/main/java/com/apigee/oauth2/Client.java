@@ -1,6 +1,8 @@
 package com.apigee.oauth2;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 
 import com.apigee.google.api.client.auth.oauth2.TokenResponse;
 import com.apigee.sdk.ApigeeClient;
@@ -47,5 +49,16 @@ public class Client {
 
     public void deleteStoredOAuth2Credentials(String storageId) {
         this.dataClient().deleteStoredOAuth2TokenData(storageId);
+    }
+
+    public static void showAlert(Context context, String alertTitle, String alertMessage) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(alertTitle);
+        alertDialog.setMessage(alertMessage);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialog.show();
     }
 }

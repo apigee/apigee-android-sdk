@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.apigee.oauth2.grantTypeActivities.AuthorizationCodeGrantTypeActivity;
+import com.apigee.oauth2.grantTypeActivities.ClientCredentialsGrantTypeActivity;
+import com.apigee.oauth2.grantTypeActivities.ImplicitGrantTypeActivity;
+import com.apigee.oauth2.grantTypeActivities.PasswordGrantTypeActivity;
+
 
 public class OAuth2Activity extends Activity {
 
