@@ -3783,9 +3783,10 @@ public class ApigeeDataClient implements LocationListener {
 
         TokenRequest tokenRequest = new TokenRequest(new NetHttpTransport(),new JacksonFactory(), new GenericUrl(accessTokenURLWithClientCredentialsGrantTypeQueryParam), "client_credentials");
         tokenRequest.setClientAuthentication(new BasicAuthentication(clientId,clientSecret));
+        HttpResponse httpResponse = null;
         InputStream inputStream = null;
         try {
-            HttpResponse httpResponse = tokenRequest.executeUnparsed();
+            httpResponse = tokenRequest.executeUnparsed();
             inputStream = httpResponse.getContent();
             if( inputStream != null ) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -3825,6 +3826,12 @@ public class ApigeeDataClient implements LocationListener {
             }
         } catch (Exception exception){
         } finally {
+            if( httpResponse != null ) {
+                try {
+                    httpResponse.disconnect();
+                } catch ( Exception exception ) {
+                }
+            }
             if( inputStream != null ) {
                 try {
                     inputStream.close();
