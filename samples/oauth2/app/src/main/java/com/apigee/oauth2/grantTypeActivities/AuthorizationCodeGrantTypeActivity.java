@@ -100,14 +100,13 @@ public class AuthorizationCodeGrantTypeActivity extends Activity {
 
     public void getAccessToken() {
         this.clearData();
-        Intent implicitGrantTypeActivity = new Intent(this,OAuth2WebViewActivity.class);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2GrantTypeExtraKey, Constants.kAuthorizationCodeGrantType);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessCodeURLExtraKey, Constants.kFacebookAuthorizeURL);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessTokenURLExtraKey, Constants.kFacebookTokenURL);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2RedirectURLExtraKey, Constants.kFacebookRedirectURL);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientIDExtraKey, Constants.kFacebookClientID);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientSecretExtraKey, Constants.kFacebookClientSecret);
-        this.startActivityForResult(implicitGrantTypeActivity,Constants.kAuthorizationCodeRequestCode);
+        Intent authorizationCodeGrantTypeActivity = Client.sharedClient().dataClient().oauth2AccessTokenAuthorizationCodeIntent(this,
+                                                                                                                                Constants.kFacebookAuthorizeURL,
+                                                                                                                                Constants.kFacebookTokenURL,
+                                                                                                                                Constants.kFacebookRedirectURL,
+                                                                                                                                Constants.kFacebookClientID,
+                                                                                                                                Constants.kFacebookClientSecret);
+        this.startActivityForResult(authorizationCodeGrantTypeActivity,Constants.kAuthorizationCodeRequestCode);
     }
 
     public void getEmailAddress() {

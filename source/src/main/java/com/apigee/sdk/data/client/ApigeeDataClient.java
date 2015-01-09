@@ -1,6 +1,7 @@
 package com.apigee.sdk.data.client;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,6 +13,7 @@ import com.apigee.sdk.Logger;
 import com.apigee.sdk.URLConnectionFactory;
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
 import com.apigee.sdk.apm.android.Log;
+import com.apigee.sdk.data.client.activities.OAuth2WebViewActivity;
 import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
 import com.apigee.sdk.data.client.callbacks.ClientAsyncTask;
 import com.apigee.sdk.data.client.callbacks.DeviceRegistrationCallback;
@@ -3931,5 +3933,51 @@ public class ApigeeDataClient implements LocationListener {
         }
 
         return tokenResponse;
+    }
+
+    /**
+     * Creates an OAuth 2 Intent for the authorization_code grant_type.
+     * The created intent can then be started by calling startActivityForResult.
+     *
+     * @param context the context to use when creating the Intent
+     * @param authorizationCodeURL the authorizationCodeURL
+     * @param accessTokenURL the accessTokenURL
+     * @param redirectURL the redirectURL
+     * @param clientId the clientId
+     * @param clientSecret the clientSecret
+     * @return the created Intent
+     */
+    public Intent oauth2AccessTokenAuthorizationCodeIntent(Context context,String authorizationCodeURL, String accessTokenURL, String redirectURL, String clientId, String clientSecret) {
+        Intent authorizationCodeGrantTypeActivity = new Intent(context,OAuth2WebViewActivity.class);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2GrantTypeExtraKey, "code");
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessCodeURLExtraKey, authorizationCodeURL);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessTokenURLExtraKey, accessTokenURL);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2RedirectURLExtraKey, redirectURL);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientIDExtraKey, clientId);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientSecretExtraKey, clientSecret);
+        return authorizationCodeGrantTypeActivity;
+    }
+
+    /**
+     * Creates an OAuth 2 Intent for the implicit grant_type.
+     * The created intent can then be started by calling startActivityForResult.
+     *
+     * @param context the context to use when creating the Intent
+     * @param authorizationCodeURL the authorizationCodeURL
+     * @param accessTokenURL the accessTokenURL
+     * @param redirectURL the redirectURL
+     * @param clientId the clientId
+     * @param clientSecret the clientSecret
+     * @return the created Intent
+     */
+    public Intent oauth2AccessTokenImplicitIntent(Context context,String authorizationCodeURL, String accessTokenURL, String redirectURL, String clientId, String clientSecret) {
+        Intent implicitGrantTypeActivity = new Intent(context,OAuth2WebViewActivity.class);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2GrantTypeExtraKey, "token");
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessCodeURLExtraKey, authorizationCodeURL);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessTokenURLExtraKey, accessTokenURL);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2RedirectURLExtraKey, redirectURL);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientIDExtraKey, clientId);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientSecretExtraKey, clientSecret);
+        return implicitGrantTypeActivity;
     }
 }

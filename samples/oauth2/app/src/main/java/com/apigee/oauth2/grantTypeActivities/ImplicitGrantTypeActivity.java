@@ -100,13 +100,12 @@ public class ImplicitGrantTypeActivity extends Activity {
 
     public void getAccessToken() {
         this.clearData();
-        Intent implicitGrantTypeActivity = new Intent(this,OAuth2WebViewActivity.class);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2GrantTypeExtraKey, Constants.kImplicitGrantType);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessCodeURLExtraKey, Constants.kFacebookAuthorizeURL);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessTokenURLExtraKey, Constants.kFacebookTokenURL);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2RedirectURLExtraKey, Constants.kFacebookRedirectURL);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientIDExtraKey, Constants.kFacebookClientID);
-        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientSecretExtraKey, Constants.kFacebookClientSecret);
+        Intent implicitGrantTypeActivity = Client.sharedClient().dataClient().oauth2AccessTokenImplicitIntent(this,
+                                                                                                              Constants.kFacebookAuthorizeURL,
+                                                                                                              Constants.kFacebookTokenURL,
+                                                                                                              Constants.kFacebookRedirectURL,
+                                                                                                              Constants.kFacebookClientID,
+                                                                                                              Constants.kFacebookClientSecret);
         this.startActivityForResult(implicitGrantTypeActivity, Constants.kImplicitRequestCode);
     }
 

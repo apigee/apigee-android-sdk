@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * OAuth2WebViewActivity is used for logging in to an OAuth 2 provider with using the authorization_code or implicit grant_types.
+ *
  * Created by ApigeeCorporation on 11/19/14.
  */
 public class OAuth2WebViewActivity extends android.app.Activity {
