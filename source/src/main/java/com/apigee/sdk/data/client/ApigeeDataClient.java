@@ -3709,6 +3709,14 @@ public class ApigeeDataClient implements LocationListener {
         }).execute();
     }
 
+    /**
+     * Stores the given OAuth 2 token response within a file data store.
+     * The stored token response can then retrieved using the getOAuth2TokenDataFromStore method.
+     *
+     * @param storageId a string object that is used to store the token response
+     * @param tokenResponse the token response containing the OAuth 2 token information.
+     * @return If the token response was stored or not.
+     */
     public Boolean storeOAuth2TokenData(String storageId, TokenResponse tokenResponse) {
         Boolean wasStored = false;
         try {
@@ -3727,6 +3735,12 @@ public class ApigeeDataClient implements LocationListener {
         return wasStored;
     }
 
+    /**
+     * Retrieves the stored token response that corresponds to the given storageId.
+     *
+     * @param storageId the id used to store the TokenResponse
+     * @return The TokenResponse object that is associated with the given storageId or null if no TokenResponse was found.
+     */
     public TokenResponse getOAuth2TokenDataFromStore(String storageId) {
         TokenResponse tokenResponse = null;
         try {
@@ -3749,6 +3763,11 @@ public class ApigeeDataClient implements LocationListener {
         return tokenResponse;
     }
 
+    /**
+     * Deletes the TokenResponse that is associated with the given storageId from the file data store.
+     *
+     * @param storageId The storageId associated with the stored TokenResponse.
+     */
     public void deleteStoredOAuth2TokenData(String storageId) {
         try {
             File oauth2StorageFolder = new File(this.context.getFilesDir(),"oauth2StorageFolder");
@@ -3761,6 +3780,14 @@ public class ApigeeDataClient implements LocationListener {
         }
     }
 
+    /**
+     * Used to get an OAuth 2 access_token using the client_credentials grant_type asynchronously.
+     *
+     * @param accessTokenURL The url used to get the access_token
+     * @param clientId The client_id
+     * @param clientSecret The client_secret
+     * @param callback The callback that will be executed when we have finished.
+     */
     public void oauth2AccessTokenAsync(final String accessTokenURL, final String clientId, final String clientSecret, OAuth2ResponseCallback callback) {
         validateNonEmptyParam(accessTokenURL, "accessTokenURL");
         validateNonEmptyParam(clientId,"clientId");
@@ -3773,6 +3800,14 @@ public class ApigeeDataClient implements LocationListener {
         }).execute();
     }
 
+    /**
+     * Used to get an OAuth 2 access_token using the client_credentials grant_type synchronously.
+     *
+     * @param accessTokenURL The url used to get the access_token
+     * @param clientId The client_id
+     * @param clientSecret The client_secret
+     * @return The TokenResponse object if we successfully gathered the token or null if the attempt was not successful.
+     */
     public TokenResponse oauth2AccessToken(String accessTokenURL, String clientId, String clientSecret) {
         validateNonEmptyParam(accessTokenURL, "accessTokenURL");
         validateNonEmptyParam(clientId,"clientId");
@@ -3846,6 +3881,15 @@ public class ApigeeDataClient implements LocationListener {
         return tokenResponse;
     }
 
+    /**
+     * Used to get an OAuth 2 access_token using the password grant_type asynchronously.
+     *
+     * @param accessTokenURL The accessTokenURL
+     * @param username The username of the user to login
+     * @param password The password of the user to login
+     * @param clientId The clientId
+     * @param callback The callback that will be executed when we have finished.
+     */
     public void oauth2AccessTokenAsync(final String accessTokenURL, final String username, final String password, final String clientId, OAuth2ResponseCallback callback) {
         validateNonEmptyParam(accessTokenURL, "accessTokenURL");
         validateNonEmptyParam(username,"username");
@@ -3858,6 +3902,15 @@ public class ApigeeDataClient implements LocationListener {
         }).execute();
     }
 
+    /**
+     * Used to get an OAuth 2 access_token using the password grant_type synchronously.
+     *
+     * @param accessTokenURL The accessTokenURL
+     * @param username The username of the user to login
+     * @param password The password of the user to login
+     * @param clientId The clientId
+     * @return The TokenResponse object if we successfully gathered the token or null if the attempt was not successful.
+     */
     public TokenResponse oauth2AccessToken(String accessTokenURL, String username, String password, String clientId) {
         validateNonEmptyParam(accessTokenURL, "accessTokenURL");
         validateNonEmptyParam(username, "username");
