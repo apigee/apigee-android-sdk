@@ -8,5 +8,5 @@ Before running a sample application, place the apigee-android jar into 'app/libs
 
 Once you have placed the jar into the correct location, you will want to perform a gradle sync to get it to recognize the jar file.  Afterwards, you will be able to run the application.
 
-You will also need to fill in the various values with 'Constants.java' in order for the app to properly function.
+You will also need to fill in the various values within 'Constants.java' in order for the app to properly function.
 
