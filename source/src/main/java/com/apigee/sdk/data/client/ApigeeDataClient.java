@@ -716,7 +716,16 @@ public class ApigeeDataClient implements LocationListener {
                 out = null;
             }
 
-            in = conn.getInputStream();
+            final int responseCode = conn.getResponseCode();
+            ApiResponse.ApiTransactionResponseState transactionResponseState;
+            if( responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_MULT_CHOICE ) {
+                in = conn.getInputStream();
+                transactionResponseState = ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateSuccess;
+            } else {
+                in = conn.getErrorStream();
+                transactionResponseState = ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateFailure;
+            }
+
             if( in != null ) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 StringBuilder sb = new StringBuilder();
@@ -729,23 +738,17 @@ public class ApigeeDataClient implements LocationListener {
 
                 String responseAsString = sb.toString();
 
-                //logTrace("response from server: '" + responseAsString + "'");
-
                 JacksonMarshallingService marshallingService = new JacksonMarshallingService();
                 response = (ApiResponse) marshallingService.demarshall(responseAsString, ApiResponse.class);
-                response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateSuccess);
                 if( response != null ) {
+                    response.setTransactionResponseState(transactionResponseState);
+                    response.setDataClient(this);
                     response.setRawResponse(responseAsString);
                 }
-
-                response.setDataClient(this);
             } else {
                 errorMessage = "no response body from server";
                 logError(errorMessage);
             }
-
-            //final int responseCode = conn.getResponseCode();
-            //logTrace("responseCode from server = " + responseCode);
         }
         catch(Exception e) {
             errorMessage = "Error " + httpMethod + " to '" + urlAsString + "'";
