@@ -35,6 +35,8 @@ repositories {
 }
 
 dependencies {
+    compile 'com.google.oauth-client:google-oauth-client:1.18.0-rc'
+    compile 'com.google.http-client:google-http-client-jackson:1.19.0'
     compile 'org.apache.httpcomponents:httpclient:4.1.2'
     compile 'com.fasterxml.jackson.core:jackson-core:2.2.3'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
@@ -52,11 +54,17 @@ shadowJar {
         include(dependency('com.fasterxml.jackson.core:jackson-core:2.2.3'))
         include(dependency('com.fasterxml.jackson.core:jackson-annotations:2.2.3'))
         include(dependency('com.fasterxml.jackson.core:jackson-databind:2.2.3'))
+        include(dependency('com.google.oauth-client:google-oauth-client:1.18.0-rc'))
+        include(dependency('com.google.http-client:google-http-client-jackson:1.19.0'))
+        include(dependency('com.google.http-client:google-http-client:1.19.0'))
+        include(dependency('org.codehaus.jackson:jackson-core-asl:1.9.11'))
     }
 }
 
 shadowJar {
     relocate 'com.fasterxml.jackson', 'com.apigee.fasterxml.jackson'
+    relocate 'com.google.api', 'com.apigee.google.api'
+    relocate 'org.codehaus.jackson', 'com.apigee.codehause.jackson'
 }
 
 javadoc {

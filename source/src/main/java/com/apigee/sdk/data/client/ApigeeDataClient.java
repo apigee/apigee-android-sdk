@@ -1,19 +1,24 @@
 package com.apigee.sdk.data.client;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 
 import com.apigee.sdk.Logger;
 import com.apigee.sdk.URLConnectionFactory;
 import com.apigee.sdk.apm.android.JacksonMarshallingService;
+import com.apigee.sdk.apm.android.Log;
+import com.apigee.sdk.data.client.activities.OAuth2WebViewActivity;
 import com.apigee.sdk.data.client.callbacks.ApiResponseCallback;
 import com.apigee.sdk.data.client.callbacks.ClientAsyncTask;
 import com.apigee.sdk.data.client.callbacks.DeviceRegistrationCallback;
 import com.apigee.sdk.data.client.callbacks.GroupsRetrievedCallback;
+import com.apigee.sdk.data.client.callbacks.OAuth2ResponseCallback;
 import com.apigee.sdk.data.client.callbacks.QueryResultsCallback;
 import com.apigee.sdk.data.client.entities.Activity;
 import com.apigee.sdk.data.client.entities.Collection;
@@ -30,18 +35,35 @@ import com.apigee.sdk.data.client.utils.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.google.api.client.auth.oauth2.AuthorizationRequestUrl;
+import com.google.api.client.auth.oauth2.BearerToken;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.PasswordTokenRequest;
+import com.google.api.client.auth.oauth2.StoredCredential;
+import com.google.api.client.auth.oauth2.TokenRequest;
+import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.http.BasicAuthentication;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.util.store.DataStore;
+import com.google.api.client.util.store.FileDataStoreFactory;
 
 import org.apache.http.util.ByteArrayBuffer;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -50,6 +72,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import static com.apigee.sdk.data.client.utils.ObjectUtils.isEmpty;
 import static com.apigee.sdk.data.client.utils.UrlUtils.addQueryParams;
@@ -620,71 +643,80 @@ public class ApigeeDataClient implements LocationListener {
      *  @param  segments  additional URL path segments to append to the request URL 
      *  @return  ApiResponse object
      */
-	public ApiResponse doHttpRequest(String httpMethod, Map<String, Object> params, Object data, String... segments) {
-		
+    public ApiResponse doHttpRequest(String baseURL, String httpMethod, Map<String, String> requestProperties, Map<String, Object> params, Object data, String... segments) {
+
         ApiResponse response = null;
-		OutputStream out = null;
-		InputStream in = null;
-		HttpURLConnection conn = null;
-		
-		String urlAsString = path(apiUrl, segments);
+        OutputStream out = null;
+        InputStream in = null;
+        HttpURLConnection conn = null;
+
+        String urlAsString = path(baseURL, segments);
 
         String errorMessage = null;
         String exception = null;
 
         try {
-	        String contentType = "application/json";
-	        if (httpMethod.equals(HTTP_METHOD_POST) && isEmpty(data) && !isEmpty(params)) {
-	            data = encodeParams(params);
-	            contentType = "application/x-www-form-urlencoded";
-	        } else {
-	            urlAsString = addQueryParams(urlAsString, params);
-	        }
+            String contentType = "application/json";
+            if (httpMethod.equals(HTTP_METHOD_POST) && isEmpty(data) && !isEmpty(params)) {
+                data = encodeParams(params);
+                contentType = "application/x-www-form-urlencoded";
+            } else {
+                urlAsString = addQueryParams(urlAsString, params);
+            }
 
-			//logTrace("Invoking " + httpMethod + " to '" + urlAsString + "'");
+            //logTrace("Invoking " + httpMethod + " to '" + urlAsString + "'");
 
-			URL url = new URL(urlAsString);
-			conn = (HttpURLConnection) url.openConnection();
-            
-			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Content-Type", contentType);
-			conn.setUseCaches(false);
-			
-			if  ((accessToken != null) && (accessToken.length() > 0)) {
-				String authStr = "Bearer " + accessToken;
-				conn.setRequestProperty("Authorization", authStr);
-			}
+            URL url = new URL(urlAsString);
+            conn = (HttpURLConnection) url.openConnection();
 
-			conn.setDoInput(true);
-			
-	        if (httpMethod.equals(HTTP_METHOD_POST) || httpMethod.equals(HTTP_METHOD_PUT)) {
-	            if (isEmpty(data)) {
-	                data = JsonNodeFactory.instance.objectNode();
-	            }
-	            
-	            String dataAsString = null;
-	            
-	            if ((data != null) && (!(data instanceof String))) {
-	            	ObjectMapper objectMapper = new ObjectMapper();
-	    			objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-	    			dataAsString = objectMapper.writeValueAsString(data);
-	            } else {
-	            	dataAsString = (String) data;
-	            }
-	            
-	    		//logTrace("Posting/putting data: '" + dataAsString + "'");
+            conn.setRequestMethod(httpMethod);
+            conn.setRequestProperty("Content-Type", contentType);
+            conn.setUseCaches(false);
 
-				byte[] dataAsBytes = dataAsString.getBytes();
+            if  ((accessToken != null) && (accessToken.length() > 0)) {
+                String authStr = "Bearer " + accessToken;
+                conn.setRequestProperty("Authorization", authStr);
+            }
 
-				conn.setRequestProperty("Content-Length", Integer.toString(dataAsBytes.length));
-				conn.setDoOutput(true);
+            if( requestProperties != null && requestProperties.size() > 0 ) {
+                for( String key : requestProperties.keySet() ) {
+                    String value = requestProperties.get(key);
+                    if( value != null && value.length() > 0 ) {
+                        conn.setRequestProperty(key,value);
+                    }
+                }
+            }
 
-				out = conn.getOutputStream();
-				out.write(dataAsBytes);
-				out.flush();
-				out.close();
-				out = null;
-	        }
+            conn.setDoInput(true);
+
+            if (httpMethod.equals(HTTP_METHOD_POST) || httpMethod.equals(HTTP_METHOD_PUT)) {
+                if (isEmpty(data)) {
+                    data = JsonNodeFactory.instance.objectNode();
+                }
+
+                String dataAsString = null;
+
+                if ((data != null) && (!(data instanceof String))) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                    dataAsString = objectMapper.writeValueAsString(data);
+                } else {
+                    dataAsString = (String) data;
+                }
+
+                //logTrace("Posting/putting data: '" + dataAsString + "'");
+
+                byte[] dataAsBytes = dataAsString.getBytes();
+
+                conn.setRequestProperty("Content-Length", Integer.toString(dataAsBytes.length));
+                conn.setDoOutput(true);
+
+                out = conn.getOutputStream();
+                out.write(dataAsBytes);
+                out.flush();
+                out.close();
+                out = null;
+            }
 
             final int responseCode = conn.getResponseCode();
             ApiResponse.ApiTransactionResponseState transactionResponseState;
@@ -697,63 +729,63 @@ public class ApigeeDataClient implements LocationListener {
             }
 
             if( in != null ) {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				
-				while( (line = reader.readLine()) != null ) {
-					sb.append(line);
-					sb.append('\n');
-				}
-				
-				String responseAsString = sb.toString();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                StringBuilder sb = new StringBuilder();
+                String line;
 
-				JacksonMarshallingService marshallingService = new JacksonMarshallingService();
-				response = (ApiResponse) marshallingService.demarshall(responseAsString, ApiResponse.class);
-				if( response != null ) {
+                while( (line = reader.readLine()) != null ) {
+                    sb.append(line);
+                    sb.append('\n');
+                }
+
+                String responseAsString = sb.toString();
+
+                JacksonMarshallingService marshallingService = new JacksonMarshallingService();
+                response = (ApiResponse) marshallingService.demarshall(responseAsString, ApiResponse.class);
+                if( response != null ) {
                     response.setTransactionResponseState(transactionResponseState);
                     response.setDataClient(this);
                     response.setRawResponse(responseAsString);
-				}
-			} else {
+                }
+            } else {
                 errorMessage = "no response body from server";
                 logError(errorMessage);
             }
-		}
-		catch(Exception e) {
+        }
+        catch(Exception e) {
             errorMessage = "Error " + httpMethod + " to '" + urlAsString + "'";
             logError(errorMessage);
-			if( e != null ) {
-				e.printStackTrace();
+            if( e != null ) {
+                e.printStackTrace();
                 exception = e.getLocalizedMessage();
                 logError(exception);
-			}
-		}
-		catch(Throwable t) {
+            }
+        }
+        catch(Throwable t) {
             errorMessage = "Error " + httpMethod + " to '" + urlAsString + "'";
             logError(errorMessage);
-			if( t != null ) {
-				t.printStackTrace();
+            if( t != null ) {
+                t.printStackTrace();
                 exception = t.getLocalizedMessage();
-				logError(exception);
-			}
-		}
-		finally {
-			try {
-				if( out != null ) {
-					out.close();
-				}
-			
-				if( in != null ) {
-					in.close();
-				}
-				
-				if( conn != null ) {
-					conn.disconnect();
-				}
-			} catch(Exception ignored) {
-			}
-		}
+                logError(exception);
+            }
+        }
+        finally {
+            try {
+                if( out != null ) {
+                    out.close();
+                }
+
+                if( in != null ) {
+                    in.close();
+                }
+
+                if( conn != null ) {
+                    conn.disconnect();
+                }
+            } catch(Exception ignored) {
+            }
+        }
 
         if( response == null ) {
             response = new ApiResponse();
@@ -763,7 +795,11 @@ public class ApigeeDataClient implements LocationListener {
             response.setTransactionResponseState(ApiResponse.ApiTransactionResponseState.kApiTransactionResponseStateFailure);
         }
 
-	    return response;
+        return response;
+    }
+
+	public ApiResponse doHttpRequest(String httpMethod, Map<String, Object> params, Object data, String... segments) {
+		return this.doHttpRequest(apiUrl,httpMethod,null,params,data,segments);
 	}
 
     public void getAssetDataForEntityAsync(final Entity entity, final String acceptedContentType, final ApiResponseCallback callback) {
@@ -802,7 +838,7 @@ public class ApigeeDataClient implements LocationListener {
                         String authStr = "Bearer " + accessToken;
                         conn.setRequestProperty("Authorization", authStr);
                     }
-                    
+
                     inputStream = conn.getInputStream();
                     if( inputStream != null ) {
                         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 8190);
@@ -1019,6 +1055,19 @@ public class ApigeeDataClient implements LocationListener {
         	logError("doHttpRequest returned null");
         }
         
+        return response;
+    }
+
+    public ApiResponse apiRequestWithBaseURL(String baseURL, String httpMethod, Map<String,String> requestProperties,
+                                  Map<String, Object> params, Object data, String... segments) {
+        ApiResponse response = null;
+
+        response = doHttpRequest(baseURL, httpMethod, requestProperties, params, data, segments);
+
+        if( (response == null) && (log != null) ) {
+            logError("doHttpRequest returned null");
+        }
+
         return response;
     }
 
@@ -3660,5 +3709,275 @@ public class ApigeeDataClient implements LocationListener {
                 return getCountersForInterval(counterArray, startTime, endTime, resolution);
             }
         }).execute();
+    }
+
+    /**
+     * Stores the given OAuth 2 token response within a file data store.
+     * The stored token response can then retrieved using the getOAuth2TokenDataFromStore method.
+     *
+     * @param storageId a string object that is used to store the token response
+     * @param tokenResponse the token response containing the OAuth 2 token information.
+     * @return If the token response was stored or not.
+     */
+    public Boolean storeOAuth2TokenData(String storageId, TokenResponse tokenResponse) {
+        Boolean wasStored = false;
+        try {
+            File oauth2StorageFolder = new File(this.context.getFilesDir(),"oauth2StorageFolder");
+            oauth2StorageFolder.mkdirs();
+            FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(oauth2StorageFolder);
+            DataStore<StoredCredential> storedCredentialDataStore = fileDataStoreFactory.getDataStore(storageId);
+            Credential oauth2Credential = new Credential(BearerToken.authorizationHeaderAccessMethod()).setFromTokenResponse(
+                    tokenResponse);
+            StoredCredential storedOAuth2Credential = new StoredCredential(oauth2Credential);
+            storedCredentialDataStore.set(storageId,storedOAuth2Credential);
+            wasStored = true;
+        } catch ( Exception exception ) {
+            logInfo("Exception storing OAuth2TokenData :" + exception.getLocalizedMessage());
+        }
+        return wasStored;
+    }
+
+    /**
+     * Retrieves the stored token response that corresponds to the given storageId.
+     *
+     * @param storageId the id used to store the TokenResponse
+     * @return The TokenResponse object that is associated with the given storageId or null if no TokenResponse was found.
+     */
+    public TokenResponse getOAuth2TokenDataFromStore(String storageId) {
+        TokenResponse tokenResponse = null;
+        try {
+            File oauth2StorageFolder = new File(this.context.getFilesDir(),"oauth2StorageFolder");
+            oauth2StorageFolder.mkdirs();
+            FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(oauth2StorageFolder);
+            DataStore<StoredCredential> storedCredentialDataStore = fileDataStoreFactory.getDataStore(storageId);
+            StoredCredential storedCredential = storedCredentialDataStore.get(storageId);
+            if( storedCredential != null ) {
+                tokenResponse = new TokenResponse();
+                tokenResponse.setAccessToken(storedCredential.getAccessToken());
+                tokenResponse.setRefreshToken(storedCredential.getRefreshToken());
+                if( storedCredential.getExpirationTimeMilliseconds() != null ) {
+                    tokenResponse.setExpiresInSeconds(TimeUnit.MILLISECONDS.toSeconds(storedCredential.getExpirationTimeMilliseconds()));
+                }
+            }
+        } catch ( Exception exception ) {
+            logInfo("Exception getting OAuth2TokenData :" + exception.getLocalizedMessage());
+        }
+        return tokenResponse;
+    }
+
+    /**
+     * Deletes the TokenResponse that is associated with the given storageId from the file data store.
+     *
+     * @param storageId The storageId associated with the stored TokenResponse.
+     */
+    public void deleteStoredOAuth2TokenData(String storageId) {
+        try {
+            File oauth2StorageFolder = new File(this.context.getFilesDir(),"oauth2StorageFolder");
+            oauth2StorageFolder.mkdirs();
+            FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(oauth2StorageFolder);
+            DataStore<StoredCredential> storedCredentialDataStore = fileDataStoreFactory.getDataStore(storageId);
+            storedCredentialDataStore.delete(storageId);
+        } catch ( Exception exception ) {
+            logInfo("Exception deleting OAuth2TokenData :" + exception.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Used to get an OAuth 2 access_token using the client_credentials grant_type asynchronously.
+     *
+     * @param accessTokenURL The url used to get the access_token
+     * @param clientId The client_id
+     * @param clientSecret The client_secret
+     * @param callback The callback that will be executed when we have finished.
+     */
+    public void oauth2AccessTokenAsync(final String accessTokenURL, final String clientId, final String clientSecret, OAuth2ResponseCallback callback) {
+        validateNonEmptyParam(accessTokenURL, "accessTokenURL");
+        validateNonEmptyParam(clientId,"clientId");
+        validateNonEmptyParam(clientSecret,"clientSecret");
+        (new ClientAsyncTask<TokenResponse>(callback) {
+            @Override
+            public TokenResponse doTask() {
+                return oauth2AccessToken(accessTokenURL,clientId,clientSecret);
+            }
+        }).execute();
+    }
+
+    /**
+     * Used to get an OAuth 2 access_token using the client_credentials grant_type synchronously.
+     *
+     * @param accessTokenURL The url used to get the access_token
+     * @param clientId The client_id
+     * @param clientSecret The client_secret
+     * @return The TokenResponse object if we successfully gathered the token or null if the attempt was not successful.
+     */
+    public TokenResponse oauth2AccessToken(String accessTokenURL, String clientId, String clientSecret) {
+        validateNonEmptyParam(accessTokenURL, "accessTokenURL");
+        validateNonEmptyParam(clientId,"clientId");
+        validateNonEmptyParam(clientSecret,"clientSecret");
+
+        TokenResponse tokenResponse = null;
+
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        queryParams.put("grant_type","client_credentials");
+        String accessTokenURLWithClientCredentialsGrantTypeQueryParam = addQueryParams(accessTokenURL,queryParams);
+
+        TokenRequest tokenRequest = new TokenRequest(new NetHttpTransport(),new JacksonFactory(), new GenericUrl(accessTokenURLWithClientCredentialsGrantTypeQueryParam), "client_credentials");
+        tokenRequest.setClientAuthentication(new BasicAuthentication(clientId,clientSecret));
+        HttpResponse httpResponse = null;
+        InputStream inputStream = null;
+        try {
+            httpResponse = tokenRequest.executeUnparsed();
+            inputStream = httpResponse.getContent();
+            if( inputStream != null ) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                    sb.append('\n');
+                }
+
+                String responseAsString = sb.toString();
+                JSONObject responseDictionary = new JSONObject(responseAsString);
+                if( responseDictionary.has("access_token") && responseDictionary.getString("access_token") != null ) {
+                    tokenResponse = new TokenResponse();
+                    tokenResponse.setAccessToken(responseDictionary.getString("access_token"));
+                    if( responseDictionary.has("refresh_token") ) {
+                        tokenResponse.setAccessToken(responseDictionary.getString("refresh_token"));
+                    }
+                    if( responseDictionary.has("scope") ) {
+                        tokenResponse.setScope(responseDictionary.getString("scope"));
+                    }
+                    if( responseDictionary.has("token_type") ) {
+                        tokenResponse.setTokenType(responseDictionary.getString("token_type"));
+                    }
+                    if( responseDictionary.has("expires_in") ) {
+                        try{
+                            tokenResponse.setExpiresInSeconds(responseDictionary.getLong("expires_in"));
+                        } catch (Exception exception) {
+                            try {
+                                tokenResponse.setExpiresInSeconds(Long.parseLong(responseDictionary.get("expires_in").toString()));
+                            } catch ( Exception exception1 ) {
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception exception){
+        } finally {
+            if( httpResponse != null ) {
+                try {
+                    httpResponse.disconnect();
+                } catch ( Exception exception ) {
+                }
+            }
+            if( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch ( Exception exception ) {
+                }
+            }
+        }
+
+        return tokenResponse;
+    }
+
+    /**
+     * Used to get an OAuth 2 access_token using the password grant_type asynchronously.
+     *
+     * @param accessTokenURL The accessTokenURL
+     * @param username The username of the user to login
+     * @param password The password of the user to login
+     * @param clientId The clientId
+     * @param callback The callback that will be executed when we have finished.
+     */
+    public void oauth2AccessTokenAsync(final String accessTokenURL, final String username, final String password, final String clientId, OAuth2ResponseCallback callback) {
+        validateNonEmptyParam(accessTokenURL, "accessTokenURL");
+        validateNonEmptyParam(username,"username");
+        validateNonEmptyParam(password,"password");
+        (new ClientAsyncTask<TokenResponse>(callback) {
+            @Override
+            public TokenResponse doTask() {
+                return oauth2AccessToken(accessTokenURL, username, password, clientId);
+            }
+        }).execute();
+    }
+
+    /**
+     * Used to get an OAuth 2 access_token using the password grant_type synchronously.
+     *
+     * @param accessTokenURL The accessTokenURL
+     * @param username The username of the user to login
+     * @param password The password of the user to login
+     * @param clientId The clientId
+     * @return The TokenResponse object if we successfully gathered the token or null if the attempt was not successful.
+     */
+    public TokenResponse oauth2AccessToken(String accessTokenURL, String username, String password, String clientId) {
+        validateNonEmptyParam(accessTokenURL, "accessTokenURL");
+        validateNonEmptyParam(username, "username");
+        validateNonEmptyParam(password, "password");
+
+        TokenResponse tokenResponse = null;
+
+        // Make sure clientId is just non-null.  Otherwise we will possibly crash or get an unneeded exception.
+        if( clientId == null ) {
+            clientId = "";
+        }
+
+        try {
+            AuthorizationRequestUrl authorizationRequestUrl = new AuthorizationRequestUrl(accessTokenURL, clientId, Collections.singleton("token"));
+            PasswordTokenRequest passwordTokenRequest = new PasswordTokenRequest(new NetHttpTransport(), new JacksonFactory(), authorizationRequestUrl, username, password);
+            tokenResponse = passwordTokenRequest.execute();
+        } catch (Exception exception) {
+        }
+
+        return tokenResponse;
+    }
+
+    /**
+     * Creates an OAuth 2 Intent for the authorization_code grant_type.
+     * The created intent can then be started by calling startActivityForResult.
+     *
+     * @param context the context to use when creating the Intent
+     * @param authorizationCodeURL the authorizationCodeURL
+     * @param accessTokenURL the accessTokenURL
+     * @param redirectURL the redirectURL
+     * @param clientId the clientId
+     * @param clientSecret the clientSecret
+     * @return the created Intent
+     */
+    public Intent oauth2AccessTokenAuthorizationCodeIntent(Context context,String authorizationCodeURL, String accessTokenURL, String redirectURL, String clientId, String clientSecret) {
+        Intent authorizationCodeGrantTypeActivity = new Intent(context,OAuth2WebViewActivity.class);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2GrantTypeExtraKey, "code");
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessCodeURLExtraKey, authorizationCodeURL);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessTokenURLExtraKey, accessTokenURL);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2RedirectURLExtraKey, redirectURL);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientIDExtraKey, clientId);
+        authorizationCodeGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientSecretExtraKey, clientSecret);
+        return authorizationCodeGrantTypeActivity;
+    }
+
+    /**
+     * Creates an OAuth 2 Intent for the implicit grant_type.
+     * The created intent can then be started by calling startActivityForResult.
+     *
+     * @param context the context to use when creating the Intent
+     * @param authorizationCodeURL the authorizationCodeURL
+     * @param accessTokenURL the accessTokenURL
+     * @param redirectURL the redirectURL
+     * @param clientId the clientId
+     * @param clientSecret the clientSecret
+     * @return the created Intent
+     */
+    public Intent oauth2AccessTokenImplicitIntent(Context context,String authorizationCodeURL, String accessTokenURL, String redirectURL, String clientId, String clientSecret) {
+        Intent implicitGrantTypeActivity = new Intent(context,OAuth2WebViewActivity.class);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2GrantTypeExtraKey, "token");
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessCodeURLExtraKey, authorizationCodeURL);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2AccessTokenURLExtraKey, accessTokenURL);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2RedirectURLExtraKey, redirectURL);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientIDExtraKey, clientId);
+        implicitGrantTypeActivity.putExtra(OAuth2WebViewActivity.OAuth2ClientSecretExtraKey, clientSecret);
+        return implicitGrantTypeActivity;
     }
 }

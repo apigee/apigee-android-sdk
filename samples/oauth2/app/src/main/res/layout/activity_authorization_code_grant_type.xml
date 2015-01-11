@@ -1,0 +1,135 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.apigee.oauth2.grantTypeActivities.ImplicitGrantTypeActivity"
+    android:id="@+id/AuthorizationCodeGrantTypeActivityView">
+
+    <TextView
+        android:text="Authorization Code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/acAuthorizationCodeGrantTypeHeaderTextView"
+        android:textSize="30dp"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Access Token:"
+        android:id="@+id/acAccessTokenHeaderTextView"
+        android:textStyle="bold"
+        android:layout_below="@+id/acAuthorizationCodeGrantTypeHeaderTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/not_available"
+        android:id="@+id/acAccessTokenTextView"
+        android:maxWidth="250dp"
+        android:layout_below="@+id/acAccessTokenHeaderTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:maxHeight="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email Address:"
+        android:id="@+id/acEmailAddressHeaderTextView"
+        android:textStyle="bold"
+        android:layout_below="@+id/acAccessTokenTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/not_available"
+        android:id="@+id/acEmailAddressTextView"
+        android:layout_below="@+id/acEmailAddressHeaderTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear Data"
+        android:id="@+id/acClearDataButton"
+        android:layout_below="@+id/acEmailAddressTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Access Token"
+        android:id="@+id/acGetAccessTokenButton"
+        android:layout_below="@+id/acClearDataButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Email Address"
+        android:id="@+id/acGetEmailAddressButton"
+        android:layout_below="@+id/acGetAccessTokenButton"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(Using Facebook)"
+        android:id="@+id/acWhichApiUtilized"
+        android:layout_below="@+id/acAuthorizationCodeGrantTypeHeaderTextView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Post To Facebook"
+        android:id="@+id/acPostToFacebookButton"
+        android:layout_below="@+id/acGetEmailAddressButton"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retrieve Store"
+        android:id="@+id/acRetrieveTokenButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/acAccessTokenHeaderTextView" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Store"
+        android:id="@+id/acDeleteStoreButton"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/acPostToFacebookButton" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Store Token"
+        android:id="@+id/acStoreTokenButton"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/acWhichApiUtilized" />
+</RelativeLayout>

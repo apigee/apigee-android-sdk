@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">oauth2</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="not_available">N/A</string>
+    <string name="title_activity_password_grant_type">PasswordGrantTypeActivity</string>
+    <string name="title_activity_client_credentials_grant_type">ClientCredentialsGrantTypeActivity</string>
+    <string name="title_activity_implicit_grant_type">ImplicitGrantTypeActivity</string>
+    <string name="title_activity_authorization_code_grant_type">AuthorizationCodeGrantTypeActivity</string>
+    <string name="title_oauth2_webview_activity">OAuth2WebViewActivity</string>
+
+</resources>
