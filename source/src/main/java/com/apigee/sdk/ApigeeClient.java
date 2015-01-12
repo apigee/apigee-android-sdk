@@ -25,7 +25,7 @@ public class ApigeeClient {
 	/**
      * Most current version of the Apigee Android SDK
      */
-    public static final String SDK_VERSION  = "2.0.13";
+    public static final String SDK_VERSION  = "2.0.14";
     /**
      * Platform type of this SDK
      */
