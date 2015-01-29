@@ -230,12 +230,8 @@ public class Entity {
      */
     public void setProperties(Map<String,JsonNode> newProperties) {
     	properties.clear();
-    	Set<String> keySet = newProperties.keySet();
-    	Iterator<String> keySetIter = keySet.iterator();
-    	
-    	while( keySetIter.hasNext() ) {
-    		String key = keySetIter.next();
-    		setProperty(key, newProperties.get(key));
+    	for (Map.Entry<String, JsonNode> entry : newProperties.entrySet()) {
+    		setProperty(entry.getKey(), entry.getValue());
     	}
     }
   
@@ -493,12 +489,8 @@ public class Entity {
      * @see  <a href="http://jackson.codehaus.org/1.0.1/javadoc/org/codehaus/jackson/JsonNode.html">JsonNode</a> 
      */
     public void addProperties(Map<String, JsonNode> properties) {
-    	Set<String> keySet = properties.keySet();
-    	Iterator<String> keySetIter = keySet.iterator();
-    	
-    	while( keySetIter.hasNext() ) {
-    		String key = keySetIter.next();
-    		setProperty(key, properties.get(key));
+    	for (Map.Entry<String, JsonNode> entry : properties.entrySet()) {
+    		setProperty(entry.getKey(), entry.getValue());
     	}
     }
     
