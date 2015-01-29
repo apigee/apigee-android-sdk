@@ -231,7 +231,7 @@ public class Entity {
     public void setProperties(Map<String,JsonNode> newProperties) {
     	properties.clear();
     	for (Map.Entry<String, JsonNode> entry : newProperties.entrySet()) {
-    		setProperty(entry.getKey(), entry.getValue())
+    		setProperty(entry.getKey(), entry.getValue());
     	}
     }
   
@@ -490,7 +490,7 @@ public class Entity {
      */
     public void addProperties(Map<String, JsonNode> properties) {
     	for (Map.Entry<String, JsonNode> entry : properties.entrySet()) {
-    		setProperty(entry.getKey(), entry.getValue())
+    		setProperty(entry.getKey(), entry.getValue());
     	}
     }
     
