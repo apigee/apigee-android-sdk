@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: google-http-client-1.19.0">
+  <library name="Gradle: com.google.http-client:google-http-client:1.19.0">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.19.0/cdca49ad0977c040f603478aa2e16b2775c8fec6/google-http-client-1.19.0.jar!/" />
     </CLASSES>

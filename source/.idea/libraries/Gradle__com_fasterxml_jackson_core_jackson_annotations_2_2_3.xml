@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: jackson-annotations-2.2.3">
+  <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.2.3">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.2.3/527fece4f23a457070a36c371a26d6c0208e1c3/jackson-annotations-2.2.3.jar!/" />
     </CLASSES>
