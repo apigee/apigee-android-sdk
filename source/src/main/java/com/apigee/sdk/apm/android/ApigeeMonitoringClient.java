@@ -619,7 +619,7 @@ public class ApigeeMonitoringClient implements SessionTimeoutListener {
 			}
 
             this.isActive = this.allowedToSendData();
-			if (this.isActive || this.alwaysUploadCrashReports) {
+			if (this.isActive) {
 				if (crashReportingEnabled) {
 					sExecutor.execute(new CrashManagerTask(this));
 				} else {

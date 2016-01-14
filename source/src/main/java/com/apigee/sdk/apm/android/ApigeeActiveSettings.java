@@ -239,6 +239,10 @@ public class ApigeeActiveSettings implements ApplicationConfigurationService {
                 
 	        			return sb.toString();
 	        		} else {
+						if( responseCode >= 400 && responseCode < 500 ) {
+							this.monitoringClient.pause();
+							this.apigeeApp.setMonitoringDisabled(true);
+						}
 	        			Log.e(ClientLog.TAG_MONITORING_CLIENT,"Error encountered retrieving configuration from server. code=" + responseCode);
 	        		}
 
