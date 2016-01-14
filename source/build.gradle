@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.apigee'
-version = '2.0.14'
+version = '2.0.15'
 
 compileJava.options.encoding = 'UTF-8'
 
